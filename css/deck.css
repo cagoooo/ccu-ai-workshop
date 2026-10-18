@@ -272,3 +272,41 @@ html.offline .offline-note { display: block; }
 @media print { #theme-btn { display: none; } }
 
 [id^="qr-akai"] svg { width: 100%; height: 100%; display: block; }
+#qr-itc svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- 駕駛艙解剖圖（線框示意） ---------- */
+.wf { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
+.wf-top { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--surface2); border-bottom: 1px solid var(--line); }
+.wf-top i { width: 10px; height: 10px; border-radius: 50%; background: #e57373; }
+.wf-top i:nth-child(2) { background: #ffb74d; }
+.wf-top i:nth-child(3) { background: #81c784; }
+.wf-top span { margin-left: 8px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wf-body { position: relative; flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.wf-blk { position: relative; border-radius: 10px; padding: 9px 12px 9px 40px; font-size: 15px; line-height: 1.4; border: 1.5px dashed var(--line); }
+.wf-blk em { font-style: normal; float: right; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--accent2); color: #fff; }
+.wf-blk b, .wf-float b { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff !important; display: grid; place-items: center; font-size: 13px; }
+.wf-blk.b1 { background: rgba(11, 127, 179, .08); }
+.wf-blk.b2 { background: rgba(232, 100, 58, .08); }
+.wf-blk.b3 { flex: 1; background: rgba(46, 125, 50, .08); display: flex; align-items: center; }
+.wf-blk.b4 { background: rgba(178, 106, 0, .08); }
+.wf-blk.b5 { background: rgba(123, 63, 160, .08); }
+.wf-float { position: absolute; right: 18px; bottom: 68px; background: var(--tile); color: #fff; border-radius: 999px; padding: 6px 12px 6px 38px; font-size: 16px; box-shadow: var(--shadow); }
+
+/* ---------- 左右對照 ---------- */
+.vs-grid { display: grid; grid-template-columns: 1fr 64px 1fr; align-items: stretch; }
+.vs-col { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px; box-shadow: var(--shadow); }
+.vs-col.left-col { border-top: 5px solid var(--muted); }
+.vs-col.right-col { border-top: 5px solid var(--accent); }
+.vs-label { font-size: 26px; font-weight: 900; margin-bottom: 10px; }
+.vs-label.right { color: var(--accent-ink); }
+.vs-center { display: grid; place-items: center; font-size: 40px; font-weight: 900; color: var(--accent); }
+.vs-col ul { list-style: none; padding: 0 !important; font-size: 21px; }
+.vs-col ul li { padding: 8px 0; border-bottom: 1px dashed var(--line); margin: 0; }
+.vs-col ul li:last-child { border-bottom: none; }
+.vs-col.left-col ul li { color: var(--muted); }
+.flow .step .chip { font-size: 13px; margin-top: 6px; }
+.flow.tight .step { padding: 14px 8px; font-size: 17px; line-height: 1.45; }
+.flow.tight .step b { font-size: 20px; }
+.flow.tight .step .em { font-size: 34px; }
+.flow.tight .arrow { width: 20px; font-size: 22px; }
+.flow .chip { white-space: nowrap; }
