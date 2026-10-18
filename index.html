@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 數位教學實務工作坊｜阿凱老師</title>
+  <meta name="description" content="國立中正大學師資培育中心 AI 數位教學實務工作坊（2026.11.13）簡報：用 Gemini Notebook、Gemini Canvas 與 AI 代理人，把一張課本照片變成一整套教學。" />
+  <meta name="author" content="阿凱老師（桃園市龍潭區石門國民小學）" />
+  <script>
+    // 預設淺色；只有使用者手動切過深色才套用深色（避免第一眼看到黑底）
+    try { if (localStorage.getItem('ccu2026ai_theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet" href="css/deck.css" />
+</head>
+<body>
+<button id="theme-btn" type="button" aria-label="切換深淺色">🌙 深色</button>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ===================== 開場 ===================== -->
+
+<!-- 1 封面 -->
+<section data-background-image="images/bg_cover.jpg" data-background-size="cover" data-background-opacity="0.92">
+  <div class="s center cover">
+    <div class="glass">
+      <div class="badge" data-a="pop">國立中正大學師資培育中心｜2026.11.13（五）</div>
+      <h1>一張課本照片，<br>長出一整套 AI 教學</h1>
+      <p class="sub" data-a>AI 數位教學實務工作坊</p>
+      <p class="meta" data-a>講師　阿凱老師（黃凱揚）・桃園市龍潭區石門國民小學<br>教育學院一館 501 教室　10:00–16:00</p>
+    </div>
+  </div>
+  <aside class="notes">開場先謝謝連啟舜老師邀請。今天以教學應用為主、行政協助為輔，上午 2 小時、下午 3 小時，三次動手實作。</aside>
+</section>
+
+<!-- 2 講師介紹 -->
+<section>
+  <div class="s">
+    <span class="kicker">講師介紹</span>
+    <h2>我是阿凱老師</h2>
+    <div class="g2 grow" style="grid-template-columns:1.15fr 1fr;align-items:start">
+      <div class="stg" style="display:flex;flex-direction:column;gap:14px">
+        <div class="card accent"><h3>🏫 桃園市龍潭區石門國民小學</h3>資訊組長，每天在第一線用 AI 備課、做教具、處理行政。</div>
+        <div class="card cyan"><h3>🛠️ 教育科技創新專區</h3>把教學現場的需求，用 AI 做成 <b>131 款</b>免費教育工具，老師、學生打開網址就能用。</div>
+        <div class="card ok"><h3>🎯 今天的承諾</h3>不教你追工具，而是帶你帶走一套「想問題 → 問對問題 → 指揮 AI → 查核 AI」的方法。</div>
+      </div>
+      <div class="card" data-a="right" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+        <div class="qr-static" id="qr-akai" style="width:190px;height:190px;background:#fff;border-radius:14px;padding:8px"></div>
+        <b style="font-size:22px">教育科技創新專區</b>
+        <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener" class="small">cagoooo.github.io/Akai</a>
+        <span class="tiny muted">工具數依據本機專案 v3.6.168（2026-10-18 盤點）</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 今日地圖 -->
+<section>
+  <div class="s">
+    <span class="kicker">今日地圖</span>
+    <h2>5 小時、6 個模組、3 次實作</h2>
+    <div class="g2 grow">
+      <div class="card accent stg" style="display:flex;flex-direction:column;gap:8px">
+        <h3>☀️ 上午 10:00–12:00｜AI 備課</h3>
+        <div><span class="chip">10:00</span>開場、文字雲破冰</div>
+        <div><span class="chip">10:15</span>模組一　心法：一張照片，一整套教材</div>
+        <div><span class="chip">10:35</span>模組二　Gemini Notebook 備課示範</div>
+        <div><span class="chip o">11:05</span><b>實作①</b>　我的單元教材包</div>
+        <div><span class="chip">11:45</span>查核清單＋上午小結</div>
+      </div>
+      <div class="card cyan stg" style="display:flex;flex-direction:column;gap:8px">
+        <h3>🌤️ 下午 13:00–16:00｜AI 教具與家教</h3>
+        <div><span class="chip">13:00</span>模組三　一句話做教具</div>
+        <div><span class="chip o">13:40</span><b>實作②</b>　Gemini Canvas 互動教具</div>
+        <div><span class="chip">14:10</span>模組四　AI 會算錯：三個內心戲</div>
+        <div><span class="chip">14:45</span>模組五　3 個 AI 代理人＋<b>實作③</b></div>
+        <div><span class="chip">15:35</span>模組六　行政協助（輔）</div>
+        <div><span class="chip">15:45</span>成果分享＋結語</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 破冰文字雲 -->
+<section id="slide-wc-open">
+  <div class="s">
+    <span class="kicker">破冰｜即時文字雲 <span class="live">LIVE</span></span>
+    <h2 class="wc-q-title">說到「AI 教學」，你第一個想到的詞？</h2>
+    <div class="wc grow" data-key="open">
+      <div class="wc-side">
+        <div class="join"><div class="qr" data-key="open"></div><a class="qr-url" target="_blank" rel="noopener"></a></div>
+        <div class="wc-form"><input type="text" maxlength="20" aria-label="輸入答案" /><button class="btn wc-send" type="button">送出</button></div>
+        <div class="small">已收到 <b class="wc-total">0</b> 則</div>
+        <ul class="wc-list"></ul>
+        <span class="wc-q" hidden></span>
+        <span class="offline-note">本機預覽：互動功能部署後才會連線</span>
+      </div>
+      <div class="wc-stage"><canvas></canvas><div class="wc-empty">手機掃左邊 QR Code<br>輸入第一個詞，文字雲就會長出來 ✨</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 課前調查 -->
+<section id="slide-poll-pre">
+  <div class="s">
+    <span class="kicker">課前調查｜即時投票 <span class="live">LIVE</span></span>
+    <h2 class="poll-q-title">你用 AI 備過課嗎？</h2>
+    <div class="poll grow" data-key="pre">
+      <div class="poll-opts"></div>
+      <div class="join">
+        <div class="qr" data-key="pre"></div><a class="qr-url" target="_blank" rel="noopener"></a>
+        <div class="small" style="margin-top:8px">已投票 <b class="poll-total">0</b> 人</div>
+        <span class="poll-q" hidden></span>
+        <span class="offline-note">本機預覽：互動功能部署後才會連線</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 模組一 ===================== -->
+
+<!-- 6 章節：模組一 -->
+<section data-background-image="images/bg_module1.jpg" data-background-size="cover" data-background-opacity="0.92">
+  <div class="s center chapter">
+    <div class="glass">
+      <div class="no" data-a="pop">01</div>
+      <span class="kicker">模組一｜心法</span>
+      <h2>一張照片，一整套教材</h2>
+      <p class="time" data-a>10:15–10:35</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 靈感來源 -->
+<section>
+  <div class="s">
+    <span class="kicker">靈感來源</span>
+    <h2>一支 10 分鐘影片，示範了 AI 備課的完整流程</h2>
+    <div class="flow stg" style="margin-top:6px">
+      <div class="step"><div class="em">📸</div><b>拍課本</b>手機拍成 PDF<br>記得拍到頁碼</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">📚</div><b>Gemini Notebook</b>筆記、心智圖、<br>學習卡、測驗</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🎞️</div><b>Antigravity</b>一句話做出<br>3D 解說動畫</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🤖</div><b>3 個 AI 代理人</b>會一步步引導的<br>解題家教</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🔍</div><b>看清侷限</b>AI 會「假裝<br>有算」</div>
+    </div>
+    <div class="card" data-a style="margin-top:auto;font-size:19px">
+      出處：101事務所〈不再害怕數學！只要手機拍照，NotebookLM＋Antigravity 把課本變成引導解題的 AI 家教〉（2026）
+      <a href="https://youtu.be/ABUd4-0TR7w" target="_blank" rel="noopener">youtu.be/ABUd4-0TR7w</a><br>
+      <span class="muted">今天把這套流程從「高中數學」擴大到<b>每個學科</b>，並加上老師最需要的一步：<b>查核</b>。</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8 VIZ 前後對比 -->
+<section>
+  <div class="s">
+    <span class="kicker">前後對比｜拖拉下方滑桿</span>
+    <h2>同一個單元，備課方式的轉變</h2>
+    <div class="viz" data-a>
+      <div class="viz-before">
+        <h3>📖 過去：一個人從零做起</h3>
+        <ul>
+          <li>讀課本、畫重點，自己整理講義</li>
+          <li>簡報、學習單、測驗卷，一份一份做</li>
+          <li>想要動畫或互動教具？多半只能放棄</li>
+          <li>時間都花在「做出來」，沒時間「想怎麼教」</li>
+        </ul>
+      </div>
+      <div class="viz-after">
+        <h3>✨ 現在：老師當總編輯</h3>
+        <ul>
+          <li>拍課本 → 交給 AI 讀，<b>設定好助教守則</b></li>
+          <li>筆記、心智圖、學習卡、測驗，<b>一次生成</b></li>
+          <li>一句話做出互動教具與解說動畫</li>
+          <li>省下的時間，拿去<b>查核內容、設計活動、陪伴學生</b></li>
+        </ul>
+      </div>
+      <div class="viz-line"></div>
+      <span class="viz-tag l">過去</span><span class="viz-tag r">現在</span>
+    </div>
+    <input class="viz-range" type="range" min="0" max="100" value="78" aria-label="前後對比滑桿" />
+  </div>
+</section>
+
+<!-- 9 老師保留的三件事 -->
+<section>
+  <div class="s">
+    <span class="kicker">AI 是放大器，不是替代者</span>
+    <h2>AI 做得再快，這三件事還是老師的</h2>
+    <div class="g3 grow stg" style="align-items:stretch">
+      <div class="card icard accent"><div class="ico"><img src="images/icon_target.png" alt="" /></div><h3>教學目標</h3><p>這節課學生要帶走什麼？<br>AI 不知道你的學生是誰。</p></div>
+      <div class="card icard cyan"><div class="ico"><img src="images/icon_scale.png" alt="" /></div><h3>專業判斷</h3><p>內容對不對、適不適齡、<br>有沒有迷思概念，由你把關。</p></div>
+      <div class="card icard ok"><div class="ico"><img src="images/icon_heart.png" alt="" /></div><h3>師生關係</h3><p>鼓勵、等待、看見孩子的進步，<br>這是 AI 給不了的。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 模組二 ===================== -->
+
+<!-- 10 章節：模組二 -->
+<section>
+  <div class="s center chapter">
+    <div class="no" data-a="pop">02</div>
+    <span class="kicker">模組二｜AI 備課</span>
+    <h2>用 Gemini Notebook 備一個單元</h2>
+    <p class="time" data-a>10:35–11:05　Gemini Notebook（原名 NotebookLM）</p>
+  </div>
+</section>
+
+<!-- 11 素材準備 -->
+<section>
+  <div class="s">
+    <span class="kicker">Step 0｜素材準備</span>
+    <h2>好教材，從「好來源」開始</h2>
+    <div class="g3 grow stg">
+      <div class="card accent"><h3><span class="num">1</span>拍成 PDF</h3>用手機雲端硬碟的「掃描」功能，把課本一頁頁拍成 PDF。</div>
+      <div class="card accent"><h3><span class="num">2</span>拍到頁碼</h3>頁碼是 AI 標註出處的依據，之後查核才找得到原文。</div>
+      <div class="card accent"><h3><span class="num">3</span>匯入筆記本</h3>在 Gemini Notebook 建立新筆記本，把 PDF 加入成為「來源」。</div>
+    </div>
+    <div class="card warn" data-a style="font-size:20px">⚠️ <b>著作權提醒</b>：課本與教材只放在自己的筆記本做教學準備，不公開分享整本內容；學生資料一律不上傳。</div>
+  </div>
+</section>
+
+<!-- 12 助教守則 -->
+<section>
+  <div class="s">
+    <span class="kicker">最關鍵的一步｜設定對話</span>
+    <h2>先給 AI 一份「助教守則」，再開始</h2>
+    <div class="g2 grow" style="grid-template-columns:1fr 1.5fr">
+      <div class="stg" style="display:flex;flex-direction:column;gap:12px">
+        <div class="card cyan small">在筆記本的「設定對話」選<b>自訂</b>，貼上守則並儲存。之後所有回答都會照這份守則走。</div>
+        <div class="card ok small">✅ 忠於課本，不亂補充<br>✅ 每句話都標出處<br>✅ 先引導，不直接給答案</div>
+        <div class="card small"><span class="muted">為什麼？就像新來的實習老師，<br>你得先告訴他「我們班的規矩」。</span></div>
+      </div>
+      <div class="prompt" data-a="right">
+        <div class="bar">📋 助教守則範本（替換橘色欄位）<button class="copy" type="button">複製提示詞</button></div>
+<pre>你是<span class="slot">【年級／科目】</span>的課堂助教，服務對象是正在學這個單元的學生。
+請遵守：
+1. 解釋一律以來源中的課本內容為準，不自行補充課本沒有的定義。
+2. 每個說法都標註出處（課本頁碼或段落）；用到課本以外的知識時，明確註明「課本外補充」。
+3. 學生問「這題怎麼解」時，先給提示或反問一個小問題，不直接給答案。
+4. 不更改題目中的任何數據，也不自行替計算題寫出答案。
+5. 用<span class="slot">【年級】</span>學生聽得懂的語氣，一次只說明一個概念。</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 教材套件 -->
+<section>
+  <div class="s">
+    <span class="kicker">工作室｜一次生成</span>
+    <h2>同一份課本，長出 8 種教材</h2>
+    <div class="g4 grow stg">
+      <div class="card icard"><div class="ico"><img src="images/icon_report.png" alt="" /></div><h3>互動報告</h3><p>有目錄、可跳轉的學習筆記</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_mindmap.png" alt="" /></div><h3>心智圖</h3><p>先建立單元的概念骨架</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_slides.png" alt="" /></div><h3>簡報</h3><p>抽象概念的圖解拆步驟</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_cards.png" alt="" /></div><h3>學習卡</h3><p>正反面翻卡，不熟的留下複習</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_infographic.png" alt="" /></div><h3>資訊圖表</h3><p>一張海報濃縮整個單元</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_quiz.png" alt="" /></div><h3>測驗</h3><p>附提示與錯題說明</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_video.png" alt="" /></div><h3>影片摘要</h3><p>適合翻轉預習</p></div>
+      <div class="card icard"><div class="ico"><img src="images/icon_audio.png" alt="" /></div><h3>語音摘要</h3><p>像 Podcast 的對談導讀</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 互動報告 -->
+<section>
+  <div class="s">
+    <span class="kicker">教材 ①｜互動報告</span>
+    <h2>報告不只是筆記，它會幫你「推薦下一份教材」</h2>
+    <div class="g3 grow stg">
+      <div class="card cyan"><h3>📑 左側目錄</h3>每個小單元都能隨時跳轉，學生不會迷路。</div>
+      <div class="card cyan"><h3>🧩 延伸教材推薦</h3>每節下方會推薦適合的心智圖、簡報、學習卡，連提示詞都寫好了。</div>
+      <div class="card cyan"><h3>📝 總結＋課後測驗</h3>最後附上整理與一套測驗題，可直接一鍵生成。</div>
+    </div>
+    <div class="card accent" data-a><b>老師的工作</b>：不要「全部接受」。先看推薦的提示詞，刪掉不符合教學目標的，再加上一句「請用<b>【年級】</b>學生的用語」。</div>
+  </div>
+</section>
+
+<!-- 15 心智圖＋學習卡 -->
+<section>
+  <div class="s">
+    <span class="kicker">教材 ②③｜心智圖與學習卡</span>
+    <h2>先看見森林，再記住每棵樹</h2>
+    <div class="g2 grow stg">
+      <div class="card accent">
+        <div class="ico"><img src="images/icon_mindmap.png" alt="" /></div>
+        <h3>心智圖：宏觀骨架</h3>
+        <ul class="small"><li>可放大、縮小、平移，一層層展開</li><li>進入細節前，先在腦中建立架構</li><li>課堂用法：上課開頭導覽、下課總整理</li></ul>
+      </div>
+      <div class="card cyan">
+        <div class="ico"><img src="images/icon_cards.png" alt="" /></div>
+        <h3>學習卡：主動回想</h3>
+        <ul class="small"><li>正面問題、背面答案；熟了打勾、不熟打叉</li><li>按「說明」，AI 助教調出課本原文並標頁碼</li><li>課本以外的補充會另外註明</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 資訊圖表＋測驗 -->
+<section>
+  <div class="s">
+    <span class="kicker">教材 ④⑤｜資訊圖表與測驗</span>
+    <h2>一張海報做總複習，一份測驗找出卡關點</h2>
+    <div class="g2 grow stg">
+      <div class="card ok">
+        <div class="ico"><img src="images/icon_infographic.png" alt="" /></div>
+        <h3>資訊圖表：考前一分鐘</h3>
+        <ul class="small"><li>把一個單元的精華濃縮在一張海報</li><li>複雜程序拆成步驟流程圖</li><li>可印出貼在教室，或做為小組討論的提示</li></ul>
+      </div>
+      <div class="card warn">
+        <div class="ico"><img src="images/icon_quiz.png" alt="" /></div>
+        <h3>測驗：答錯才是開始</h3>
+        <ul class="small"><li>每題有「提示」按鈕，答錯立即標示</li><li>按「說明」由 AI 助教解釋錯在哪裡</li><li>做完可一鍵產生下一份，反覆加強</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 放進課堂哪一段 -->
+<section>
+  <div class="s">
+    <span class="kicker">教學設計｜師培生最該想清楚的事</span>
+    <h2>這些教材，放在課堂的哪一段？</h2>
+    <table class="t" data-a>
+      <thead><tr><th>教材</th><th>課前（預習）</th><th>課中（教學）</th><th>課後（複習）</th></tr></thead>
+      <tbody>
+        <tr><td>🧠 心智圖</td><td>預覽單元架構</td><td>講解時當導覽地圖</td><td>單元總整理</td></tr>
+        <tr><td>🃏 學習卡</td><td>檢核先備知識</td><td>分組搶答活動</td><td>自主複習、間隔重複</td></tr>
+        <tr><td>📊 資訊圖表</td><td>—</td><td>小組討論的鷹架</td><td>考前一分鐘</td></tr>
+        <tr><td>✅ 測驗</td><td>前測</td><td>形成性評量</td><td>補救練習</td></tr>
+        <tr><td>🎧 影音／語音摘要</td><td>翻轉預習</td><td>—</td><td>請假補課</td></tr>
+      </tbody>
+    </table>
+    <p class="small muted" data-a>重點不是「有幾種教材」，而是<b>每一種放在哪個時機、解決哪個學習困難</b>。</p>
+  </div>
+</section>
+
+<!-- 18 實作① -->
+<section>
+  <div class="s">
+    <span class="kicker">實作 ①｜40 分鐘</span>
+    <h2>做出「我的單元教材包」</h2>
+    <div class="task">
+      <div class="card accent">
+        <ol class="stg">
+          <li>選一個你未來想教的單元（任何學科），準備 3–6 頁課本或講義</li>
+          <li>建立 Gemini Notebook 筆記本，匯入來源</li>
+          <li>貼上「助教守則」，改成你的年級與科目</li>
+          <li>生成<b>至少 3 種教材</b>：互動報告＋心智圖＋測驗（或學習卡）</li>
+          <li>寫下：每種教材放在課前、課中還是課後？</li>
+          <li>用下一頁的<b>查核清單</b>，抓出至少 1 個要修正的地方</li>
+        </ol>
+      </div>
+      <div class="timer" data-min="40" data-a="pop">
+        <span class="lbl">實作倒數</span>
+        <span class="timer-num">40:00</span>
+        <div class="btns"><button class="btn" data-t="go" type="button">開始／暫停</button><button class="btn ghost" data-t="plus" type="button">＋1 分</button><button class="btn ghost" data-t="reset" type="button">重設</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 查核清單 -->
+<section>
+  <div class="s">
+    <span class="kicker">交出去之前｜查核清單</span>
+    <h2>AI 做的教材，老師要簽名負責</h2>
+    <div class="g2 grow stg">
+      <div class="card ok"><h3>📌 出處對得上嗎？</h3>隨機抽 3 個說法，回到課本頁碼核對原文。</div>
+      <div class="card ok"><h3>➕ 課外內容有標註嗎？</h3>課本沒教的補充，有沒有寫明「課本外」？</div>
+      <div class="card warn"><h3>🔢 數據有被改嗎？</h3>題目數字、年代、單位、公式，逐一比對。</div>
+      <div class="card warn"><h3>🧒 學生看得懂嗎？</h3>用語是否適齡？有沒有強化了常見迷思？</div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 上午小結投票 -->
+<section id="slide-poll-noon">
+  <div class="s">
+    <span class="kicker">上午小結｜即時投票 <span class="live">LIVE</span></span>
+    <h2 class="poll-q-title">上午做的教材，你最想帶回教室的是？</h2>
+    <div class="poll grow" data-key="noon">
+      <div class="poll-opts"></div>
+      <div class="join">
+        <div class="qr" data-key="noon"></div><a class="qr-url" target="_blank" rel="noopener"></a>
+        <div class="small" style="margin-top:8px">已投票 <b class="poll-total">0</b> 人</div>
+        <span class="poll-q" hidden></span>
+        <span class="offline-note">本機預覽：互動功能部署後才會連線</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 午休 -->
+<section data-background-image="images/bg_lunch.jpg" data-background-size="cover" data-background-opacity="0.92">
+  <div class="s center">
+    <div class="glass">
+      <span class="kicker">12:00–13:00</span>
+      <h1>午餐時間 🍱</h1>
+      <p class="lead" data-a>下午 13:00 回來，我們要讓 AI 動起來</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 下午 ===================== -->
+
+<!-- 22 下午回顧 -->
+<section>
+  <div class="s">
+    <span class="kicker">下午開場｜13:00</span>
+    <h2>上午帶走的三句話</h2>
+    <div class="g3 grow stg">
+      <div class="card accent"><h3>1. 來源決定品質</h3>拍到頁碼、只放課本，AI 才有根據可以標出處。</div>
+      <div class="card cyan"><h3>2. 先給守則再開工</h3>一份「助教守則」，讓 AI 從回答機器變成教學夥伴。</div>
+      <div class="card ok"><h3>3. 老師當總編輯</h3>決定放哪個時機、查核哪裡有錯，才是老師的價值。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 模組三 ===================== -->
+
+<!-- 23 章節：模組三 -->
+<section>
+  <div class="s center chapter">
+    <div class="no" data-a="pop">03</div>
+    <span class="kicker">模組三｜AI 教具</span>
+    <h2>一句話，做出會動的教具</h2>
+    <p class="time" data-a>13:00–14:10　Gemini Canvas 實作＋Antigravity 講師示範</p>
+  </div>
+</section>
+
+<!-- 24 工具怎麼選 -->
+<section>
+  <div class="s">
+    <span class="kicker">工具怎麼選</span>
+    <h2>今天的分工：你用 Canvas，我示範 Antigravity</h2>
+    <div class="g2 grow stg">
+      <div class="card cyan">
+        <h3>🎨 Gemini Canvas　<span class="chip c">實作②</span></h3>
+        <ul class="small">
+          <li><b>瀏覽器就能用</b>，不用安裝任何軟體</li>
+          <li>適合：單頁互動教具、模擬器、小遊戲、測驗頁</li>
+          <li>邊對話邊修改，預覽即時更新</li>
+          <li>做好可以分享連結給學生</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h3>🚀 Antigravity　<span class="chip o">講師示範</span></h3>
+        <ul class="small">
+          <li>Google 的 AI 開發環境，需要<b>安裝在電腦上</b></li>
+          <li>AI 會自己寫程式、測試、修正錯誤</li>
+          <li>適合：有旁白字幕的動畫、多檔案的完整網站</li>
+          <li>門檻較高，等你需要時再升級</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 先讓 AI 反問你 -->
+<section>
+  <div class="s">
+    <span class="kicker">做之前，先被問</span>
+    <h2>先讓 AI 反問你，再讓它動手</h2>
+    <div class="g2 grow" style="grid-template-columns:1fr 1.5fr">
+      <div class="stg" style="display:flex;flex-direction:column;gap:12px">
+        <div class="card cyan small">影片在 Antigravity 指令最後加上 <b>/grill me</b>，讓 AI 動手前先追問細節（畫面、分鏡、對象）。</div>
+        <div class="card ok small">換到任何工具都適用的心法：<br><b>需求說不清楚，作品就會做歪。</b><br>讓 AI 當你的「需求訪談員」。</div>
+      </div>
+      <div class="prompt" data-a="right">
+        <div class="bar">📋 教具需求訪談範本<button class="copy" type="button">複製提示詞</button></div>
+<pre>我想做一個可以在課堂投影的互動教具。
+主題：<span class="slot">【例如：月相變化】</span>
+對象：<span class="slot">【例如：國小四年級】</span>
+
+在動手做之前，請先一次問我 3～5 個問題，確認：
+1. 這個教具要解決學生的哪個學習困難？
+2. 學生要怎麼操作、老師要怎麼帶？
+3. 畫面要呈現哪些元素、用什麼顏色風格？
+4. 有哪些常見迷思概念要特別避免？
+
+等我回答後再開始製作。做好後請用 3 句話說明操作方式。</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 26 Antigravity 示範 -->
+<section>
+  <div class="s">
+    <span class="kicker">講師示範｜Antigravity</span>
+    <h2>一句話，做出 30 秒的解說動畫</h2>
+    <div class="g2 grow" style="grid-template-columns:1.3fr 1fr">
+      <div class="prompt" data-a="left">
+        <div class="bar">📋 動畫指令範本<button class="copy" type="button">複製提示詞</button></div>
+<pre>請製作一段 30 秒、有女聲旁白解說、有字幕的動畫，
+向<span class="slot">【國中八年級】</span>學生解釋<span class="slot">【光合作用】</span>。
+畫面請用簡單的立體圖示，一次只出現一個重點。
+/grill me</pre>
+      </div>
+      <div class="stg" style="display:flex;flex-direction:column;gap:12px">
+        <div class="card small"><b>① 回答追問</b>：畫面風格、分鏡、旁白語氣</div>
+        <div class="card small"><b>② 一律同意</b>：AI 會請求寫程式、生成畫面與聲音</div>
+        <div class="card small"><b>③ 驗收</b>：內容正確嗎？字幕跟旁白對得上嗎？</div>
+        <div class="card accent small">影片原例是高中數學的「歪斜線」，今天換成其他學科，證明方法通用。</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">現場示範：開 Antigravity，新專案，貼指令，回答 grill me 的問題。若網路慢，改播事先錄好的成品。</aside>
+</section>
+
+<!-- 27 實作② -->
+<section>
+  <div class="s">
+    <span class="kicker">實作 ②｜30 分鐘</span>
+    <h2>用 Gemini Canvas 做一個互動教具</h2>
+    <div class="task">
+      <div class="card cyan">
+        <ol class="stg">
+          <li>打開 Gemini，選擇 <b>Canvas</b></li>
+          <li>貼上「教具需求訪談範本」，填入主題與年級</li>
+          <li>認真回答 AI 的追問（這一步決定作品品質）</li>
+          <li>試用至少 3 次，每次只提<b>一個</b>修改要求</li>
+          <li>想一想：這個教具放在課堂哪一段、取代了什麼？</li>
+          <li>分享連結到小組，互相試玩給回饋</li>
+        </ol>
+      </div>
+      <div class="timer" data-min="30" data-a="pop">
+        <span class="lbl">實作倒數</span>
+        <span class="timer-num">30:00</span>
+        <div class="btns"><button class="btn" data-t="go" type="button">開始／暫停</button><button class="btn ghost" data-t="plus" type="button">＋1 分</button><button class="btn ghost" data-t="reset" type="button">重設</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 Akai：教育科技創新專區 -->
+<section>
+  <div class="s">
+    <span class="kicker">從一個教具，到一整個工具站</span>
+    <h2>教育科技創新專區：一位老師 × AI 的累積</h2>
+    <div class="g4 stg">
+      <div class="card stat"><div class="n">131</div><div class="l">款免費教育工具</div></div>
+      <div class="card stat"><div class="n">7</div><div class="l">大類別</div></div>
+      <div class="card stat"><div class="n">132</div><div class="l">篇使用教學長文</div></div>
+      <div class="card stat"><div class="n">100%</div><div class="l">免費・免註冊・無廣告</div></div>
+    </div>
+    <div class="g2 grow" style="grid-template-columns:1.6fr 1fr">
+      <div class="card" data-a>
+        <h3>7 大類別</h3>
+        <span class="chip o">實用工具 43</span><span class="chip o">趣味遊戲 26</span><span class="chip c">教學資源 23</span><span class="chip c">即時互動 15</span><span class="chip g">語言學習 14</span><span class="chip g">親師溝通 7</span><span class="chip">閱讀理解 3</span>
+        <p class="small muted" style="margin-top:10px">每一款都從「教學現場的一個困擾」開始，跟你剛剛做的教具是同一條路。</p>
+      </div>
+      <div class="card" data-a="right" style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+        <div id="qr-akai2" style="width:150px;height:150px;background:#fff;border-radius:12px;padding:6px"></div>
+        <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener" class="small">cagoooo.github.io/Akai</a>
+      </div>
+    </div>
+    <p class="tiny muted" data-a>數據依據本機專案 H:\Akai v3.6.168（2026-10-18 盤點）。</p>
+  </div>
+</section>
+
+<!-- 29 Akai：推薦工具 -->
+<section>
+  <div class="s">
+    <span class="kicker">師培生明天就能用</span>
+    <h2>8 個適合帶進課堂的工具</h2>
+    <div class="g4 grow stg">
+      <a class="card tool" href="https://cagoooo.github.io/vote/" target="_blank" rel="noopener"><span class="cat">即時互動</span><b>學生即時投票系統</b><span>出題產生 QR Code，學生掃碼作答，附白板標註</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/Akailao/" target="_blank" rel="noopener"><span class="cat">教學資源</span><b>剛好學：課堂互動 so easy</b><span>13 種互動模式：投票、問答、繪圖題、相片牆…</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/cloud" target="_blank" rel="noopener"><span class="cat">即時互動</span><b>文字雲即時互動</b><span>全班即時投稿共建文字雲，適合腦力激盪</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/class/" target="_blank" rel="noopener"><span class="cat">實用工具</span><b>班級小管家</b><span>名單、加扣分、抽籤分組、計時、聯絡簿</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/coolclass/" target="_blank" rel="noopener"><span class="cat">實用工具</span><b>教室小幫手</b><span>一頁集合 26 個課堂小工具，含 AI 評語草擬</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/prepare/" target="_blank" rel="noopener"><span class="cat">教學資源</span><b>教師數位備課教案小幫手</b><span>AI 快速生成教案與教學活動設計</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/pirls-questioncraft/" target="_blank" rel="noopener"><span class="cat">閱讀理解</span><b>PIRLS 閱讀理解生成站 PRO</b><span>貼上課文，依四層次自動出題並附說明</span></a>
+      <a class="card tool" href="https://cagoooo.github.io/it-cockpit/" target="_blank" rel="noopener"><span class="cat">教學資源</span><b>資訊科技教學駕駛艙</b><span>25 個年級單元互動教材，課程設計範例</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 模組四 ===================== -->
+
+<!-- 30 章節：模組四 -->
+<section data-background-image="images/bg_error.jpg" data-background-size="cover" data-background-opacity="0.92">
+  <div class="s center chapter">
+    <div class="glass">
+      <div class="no" data-a="pop">04</div>
+      <span class="kicker">模組四｜看清侷限</span>
+      <h2>AI 會算錯，而且會假裝沒錯</h2>
+      <p class="time" data-a>14:10–14:35</p>
+    </div>
+  </div>
+</section>
+
+<!-- 31 為什麼會錯 -->
+<section>
+  <div class="s">
+    <span class="kicker">為什麼會錯？</span>
+    <h2>AI 是「接龍高手」，不是計算機</h2>
+    <div class="g2 grow stg">
+      <div class="card cyan">
+        <h3>🔗 它在做什麼</h3>
+        大型語言模型是根據前文，<b>預測最可能的下一個字</b>。<br>
+        就像一位超會接龍的同學：接出來的句子通順又有自信，但他<b>沒有真的拿出計算機</b>。
+      </div>
+      <div class="card warn">
+        <h3>⚠️ 所以容易出錯的地方</h3>
+        <ul class="small">
+          <li>多步驟計算（一步錯，步步錯）</li>
+          <li>精確數字、年代、出處</li>
+          <li>課本沒有、它「看起來應該是」的內容（幻覺）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card accent" data-a>影片作者的做法：讓 AI <b>先寫程式驗算</b>，再一步步教學生，把「猜」換成「算」。</div>
+  </div>
+</section>
+
+<!-- 32 三個內心戲 -->
+<section>
+  <div class="s">
+    <span class="kicker">影片揭露｜AI 解題的內部紀錄</span>
+    <h2>AI 的三個「內心戲」</h2>
+    <div class="g3 grow stg">
+      <div class="card icard warn"><div class="ico"><img src="images/icon_wander.png" alt="" /></div><h3>① 解題分心</h3><p>請它解第 4 題，它先跑去翻第 6 題的舊檔案，繞一圈才回來。</p></div>
+      <div class="card icard ok"><div class="ico"><img src="images/icon_loop.png" alt="" /></div><h3>② 自我要求</h3><p>第一次偷懶直接寫答案，沒人要求，它卻自己重寫、跑一千筆資料驗證。</p></div>
+      <div class="card icard danger"><div class="ico"><img src="images/icon_mask.png" alt="" /></div><h3>③ 假裝有算</h3><p>答案其實是心算的，再塞進程式裡交差，看起來像程式算出來的。</p></div>
+    </div>
+    <p class="small muted" data-a>出處：101事務所影片 08:59–10:01。結論：<b>再嚴謹的設計，都不能保證 AI 百分之百可靠。</b></p>
+  </div>
+</section>
+
+<!-- 33 找錯活動 -->
+<section>
+  <div class="s">
+    <span class="kicker">小組活動｜3 分鐘</span>
+    <h2>找錯：這三段 AI 回答，各錯在哪裡？</h2>
+    <div class="g3 grow stg">
+      <div class="card">
+        <h3>🔢 數學</h3>
+        <p class="small">長方形周長 24 公分，長比寬多 4 公分。設寬為 x，2（x＋x＋4）＝24，得 x＝4，長＝8，所以面積＝4×8＝36 平方公分。</p>
+      </div>
+      <div class="card">
+        <h3>🔬 自然</h3>
+        <p class="small">水在 1 大氣壓下 100°C 沸騰。高山上氣壓較低，所以水的沸點會更高，煮麵更快熟。</p>
+      </div>
+      <div class="card">
+        <h3>📜 國文</h3>
+        <p class="small">「床前明月光，疑是地上霜」出自杜甫的〈靜夜思〉，描寫遊子思鄉之情。</p>
+      </div>
+    </div>
+    <div class="card ok fragment small"><b>解答</b>：① 4×8＝<b>32</b>，前面都對、最後一步錯　② 氣壓低，沸點<b>降低</b>，麵反而不容易煮熟　③ 作者是<b>李白</b>。<br><span class="muted">發現了嗎？錯誤常藏在「很有自信、前面都對」的句子裡。</span></div>
+  </div>
+</section>
+
+<!-- 34 查核四步驟 -->
+<section>
+  <div class="s">
+    <span class="kicker">老師的 AI 素養</span>
+    <h2>查核 AI 的四個步驟</h2>
+    <div class="flow stg">
+      <div class="step"><div class="em">📌</div><b>對來源</b>回到課本頁碼<br>核對原文</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🧮</div><b>驗數字</b>自己算一次，<br>或換工具交叉比對</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🧒</div><b>看適齡</b>用語、例子、<br>迷思概念</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🗂️</div><b>留紀錄</b>註明 AI 協作，<br>保留修改版本</div>
+    </div>
+    <div class="card accent" data-a style="margin-top:auto">💡 把這四步寫進你的教案「教學資源」欄位，讓 AI 協作變成<b>看得見、可檢核</b>的專業行為。</div>
+  </div>
+</section>
+
+<!-- ===================== 模組五 ===================== -->
+
+<!-- 35 章節：模組五 -->
+<section>
+  <div class="s center chapter">
+    <div class="no" data-a="pop">05</div>
+    <span class="kicker">模組五｜AI 家教</span>
+    <h2>3 個 AI 代理人，組成蘇格拉底家教</h2>
+    <p class="time" data-a>14:45–15:35</p>
+  </div>
+</section>
+
+<!-- 36 全域守則 -->
+<section>
+  <div class="s">
+    <span class="kicker">系統設計｜全域守則</span>
+    <h2>先立「班規」，再分配角色</h2>
+    <div class="g2 grow" style="grid-template-columns:1fr 1.2fr">
+      <div class="card cyan stg" style="display:flex;flex-direction:column;gap:10px">
+        <h3>📜 AGENTS.md＝全體 AI 的最高原則</h3>
+        <p class="small">影片中的解題系統，在專案最上層放一份守則檔，所有 AI 代理人都要遵守。</p>
+        <p class="small">就像學校的<b>校規</b>：不管哪一位老師上課，都不能違反。</p>
+      </div>
+      <div class="card accent stg" style="display:flex;flex-direction:column;gap:10px">
+        <h3>守則裡寫什麼？</h3>
+        <div class="small">🚫 不可以擅自心算，計算一定要驗證</div>
+        <div class="small">🔤 算式用容易辨識的文字符號</div>
+        <div class="small">🙋 不直接給答案，一次只問一個小問題</div>
+        <div class="small">🤷 不確定就說不確定，不要編造</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 37 三個角色 -->
+<section>
+  <div class="s">
+    <span class="kicker">分工合作</span>
+    <h2>一個家教系統，三個角色</h2>
+    <div class="g3 grow stg">
+      <div class="card icard cyan"><div class="ico"><img src="images/icon_bell.png" alt="" /></div><h3>補習班櫃台</h3><p>確認題目完整（圖、數據、問哪一小題），再分派給負責的代理人。</p></div>
+      <div class="card icard accent"><div class="ico"><img src="images/icon_code.png" alt="" /></div><h3>解題專家</h3><p>收到題目後，<b>自己寫程式解題、驗算</b>，把正確解法交給家教。</p></div>
+      <div class="card icard ok"><div class="ico"><img src="images/icon_socrates.png" alt="" /></div><h3>蘇格拉底家教</h3><p>拿到解法但不說破，用提問陪學生一步一步想出來。</p></div>
+    </div>
+    <p class="small muted" data-a>為什麼要分工？一個 AI 同時「解題」又「教學」，很容易急著把答案說出來。</p>
+  </div>
+</section>
+
+<!-- 38 蘇格拉底對話示範 -->
+<section>
+  <div class="s">
+    <span class="kicker">蘇格拉底式引導</span>
+    <h2>一次只問一個小問題</h2>
+    <div class="g2 grow" style="grid-template-columns:1.4fr 1fr">
+      <div class="chat stg">
+        <div class="bubble ai"><span class="who">AI 家教</span>題目給了哪兩個條件呢？</div>
+        <div class="bubble me"><span class="who">學生</span>周長 24，長比寬多 4。</div>
+        <div class="bubble ai"><span class="who">AI 家教</span>很好！如果寬是 x，長可以怎麼表示？</div>
+        <div class="bubble me"><span class="who">學生</span>x＋4</div>
+        <div class="bubble ai"><span class="who">AI 家教</span>對了。那周長 24 可以列成什麼式子？</div>
+        <div class="bubble me"><span class="who">學生</span>我不知道……</div>
+        <div class="bubble ai"><span class="who">AI 家教</span>沒關係，拆小一點：長方形周長＝（長＋寬）×？</div>
+      </div>
+      <div class="stg" style="display:flex;flex-direction:column;gap:12px">
+        <div class="card ok small">✅ 答對：具體說出哪裡做得好，再往下一步</div>
+        <div class="card warn small">🔍 卡住：把問題拆得更小，而不是直接講答案</div>
+        <div class="card cyan small">✍️ 影片示範：手寫算式拍照上傳，AI 也看得懂</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 39 Gem 提示詞範本 -->
+<section>
+  <div class="s">
+    <span class="kicker">不寫程式也做得到</span>
+    <h2>用一個 Gem，模擬三個角色</h2>
+    <div class="prompt grow" data-a>
+      <div class="bar">📋 蘇格拉底家教 Gem 指令範本<button class="copy" type="button">複製提示詞</button></div>
+<pre style="font-size:17px;line-height:1.55"># 全域守則（最高原則）
+你是<span class="slot">【年級／科目】</span>家教。永遠不直接給最終答案；一次只問一個小問題。計算一律寫出算式並自行驗算；不確定時說「我不確定」，不要編造。
+
+# 角色一：櫃台
+收到題目，先確認題目完整（圖、數據、問的是哪一小題）。缺什麼就請學生補上，確認後再開始。
+
+# 角色二：解題專家
+在開始引導之前，先完整解題並驗算一次，確定正確解法與關鍵步驟。這段過程不要給學生看。
+
+# 角色三：蘇格拉底家教
+依關鍵步驟，一次問一個小問題。學生答錯時，把問題拆得更小；答對時，具體稱讚做對的地方。
+最後請學生用自己的話說明解法。</pre>
+    </div>
+    <p class="tiny muted" data-a>誠實提醒：Gem 沒有真正的「後台」，也不會真的執行程式驗算，可靠度不如影片中的程式化系統，仍需要老師把關。</p>
+  </div>
+</section>
+
+<!-- 40 實作③ -->
+<section>
+  <div class="s">
+    <span class="kicker">實作 ③｜30 分鐘</span>
+    <h2>做出「我的學科 AI 家教」</h2>
+    <div class="task">
+      <div class="card ok">
+        <ol class="stg">
+          <li>在 Gemini 建立新的 <b>Gem</b>，貼上範本並改成你的科目</li>
+          <li>加入一條<b>你的學科專屬守則</b>（例如：國文不能代寫作文）</li>
+          <li>扮演學生，用一題真實題目測試</li>
+          <li>故意答錯、故意說「直接給我答案」，看它守不守規矩</li>
+          <li>記下一個它做得好、一個做不好的地方，修改指令再測</li>
+        </ol>
+      </div>
+      <div class="timer" data-min="30" data-a="pop">
+        <span class="lbl">實作倒數</span>
+        <span class="timer-num">30:00</span>
+        <div class="btns"><button class="btn" data-t="go" type="button">開始／暫停</button><button class="btn ghost" data-t="plus" type="button">＋1 分</button><button class="btn ghost" data-t="reset" type="button">重設</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 41 學生使用倫理 -->
+<section>
+  <div class="s">
+    <span class="kicker">帶進教室之前</span>
+    <h2>和學生約定 AI 的使用界線</h2>
+    <div class="g2 grow stg">
+      <div class="card ok">
+        <h3>✅ 可以這樣用</h3>
+        <ul class="small"><li>卡關時要一個提示</li><li>寫完後拿來對答案、找錯</li><li>請 AI 用另一種方式再解釋一次</li></ul>
+      </div>
+      <div class="card danger">
+        <h3>🚫 不可以這樣用</h3>
+        <ul class="small"><li>直接抄答案、拿去交作業</li><li>還沒想就先問 AI</li><li>把 AI 的話當成標準答案</li></ul>
+      </div>
+    </div>
+    <div class="card accent small" data-a>影片作者的提醒：如果你是學生，千萬不要點開「後台驗證紀錄」，因為你可能會放棄思考、直接用抄的。<b>老師設計工具時，要把「思考的機會」留給學生。</b></div>
+  </div>
+</section>
+
+<!-- ===================== 模組六 ===================== -->
+
+<!-- 42 行政協助 -->
+<section>
+  <div class="s">
+    <span class="kicker">模組六｜行政協助（15:35–15:45）</span>
+    <h2>同一套方法，也能減輕行政負擔</h2>
+    <div class="g2 grow" style="grid-template-columns:1.25fr 1fr">
+      <div class="g2 stg" style="align-content:start">
+        <div class="card small"><h3>✉️ 親師溝通</h3>把重點條列，請 AI 改寫成溫和、具體的聯絡簿或家長信。</div>
+        <div class="card small"><h3>📣 班級公告</h3>一份資訊，生成聯絡簿版、海報版、班網版。</div>
+        <div class="card small"><h3>📝 會議紀錄</h3>從逐字稿整理決議與待辦，標出負責人與期限。</div>
+        <div class="card small"><h3>📅 活動企劃</h3>從目標反推流程、分工表與時程，再由你調整。</div>
+      </div>
+      <div class="card cyan" data-a="right">
+        <h3>創新專區的行政工具</h3>
+        <a class="tool" href="https://cagoooo.github.io/schedule/" target="_blank" rel="noopener" style="margin-top:8px"><b>專科教室與平板車預約</b><span>場地設備預約，含 LINE 推播與使用報告</span></a>
+        <a class="tool" href="https://cagoooo.github.io/smes-substitute/" target="_blank" rel="noopener" style="margin-top:10px"><b>線上調代課系統</b><span>點選節次媒合代課，可出單與結算</span></a>
+        <a class="tool" href="https://cagoooo.github.io/budget/" target="_blank" rel="noopener" style="margin-top:10px"><b>動支及黏存單產生系統</b><span>輸入基本資訊，產出標準格式單據</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 43 個資紅線 -->
+<section>
+  <div class="s">
+    <span class="kicker">紅線</span>
+    <h2>這些資料，不要丟給 AI</h2>
+    <div class="g3 grow stg">
+      <div class="card danger"><h3>🪪 可識別個資</h3>學生姓名配成績、身分證字號、地址電話、學號名冊。</div>
+      <div class="card danger"><h3>🩺 敏感資料</h3>特教、輔導、家庭狀況、健康與醫療紀錄。</div>
+      <div class="card danger"><h3>📷 學生影像</h3>可辨識學生的照片與影片，未經同意不上傳。</div>
+    </div>
+    <div class="card ok small" data-a>✅ 必要時先<b>去識別化</b>（以「學生 A」代替姓名、刪除可推回本人的細節）；使用學校核可的帳號與工具，不確定就先問學校。</div>
+  </div>
+</section>
+
+<!-- ===================== 收束 ===================== -->
+
+<!-- 44 成果分享 -->
+<section>
+  <div class="s">
+    <span class="kicker">成果分享｜15:45</span>
+    <h2>每組 2 分鐘，回答三個問題</h2>
+    <div class="task">
+      <div class="g3 stg" style="grid-template-columns:1fr;gap:12px;align-content:start">
+        <div class="card accent"><h3>1. 你做了什麼？</h3>教材包、互動教具或 AI 家教，選一個最得意的。</div>
+        <div class="card cyan"><h3>2. 放在課堂哪一段？</h3>它解決了學生的哪個學習困難？</div>
+        <div class="card ok"><h3>3. 你抓到 AI 的哪個錯？</h3>你怎麼發現、怎麼修正的？</div>
+      </div>
+      <div class="timer" data-min="2" data-a="pop">
+        <span class="lbl">每組計時</span>
+        <span class="timer-num">02:00</span>
+        <div class="btns"><button class="btn" data-t="go" type="button">開始／暫停</button><button class="btn ghost" data-t="plus" type="button">＋1 分</button><button class="btn ghost" data-t="reset" type="button">重設</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 45 四件事 -->
+<section data-background-image="images/bg_four.jpg" data-background-size="cover" data-background-opacity="0.92">
+  <div class="s center">
+    <div class="glass" style="max-width:1000px">
+      <span class="kicker">結語</span>
+      <h2>AI 時代，要學的不是工具</h2>
+      <div class="g4 stg" style="margin-top:22px;text-align:left">
+        <div class="card accent small"><h3>① 想清楚</h3>你要解決什麼教學問題？</div>
+        <div class="card cyan small"><h3>② 問對問題</h3>給角色、給守則、讓它反問你</div>
+        <div class="card ok small"><h3>③ 指揮 AI</h3>拆任務、分角色，一次改一件事</div>
+        <div class="card warn small"><h3>④ 看清侷限</h3>查核到底，不過度依賴</div>
+      </div>
+      <p class="small muted" data-a style="margin-top:16px">工具會一直換，這四件事會一直有用。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 46 課尾文字雲 -->
+<section id="slide-wc-close">
+  <div class="s">
+    <span class="kicker">課尾反思｜即時文字雲 <span class="live">LIVE</span></span>
+    <h2 class="wc-q-title">明天你會先用 AI 做哪一件事？</h2>
+    <div class="wc grow" data-key="close">
+      <div class="wc-side">
+        <div class="join"><div class="qr" data-key="close"></div><a class="qr-url" target="_blank" rel="noopener"></a></div>
+        <div class="wc-form"><input type="text" maxlength="20" aria-label="輸入答案" /><button class="btn wc-send" type="button">送出</button></div>
+        <div class="small">已收到 <b class="wc-total">0</b> 則</div>
+        <ul class="wc-list"></ul>
+        <span class="wc-q" hidden></span>
+        <span class="offline-note">本機預覽：互動功能部署後才會連線</span>
+      </div>
+      <div class="wc-stage"><canvas></canvas><div class="wc-empty">寫下一個你明天就會做的小行動 ✍️</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 47 延伸資源與致謝 -->
+<section>
+  <div class="s">
+    <span class="kicker">延伸資源</span>
+    <h2>謝謝大家，帶著這些回家繼續玩</h2>
+    <div class="g3 grow stg">
+      <div class="card cyan small">
+        <h3>🧰 今天的工具</h3>
+        <a href="https://notebooklm.google" target="_blank" rel="noopener">Gemini Notebook</a><br>
+        <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini（Canvas、Gem）</a><br>
+        <a href="https://antigravity.google" target="_blank" rel="noopener">Antigravity</a><br>
+        <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">Google AI Studio（API Key）</a>
+      </div>
+      <div class="card accent small">
+        <h3>🎬 靈感來源</h3>
+        101事務所 影片<br><a href="https://youtu.be/ABUd4-0TR7w" target="_blank" rel="noopener">youtu.be/ABUd4-0TR7w</a><br>
+        影片中的解題家教線上體驗<br><a href="https://studio-101.github.io/101-Math-Tutor/" target="_blank" rel="noopener">studio-101.github.io/101-Math-Tutor</a>
+      </div>
+      <div class="card ok small" style="text-align:center">
+        <h3>🏫 教育科技創新專區</h3>
+        <div id="qr-akai3" style="width:130px;height:130px;background:#fff;border-radius:12px;padding:6px;margin:6px auto"></div>
+        <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener">cagoooo.github.io/Akai</a>
+      </div>
+    </div>
+    <p class="small muted" data-a style="text-align:center">感謝國立中正大學師資培育中心　連啟舜老師邀請｜阿凱老師・桃園市龍潭區石門國民小學</p>
+  </div>
+</section>
+
+</div>
+</div>
+
+<!-- 阿凱老師署名（不可省） -->
+<footer class="akai-footer">
+  Made with ❤️ by
+  <a href="https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5" target="_blank" rel="noopener">阿凱老師</a>
+  · 桃園市龍潭區石門國民小學
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    width: 1280,
+    height: 720,
+    margin: 0.03,
+    center: false,
+    transition: 'fade',
+    transitionSpeed: 'fast',
+    backgroundTransition: 'fade',
+    progress: true,
+    controls: true,
+    slideNumber: 'c/t',
+    plugins: [RevealNotes],
+  });
+  // 固定網址的 QR Code（教育科技創新專區）
+  ['qr-akai', 'qr-akai2', 'qr-akai3'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var qr = qrcode(0, 'M');
+    qr.addData('https://cagoooo.github.io/Akai/');
+    qr.make();
+    el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  });
+</script>
+<script src="js/motion.js"></script>
+<script type="module" src="js/deck.js"></script>
+</body>
+</html>

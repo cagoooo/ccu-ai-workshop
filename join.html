@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>工作坊互動參與｜AI 數位教學實務工作坊</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#faf7f2; --surface:#fff; --ink:#1f2328; --muted:#5b6470; --line:#e6dfd3; --accent:#e8643a; --accent2:#0b7fb3; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; }
+    header { padding: 18px 16px 8px; }
+    header small { color: var(--accent); font-weight: 700; letter-spacing: .1em; }
+    header h1 { margin: 4px 0 0; font-size: 21px; font-weight: 900; }
+    nav { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; position: sticky; top: 0; background: var(--bg); z-index: 2; }
+    nav a { flex-shrink: 0; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 700; }
+    nav a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+    main { padding: 8px 16px 40px; }
+    .panel { display: none; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 8px 24px rgba(60,40,20,.07); }
+    .panel.on { display: block; }
+    .panel h2 { font-size: 22px; line-height: 1.4; margin: 0 0 14px; }
+    input { width: 100%; font: inherit; font-size: 18px; padding: 14px; border-radius: 12px; border: 2px solid var(--line); }
+    input:focus { outline: none; border-color: var(--accent2); }
+    button.send { width: 100%; margin-top: 10px; font: inherit; font-size: 18px; font-weight: 900; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: #fff; }
+    button.send:disabled { opacity: .5; }
+    .opt { display: block; width: 100%; text-align: left; font: inherit; font-size: 18px; padding: 15px 16px; margin-bottom: 10px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
+    .opt.mine { border-color: var(--accent); background: rgba(232,100,58,.08); font-weight: 700; }
+    .opt.mine::after { content: '　✓ 你的選擇'; color: var(--accent); font-size: 14px; }
+    .msg { min-height: 24px; margin-top: 10px; color: var(--accent2); font-weight: 700; }
+    .hint { color: var(--muted); font-size: 14px; margin-top: 6px; }
+    .warn { background: #fff4e5; color: #8a5300; padding: 10px 12px; border-radius: 10px; font-size: 14px; margin-bottom: 12px; display: none; }
+    .offline .warn { display: block; }
+    footer { text-align: center; font-size: 13px; color: var(--muted); padding: 0 16px 24px; }
+    footer a { color: var(--accent2); }
+  </style>
+</head>
+<body>
+  <header>
+    <small>中正大學師培中心 · 2026.11.13</small>
+    <h1>AI 數位教學實務工作坊｜互動參與</h1>
+  </header>
+  <nav>
+    <a href="#open" data-tab="open">開場文字雲</a>
+    <a href="#pre" data-tab="pre">課前調查</a>
+    <a href="#noon" data-tab="noon">上午小結</a>
+    <a href="#close" data-tab="close">課尾反思</a>
+  </nav>
+  <main>
+    <div class="warn">目前是本機預覽，互動功能要部署後才會連線。</div>
+    <section class="panel" id="p-open" data-wc="open"></section>
+    <section class="panel" id="p-pre" data-poll="pre"></section>
+    <section class="panel" id="p-noon" data-poll="noon"></section>
+    <section class="panel" id="p-close" data-wc="close"></section>
+  </main>
+  <footer>
+    Made with ❤️ by
+    <a href="https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5" target="_blank" rel="noopener">阿凱老師</a>
+    · 桃園市龍潭區石門國民小學
+  </footer>
+
+  <script type="module">
+    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote } from './js/interact.js';
+
+    if (!isReady()) document.body.classList.add('offline');
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    document.querySelectorAll('[data-wc]').forEach((p) => {
+      const key = p.dataset.wc;
+      p.innerHTML = `<h2>${esc(WORDCLOUDS[key].q)}</h2>
+        <input type="text" maxlength="20" placeholder="${esc(WORDCLOUDS[key].hint)}" aria-label="輸入答案" />
+        <button class="send" type="button">送出</button>
+        <div class="hint">可以送出很多次，每次一個詞（20 字內）。</div>
+        <div class="msg" aria-live="polite"></div>`;
+      const input = p.querySelector('input');
+      const btn = p.querySelector('.send');
+      const msg = p.querySelector('.msg');
+      const send = async () => {
+        if (!input.value.trim()) return;
+        btn.disabled = true;
+        try {
+          await submitWord(key, input.value);
+          msg.textContent = `已送出「${input.value.trim()}」，看看大螢幕！`;
+          input.value = '';
+        } catch (e) { msg.textContent = '送出失敗，請再試一次'; }
+        btn.disabled = false;
+      };
+      btn.addEventListener('click', send);
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+    });
+
+    document.querySelectorAll('[data-poll]').forEach((p) => {
+      const key = p.dataset.poll;
+      const cfg = POLLS[key];
+      p.innerHTML = `<h2>${esc(cfg.q)}</h2>` +
+        cfg.options.map((o) => `<button class="opt" type="button" data-opt="${o.id}">${esc(o.label)}</button>`).join('') +
+        '<div class="hint">可以改選，以最後一次為準。</div><div class="msg" aria-live="polite"></div>';
+      const mark = () => p.querySelectorAll('.opt').forEach((b) => b.classList.toggle('mine', b.dataset.opt === myVote(key)));
+      p.addEventListener('click', async (e) => {
+        const b = e.target.closest('.opt');
+        if (!b) return;
+        try { await vote(key, b.dataset.opt); mark(); p.querySelector('.msg').textContent = '已投票，看看大螢幕！'; }
+        catch (err) { p.querySelector('.msg').textContent = '投票失敗，請再試一次'; }
+      });
+      mark();
+    });
+
+    const show = () => {
+      const key = (location.hash || '#open').slice(1);
+      const tab = document.getElementById(`p-${key}`) ? key : 'open';
+      document.querySelectorAll('.panel').forEach((x) => x.classList.toggle('on', x.id === `p-${tab}`));
+      document.querySelectorAll('nav a').forEach((a) => a.classList.toggle('on', a.dataset.tab === tab));
+    };
+    window.addEventListener('hashchange', show);
+    show();
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+rules_version = '2';
+// akai-slide-interact：阿凱老師互動簡報共用專案
+// 集合一律以「簡報slug_」為前綴；只開放「新增」，不開放刪除
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 文字雲：<slug>_wordcloud 或 <slug>_wordcloud_<題號>
+    match /{col}/{docId} {
+      allow read: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(wordcloud|poll)(_[a-z0-9]+)?$');
+
+      allow create: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_wordcloud(_[a-z0-9]+)?$')
+        && request.resource.data.keys().hasOnly(['word', 'created_at'])
+        && request.resource.data.word is string
+        && request.resource.data.word.size() >= 1
+        && request.resource.data.word.size() <= 20
+        && request.resource.data.created_at == request.time;
+
+      // 投票：每位投票者一份文件（doc id = 投票者代號），可改票
+      allow create, update: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_poll(_[a-z0-9]+)?$')
+        && docId.size() <= 40
+        && request.resource.data.keys().hasOnly(['opt', 'updated_at'])
+        && request.resource.data.opt in ['a', 'b', 'c', 'd', 'e', 'f']
+        && request.resource.data.updated_at == request.time;
+
+      allow delete: if false;
+    }
+  }
+}
