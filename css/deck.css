@@ -310,3 +310,4 @@ html.offline .offline-note { display: block; }
 .flow.tight .step .em { font-size: 34px; }
 .flow.tight .arrow { width: 20px; font-size: 22px; }
 .flow .chip { white-space: nowrap; }
+#qr-gifted svg { width: 100%; height: 100%; display: block; }
