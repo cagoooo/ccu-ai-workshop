@@ -63,7 +63,7 @@
 <section>
   <div class="s">
     <span class="kicker">今日地圖</span>
-    <h2>5 小時、6 個模組、3 次實作</h2>
+    <h2>5 小時、7 個模組、3 次實作</h2>
     <div class="g2 grow">
       <div class="card accent stg" style="display:flex;flex-direction:column;gap:8px">
         <h3>☀️ 上午 10:00–12:00｜AI 備課</h3>
@@ -77,10 +77,11 @@
         <h3>🌤️ 下午 13:00–16:00｜駕駛艙與 AI 家教</h3>
         <div><span class="chip">13:10</span>模組三　教學駕駛艙：案例與做法</div>
         <div><span class="chip o">13:40</span><b>實作②</b>　我的第一個教學駕駛艙</div>
-        <div><span class="chip">14:15</span>模組四　AI 會算錯：三個內心戲</div>
-        <div><span class="chip">14:45</span>模組五　3 個 AI 代理人＋<b>實作③</b></div>
-        <div><span class="chip">15:35</span>模組六　行政協助（輔）</div>
-        <div><span class="chip">15:45</span>成果分享＋結語</div>
+        <div><span class="chip">14:15</span>模組四　動畫簡報：讓概念動起來</div>
+        <div><span class="chip">14:30</span>模組五　AI 會算錯：三個內心戲</div>
+        <div><span class="chip">15:00</span>模組六　AI 家教＋<b>實作③</b>（二選一）</div>
+        <div><span class="chip">15:40</span>模組七　行政協助（輔）</div>
+        <div><span class="chip">15:48</span>成果分享＋結語</div>
       </div>
     </div>
   </div>
@@ -774,30 +775,6 @@
   </div>
 </section>
 
-<!-- 33 Antigravity 示範（加映） -->
-<section>
-  <div class="s">
-    <span class="kicker">講師示範｜加映</span>
-    <h2>一句話，做出 30 秒的解說動畫</h2>
-    <div class="g2 grow" style="grid-template-columns:1.3fr 1fr">
-      <div class="prompt" data-a="left">
-        <div class="bar">📋 動畫指令範本（Antigravity）<button class="copy" type="button">複製提示詞</button></div>
-<pre>請製作一段 30 秒、有女聲旁白解說、有字幕的動畫，
-向<span class="slot">【國中八年級】</span>學生解釋<span class="slot">【光合作用】</span>。
-畫面請用簡單的立體圖示，一次只出現一個重點。
-/grill me</pre>
-      </div>
-      <div class="stg" style="display:flex;flex-direction:column;gap:12px">
-        <div class="card small"><b>/grill me</b>：讓 AI 動手前先追問畫面、分鏡、旁白語氣</div>
-        <div class="card small"><b>做好的動畫</b>：可以放進駕駛艙的關卡，當成概念解說</div>
-        <div class="card small"><b>驗收</b>：內容正確嗎？字幕跟旁白對得上嗎？</div>
-        <div class="card accent small">影片原例是高中數學的「歪斜線」，換成其他學科一樣適用。</div>
-      </div>
-    </div>
-  </div>
-  <aside class="notes">時間不夠就跳過這頁，直接進實作②；若網路慢，改播事先錄好的成品。</aside>
-</section>
-
 <!-- 34 實作② -->
 <section>
   <div class="s">
@@ -883,16 +860,179 @@
   </div>
 </section>
 
-<!-- ===================== 模組四 ===================== -->
+<!-- ===================== 模組四：動畫簡報 ===================== -->
+
+<!-- M1 章節：模組四 -->
+<section>
+  <div class="s center chapter">
+    <div class="no" data-a="pop">04</div>
+    <span class="kicker">模組四｜動畫簡報</span>
+    <h2>讓抽象概念，在簡報裡動起來</h2>
+    <p class="time" data-a>14:15–14:30　靈感：三師爸 SOIL Motion Deck</p>
+  </div>
+  <aside class="notes">來源：三師爸 Sense Bar 2026-10-18 直播〈前所未見：動畫簡報技能〉。重點是課堂用法與學科適配，技術細節點到為止。</aside>
+</section>
+
+<!-- M2 什麼是動畫簡報 -->
+<section>
+  <div class="s">
+    <span class="kicker">什麼是動畫簡報？</span>
+    <h2>一個技能，一次做出兩份教材</h2>
+    <div class="g2 grow stg">
+      <div class="card accent">
+        <h3>🖥️ A｜上課用：動畫簡報</h3>
+        <ul style="font-size:21px">
+          <li>關鍵的 2–4 頁嵌入 15–25 秒動畫</li>
+          <li>動畫<b>刻意不出聲</b>，老師邊播邊講</li>
+          <li>可以暫停、用筆標註、看不懂再播一次</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <h3>🎬 B｜課後用：解說影片</h3>
+        <ul style="font-size:21px">
+          <li>同一份內容，加上配音與字幕</li>
+          <li>學生預習、複習、請假補課</li>
+          <li>節奏固定；上課時改用簡報，由老師掌控節奏</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote-box" data-a>「沒有聲音是要讓老師講。」<span class="quote-author">— 三師爸，〈前所未見：動畫簡報技能〉直播（2026-10-18）</span></div>
+  </div>
+</section>
+
+<!-- M3 現場看一段：圓面積 -->
+<section id="slide-circle">
+  <div class="s">
+    <span class="kicker">動畫頁長這樣｜國小六年級・圓面積</span>
+    <h2>圓切開、交錯排好，就變成長方形</h2>
+    <div class="g2 grow" style="grid-template-columns:1.55fr 1fr">
+      <div class="circle-demo" data-a="left">
+        <svg id="circle-svg" viewBox="0 0 600 360" role="img" aria-label="圓面積動畫：把圓切成八片扇形，交錯排成近似長方形"></svg>
+        <div class="demo-ctrl">
+          <button class="btn" type="button" data-c="play">▶ 播放</button>
+          <button class="btn ghost" type="button" data-c="pause">⏸ 暫停</button>
+          <button class="btn ghost" type="button" data-c="replay">↺ 重播</button>
+          <span class="tiny muted">靜音・老師邊播邊講</span>
+        </div>
+      </div>
+      <div class="stg" style="display:flex;flex-direction:column;gap:10px">
+        <div class="card small"><span class="num">1</span>把圓切成 8 片扇形</div>
+        <div class="card small"><span class="num">2</span>上下交錯排成一列</div>
+        <div class="card small"><span class="num">3</span>高是半徑 r，底是圓周的一半 πr</div>
+        <div class="card accent small"><span class="num">4</span>面積 ＝ πr × r ＝ <b>πr²</b></div>
+        <div class="card warn small">⏸ 停在第 2 步問學生：「切得越多片，會變成什麼形狀？」</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">這一頁本身就是用 GSAP 做的動畫（簡報裡寫好的 JavaScript）。先問學生，再按播放；播到排成一列時暫停提問。三師爸直播的圓面積範例還會切成 16、32 片，讓邊越來越平。</aside>
+</section>
+
+<!-- M4 學科適配 -->
+<section>
+  <div class="s">
+    <span class="kicker">直播實測｜各學科做出來的效果</span>
+    <h2>數學、自然最適合；語文科需要老師「魔改」</h2>
+    <div class="g3 grow stg">
+      <div class="card ok small"><h3>📐 圓面積｜國小數學</h3>扇形交錯拼成長方形，再切更細讓邊變平<br><span class="chip g">非常適合</span></div>
+      <div class="card ok small"><h3>📏 畢氏定理｜國中數學</h3>三邊畫正方形，9＋16＝25，再用拼圖重排證明<br><span class="chip g">非常適合</span></div>
+      <div class="card ok small"><h3>🌙 月相｜國中自然</h3>左邊俯視軌道、右邊同步顯示月相，順便破解「地影遮住」迷思<br><span class="chip g">非常適合</span></div>
+      <div class="card warn small"><h3>🔤 關係代名詞｜國中英文</h3>兩句合併三步驟，子句像「長版形容詞便利貼」<br><span class="chip o">內容清楚，動畫效益普通</span></div>
+      <div class="card warn small"><h3>✍️ 譬喻修辭｜國中國文</h3>明喻 → 隱喻 → 略喻 → 借喻，逐步替換<br><span class="chip o">內容清楚，動畫效益普通</span></div>
+      <div class="card warn small"><h3>🚣 刻舟求劍｜國文成語</h3>船往前走、劍留在原地，記號越離越遠<br><span class="chip o">需要語文老師加料</span></div>
+    </div>
+    <p class="small muted" data-a>三師爸結論：需要圖形、空間、邏輯關係的理科最適合；文科不是不行，而是要找到「非動不可」的畫面。</p>
+  </div>
+</section>
+
+<!-- M5 哪些頁值得做動畫 -->
+<section>
+  <div class="s">
+    <span class="kicker">挑頁面的心法</span>
+    <h2>不是每一頁都要動，只動「非動不可」的那幾頁</h2>
+    <div class="g2 grow stg">
+      <div class="card ok">
+        <h3>✅ 值得做動畫</h3>
+        <ul style="font-size:21px"><li>推導與證明（畢氏定理、圓面積）</li><li>數量累加與比較</li><li>迷思翻轉（月缺不是地影遮住）</li><li>空間關係（月相、立體圖形）</li></ul>
+      </div>
+      <div class="card">
+        <h3>✋ 不必做動畫</h3>
+        <ul style="font-size:21px"><li>定義、名詞解釋</li><li>表格整理</li><li>練習題</li><li>總結</li></ul>
+      </div>
+    </div>
+    <div class="card cyan small" data-a><b>動畫頁四規則</b>：① 只看畫面也看得懂　② 從空白開始、停在結論　③ 重要文字不放畫面最下方（留給字幕）　④ 一頁只講一個重點</div>
+  </div>
+</section>
+
+<!-- M6 工作流（講師版） -->
+<section>
+  <div class="s">
+    <span class="kicker">講師版工作流｜SOIL Motion Deck</span>
+    <h2>AI 怎麼做出一份動畫簡報？</h2>
+    <div class="flow tight stg">
+      <div class="step"><div class="em">🧭</div><b>SOIL 定位</b>概念、脈絡、<br>頁面架構<br>挑出動畫頁</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">📝</div><b>腳本分鏡</b>旁白決定節奏<br>（中文每秒約<br>4–4.5 字）</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">✨</div><b>逐格動畫</b>HyperFrames<br>（HTML＋GSAP）</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">🎬</div><b>解說影片</b>配音＋字幕<br>（edge-tts 免費）</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">✂️</div><b>靜音片段</b>去掉聲音字幕<br>剪成 15–25 秒</div>
+      <div class="arrow">›</div>
+      <div class="step"><div class="em">📊</div><b>嵌入簡報</b>動畫頁左影片、<br>右步驟，備註<br>寫提問點</div>
+    </div>
+    <div class="g3 stg" style="margin-top:auto">
+      <div class="card small"><b>🤖 換哪個 AI 都穩</b><br>直播中 Claude Code、Codex、Gemini 同時跑，品質相近：技能寫得好比模型貴重要。</div>
+      <div class="card small"><b>🆓 開源可下載</b><br>GitHub：mathruffian-dot/soil-motion-deck（MIT 授權），不需付費 API。</div>
+      <div class="card accent small"><b>🪄 小彩蛋</b><br>你現在看的這份簡報，換頁與淡入就是用同一套 GSAP 時間軸做的。</div>
+    </div>
+  </div>
+  <aside class="notes">直播實測：每家約 25–30 分鐘做完一份，舊電腦可能要一小時。最需要的是本機環境（Node、ffmpeg），所以師培生今天走下一頁的簡化版。</aside>
+</section>
+
+<!-- M7 師培生簡化版 -->
+<section>
+  <div class="s">
+    <span class="kicker">師培生版｜只用瀏覽器</span>
+    <h2>20 秒概念動畫，放進你的簡報</h2>
+    <div class="g2 grow" style="grid-template-columns:1.7fr 1fr">
+      <div class="prompt" data-a="left">
+        <div class="bar">📋 概念動畫提示詞（Gemini Canvas）<button class="copy" type="button">複製提示詞</button></div>
+<pre style="font-size:16.5px;line-height:1.55">請用單一 HTML 檔（SVG＋GSAP）做一段約 20 秒的「無聲概念動畫」，我要放進上課簡報。
+科目／年級：<span class="slot">【國中八年級數學】</span>
+概念：<span class="slot">【畢氏定理：兩股正方形面積和＝斜邊正方形面積】</span>
+
+動畫規則：
+1. 只看畫面也看得懂，每一步只出現一個重點
+2. 從空白開始，最後停在結論畫面至少 3 秒
+3. 重要文字不要放在畫面最下方
+4. 不要聲音；角落放「播放／暫停／重播」按鈕
+5. 16:9 畫面、字夠大、背景單純
+
+動手前先問我：學生最常見的迷思是什麼？動畫要分幾步？</pre>
+      </div>
+      <div class="stg" style="display:flex;flex-direction:column;gap:8px">
+        <div class="card cyan small"><b>1 生成</b>：Canvas 貼上提示詞，回答追問</div>
+        <div class="card cyan small"><b>2 檢查</b>：概念正確嗎？一次只改一件事</div>
+        <div class="card accent small"><b>3 錄影</b>：全螢幕播放，用 Windows「剪取工具」或 Mac「Shift＋⌘＋5」錄成影片</div>
+        <div class="card accent small"><b>4 嵌入</b>：插入 PowerPoint；Google 簡報要先上傳雲端硬碟</div>
+        <div class="card ok small"><b>5 備註</b>：寫下要在哪一秒暫停、問什麼</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== 模組五 ===================== -->
 
 <!-- 30 章節：模組四 -->
 <section data-background-image="images/bg_error.jpg" data-background-size="cover" data-background-opacity="0.92">
   <div class="s center chapter">
     <div class="glass">
-      <div class="no" data-a="pop">04</div>
-      <span class="kicker">模組四｜看清侷限</span>
+      <div class="no" data-a="pop">05</div>
+      <span class="kicker">模組五｜看清侷限</span>
       <h2>AI 會算錯，而且會假裝沒錯</h2>
-      <p class="time" data-a>14:15–14:35</p>
+      <p class="time" data-a>14:30–14:50　（14:50–15:00 休息）</p>
     </div>
   </div>
 </section>
@@ -976,15 +1116,15 @@
   </div>
 </section>
 
-<!-- ===================== 模組五 ===================== -->
+<!-- ===================== 模組六 ===================== -->
 
-<!-- 35 章節：模組五 -->
+<!-- 35 章節：模組六 -->
 <section>
   <div class="s center chapter">
-    <div class="no" data-a="pop">05</div>
-    <span class="kicker">模組五｜AI 家教</span>
+    <div class="no" data-a="pop">06</div>
+    <span class="kicker">模組六｜AI 家教</span>
     <h2>3 個 AI 代理人，組成蘇格拉底家教</h2>
-    <p class="time" data-a>14:45–15:35</p>
+    <p class="time" data-a>15:00–15:40</p>
   </div>
 </section>
 
@@ -1072,20 +1212,31 @@
   </div>
 </section>
 
-<!-- 40 實作③ -->
+<!-- 40 實作③（二選一） -->
 <section>
   <div class="s">
-    <span class="kicker">實作 ③｜30 分鐘</span>
-    <h2>做出「我的學科 AI 家教」</h2>
+    <span class="kicker">實作 ③｜30 分鐘｜依學科二選一</span>
+    <h2>做出你的 AI 家教，或你的第一段概念動畫</h2>
     <div class="task">
-      <div class="card ok">
-        <ol class="stg">
-          <li>在 Gemini 建立新的 <b>Gem</b>，貼上範本並改成你的科目</li>
-          <li>加入一條<b>你的學科專屬守則</b>（例如：國文不能代寫作文）</li>
-          <li>扮演學生，用一題真實題目測試</li>
-          <li>故意答錯、故意說「直接給我答案」，看它守不守規矩</li>
-          <li>記下一個它做得好、一個做不好的地方，修改指令再測</li>
-        </ol>
+      <div class="g2 stg" style="align-content:start">
+        <div class="card ok">
+          <h3>🅰 蘇格拉底家教（推薦語文、社會）</h3>
+          <ol style="font-size:19px">
+            <li>建立 <b>Gem</b>，貼上家教範本，改成你的科目</li>
+            <li>加一條學科專屬守則（例：不能代寫作文）</li>
+            <li>扮演學生，故意答錯、要求直接給答案</li>
+            <li>記下做得好與做不好的地方，修改再測</li>
+          </ol>
+        </div>
+        <div class="card accent">
+          <h3>🅱 概念動畫（推薦數學、自然）</h3>
+          <ol style="font-size:19px">
+            <li>挑一個「非動不可」的概念</li>
+            <li>Canvas 貼上概念動畫提示詞，回答追問</li>
+            <li>檢查正確性，一次只改一件事</li>
+            <li>錄成影片，放進一頁簡報，備註寫提問點</li>
+          </ol>
+        </div>
       </div>
       <div class="timer" data-min="30" data-a="pop">
         <span class="lbl">實作倒數</span>
@@ -1120,7 +1271,7 @@
 <!-- 42 行政協助 -->
 <section>
   <div class="s">
-    <span class="kicker">模組六｜行政協助（15:35–15:45）</span>
+    <span class="kicker">模組七｜行政協助（15:40–15:48）</span>
     <h2>同一套方法，也能減輕行政負擔</h2>
     <div class="g2 grow" style="grid-template-columns:1.25fr 1fr">
       <div class="g2 stg" style="align-content:start">
@@ -1158,17 +1309,17 @@
 <!-- 44 成果分享 -->
 <section>
   <div class="s">
-    <span class="kicker">成果分享｜15:45</span>
-    <h2>每組 2 分鐘，回答三個問題</h2>
+    <span class="kicker">成果分享｜15:48</span>
+    <h2>每組 1 分鐘，回答三個問題</h2>
     <div class="task">
       <div class="g3 stg" style="grid-template-columns:1fr;gap:12px;align-content:start">
-        <div class="card accent"><h3>1. 你做了什麼？</h3>教材包、教學駕駛艙或 AI 家教，選一個最得意的。</div>
+        <div class="card accent"><h3>1. 你做了什麼？</h3>教材包、教學駕駛艙、動畫或 AI 家教，選一個最得意的。</div>
         <div class="card cyan"><h3>2. 放在課堂哪一段？</h3>它解決了學生的哪個學習困難？</div>
         <div class="card ok"><h3>3. 你抓到 AI 的哪個錯？</h3>你怎麼發現、怎麼修正的？</div>
       </div>
-      <div class="timer" data-min="2" data-a="pop">
+      <div class="timer" data-min="1" data-a="pop">
         <span class="lbl">每組計時</span>
-        <span class="timer-num">02:00</span>
+        <span class="timer-num">01:00</span>
         <div class="btns"><button class="btn" data-t="go" type="button">開始／暫停</button><button class="btn ghost" data-t="plus" type="button">＋1 分</button><button class="btn ghost" data-t="reset" type="button">重設</button></div>
       </div>
     </div>
@@ -1229,7 +1380,9 @@
       <div class="card accent small">
         <h3>🎬 靈感來源</h3>
         101事務所 影片<br><a href="https://youtu.be/ABUd4-0TR7w" target="_blank" rel="noopener">youtu.be/ABUd4-0TR7w</a><br>
-        影片中的解題家教線上體驗<br><a href="https://studio-101.github.io/101-Math-Tutor/" target="_blank" rel="noopener">studio-101.github.io/101-Math-Tutor</a>
+        影片中的解題家教線上體驗<br><a href="https://studio-101.github.io/101-Math-Tutor/" target="_blank" rel="noopener">studio-101.github.io/101-Math-Tutor</a><br>
+        三師爸〈前所未見：動畫簡報技能〉<br><a href="https://www.youtube.com/live/muPf8SHuxu8" target="_blank" rel="noopener">youtube.com/live/muPf8SHuxu8</a><br>
+        <a href="https://github.com/mathruffian-dot/soil-motion-deck" target="_blank" rel="noopener">GitHub：soil-motion-deck</a>
       </div>
       <div class="card ok small" style="text-align:center">
         <h3>🏫 教育科技創新專區</h3>
@@ -1283,6 +1436,7 @@
   });
 </script>
 <script src="js/motion.js"></script>
+<script src="js/demo-circle.js"></script>
 <script type="module" src="js/deck.js"></script>
 </body>
 </html>

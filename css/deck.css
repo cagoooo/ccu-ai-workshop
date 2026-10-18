@@ -311,3 +311,21 @@ html.offline .offline-note { display: block; }
 .flow.tight .arrow { width: 20px; font-size: 22px; }
 .flow .chip { white-space: nowrap; }
 #qr-gifted svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- 引用 ---------- */
+.quote-box { background: var(--surface); border-left: 6px solid var(--accent); border-radius: 14px; padding: 16px 22px; font-size: 24px; font-weight: 700; box-shadow: var(--shadow); }
+.quote-author { display: block; margin-top: 6px; font-size: 15px; font-weight: 400; color: var(--muted); }
+
+/* ---------- 圓面積動畫頁 ---------- */
+.circle-demo { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
+.circle-demo svg { flex: 1; width: 100%; min-height: 0; display: block; }
+.demo-ctrl { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--surface2); }
+.cd-a { fill: rgba(232, 100, 58, .85); stroke: var(--surface); stroke-width: 2; }
+.cd-b { fill: rgba(11, 127, 179, .85); stroke: var(--surface); stroke-width: 2; }
+[data-theme="dark"] .cd-b { fill: rgba(79, 195, 247, .85); }
+.cd-ghost { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 6; }
+.cd-line { stroke: var(--ink); stroke-width: 2.5; }
+.cd-label { fill: var(--ink); font-size: 22px; font-weight: 700; font-family: 'Noto Sans TC', sans-serif; }
+.cd-formula { fill: var(--accent-ink); font-size: 32px; font-weight: 900; font-family: 'Noto Sans TC', sans-serif; }
+.cd-mid { text-anchor: middle; }
+.cd-end { text-anchor: end; }
