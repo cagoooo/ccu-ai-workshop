@@ -1,5 +1,5 @@
 // 簡報介面元件：主題切換、計時器、複製提示詞、前後對比滑桿、QR Code、文字雲、投票
-import { WORDCLOUDS, POLLS, isReady, submitWord, watchWords, vote, watchPoll, myVote } from './interact.js';
+import { WORDCLOUDS, POLLS, isReady, submitWord, watchWords, vote, watchPoll, myVote, onStatus } from './interact.js';
 
 const DEFAULT_PREF = 'light';
 const THEME_KEY = 'ccu2026ai_theme';
@@ -84,6 +84,23 @@ $$('.qr[data-key]').forEach((box) => {
   if (link) { link.textContent = url.replace(/^https?:\/\//, ''); link.href = url; }
 });
 
+
+/* ---------- 即時感：數字變多時跳一下 ---------- */
+function bump(el, value) {
+  const prev = Number(el.textContent) || 0;
+  el.textContent = value;
+  if (value > prev && window.gsap) gsap.fromTo(el, { scale: 1.8, color: '#e8643a' }, { scale: 1, color: '', duration: .6, ease: 'back.out(3)' });
+}
+
+/* ---------- 連線狀態燈 ---------- */
+const STATUS_TEXT = { live: '● 即時同步中', connecting: '● 連線中…', retrying: '● 重新連線中', offline: '● 本機預覽（未連線）' };
+document.querySelectorAll('.wc-side, .poll .join').forEach((host) => {
+  const s = document.createElement('div');
+  s.className = 'live-status';
+  host.appendChild(s);
+  onStatus((st) => { s.textContent = STATUS_TEXT[st] || st; s.dataset.st = st; });
+});
+
 /* ---------- 文字雲 ---------- */
 const clouds = [];
 function cloudColors() {
@@ -127,7 +144,7 @@ $$('.wc[data-key]').forEach((box) => {
   input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') send(); });
   watchWords(key, (data, total) => {
     c.data = data;
-    box.querySelector('.wc-total').textContent = total;
+    bump(box.querySelector('.wc-total'), total);
     box.querySelector('.wc-empty').style.display = data.length ? 'none' : '';
     box.querySelector('.wc-list').innerHTML = data.slice(0, 7)
       .map(([w, n]) => `<li><span>${esc(w)}</span><b>${n}</b></li>`).join('')
@@ -156,7 +173,7 @@ $$('.poll[data-key]').forEach((box) => {
   });
   mark();
   watchPoll(key, (counts, total) => {
-    box.querySelector('.poll-total').textContent = total;
+    bump(box.querySelector('.poll-total'), total);
     cfg.options.forEach((o) => {
       const pct = total ? Math.round(((counts[o.id] || 0) / total) * 100) : 0;
       const b = list.querySelector(`[data-opt="${o.id}"]`);

@@ -1,7 +1,7 @@
 // 即時互動（文字雲／投票）共用模組：簡報頁與手機參與頁都用這一份
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
 import {
-  getFirestore, collection, addDoc, doc, setDoc, onSnapshot, serverTimestamp,
+  initializeFirestore, collection, addDoc, doc, setDoc, onSnapshot, serverTimestamp, getDocsFromServer,
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js';
 
@@ -37,7 +37,40 @@ export const POLLS = {
 };
 
 const ready = !firebaseConfig.apiKey.startsWith('__');
-const db = ready ? getFirestore(initializeApp(firebaseConfig)) : null;
+// 自動偵測：學校網路擋住即時串流時，改用長輪詢維持即時推送
+const db = ready ? initializeFirestore(initializeApp(firebaseConfig), { experimentalAutoDetectLongPolling: true }) : null;
+
+/* ---------- 連線狀態（給畫面上的「即時同步中」燈號用） ---------- */
+const statusListeners = new Set();
+let status = ready ? 'connecting' : 'offline';
+export function onStatus(cb) { statusListeners.add(cb); cb(status); return () => statusListeners.delete(cb); }
+function setStatus(s) { if (s !== status) { status = s; statusListeners.forEach((cb) => cb(s)); } }
+
+/* 即時監聽＋保險機制：
+ * ① onSnapshot 即時推送（主要）
+ * ② 分頁回到前景、網路恢復時立刻向伺服器補抓（Chrome 會凍結背景分頁）
+ * ③ 每 4 秒向伺服器核對一次（即時連線被網路切斷時的備援） */
+function liveQuery(ref, handle) {
+  if (!db) { handle(null); return () => {}; }
+  let lastSig = '';
+  const apply = (snap) => {
+    const sig = snap.docs.map((d) => d.id + ':' + JSON.stringify(d.data())).join('|');
+    if (sig !== lastSig) { lastSig = sig; handle(snap); }
+  };
+  const unsub = onSnapshot(ref, { includeMetadataChanges: true }, (snap) => {
+    setStatus(snap.metadata.fromCache ? 'connecting' : 'live');
+    apply(snap);
+  }, (err) => { console.warn('即時監聽中斷', err); setStatus('retrying'); });
+  const refresh = () => getDocsFromServer(ref).then((snap) => { setStatus('live'); apply(snap); })
+    .catch(() => setStatus('retrying'));
+  const onVisible = () => { if (document.visibilityState === 'visible') refresh(); };
+  document.addEventListener('visibilitychange', onVisible);
+  window.addEventListener('online', refresh);
+  window.addEventListener('focus', refresh);
+  const timer = setInterval(() => { if (document.visibilityState === 'visible') refresh(); }, 4000);
+  return () => { unsub(); clearInterval(timer); document.removeEventListener('visibilitychange', onVisible);
+    window.removeEventListener('online', refresh); window.removeEventListener('focus', refresh); };
+}
 export const isReady = () => ready;
 
 const store = {
@@ -64,15 +97,15 @@ export async function submitWord(key, raw) {
 }
 
 export function watchWords(key, cb) {
-  if (!db) { cb([], 0); return () => {}; }
-  return onSnapshot(collection(db, `${SLUG}_wordcloud_${key}`), (snap) => {
+  return liveQuery(db ? collection(db, `${SLUG}_wordcloud_${key}`) : null, (snap) => {
+    if (!snap) return cb([], 0);
     const counts = {};
     snap.forEach((d) => {
       const w = String(d.data().word || '').trim();
       if (w) counts[w] = (counts[w] || 0) + 1;
     });
     cb(Object.entries(counts).sort((a, b) => b[1] - a[1]), snap.size);
-  }, (err) => console.warn('文字雲讀取失敗', err));
+  });
 }
 
 export const myVote = (key) => store.get(`${SLUG}_vote_${key}`);
@@ -85,10 +118,10 @@ export async function vote(key, opt) {
 }
 
 export function watchPoll(key, cb) {
-  if (!db) { cb({}, 0); return () => {}; }
-  return onSnapshot(collection(db, `${SLUG}_poll_${key}`), (snap) => {
+  return liveQuery(db ? collection(db, `${SLUG}_poll_${key}`) : null, (snap) => {
+    if (!snap) return cb({}, 0);
     const counts = {};
     snap.forEach((d) => { const o = d.data().opt; counts[o] = (counts[o] || 0) + 1; });
     cb(counts, snap.size);
-  }, (err) => console.warn('投票讀取失敗', err));
+  });
 }
