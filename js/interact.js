@@ -3,7 +3,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebas
 import {
   initializeFirestore, collection, addDoc, doc, setDoc, onSnapshot, serverTimestamp, getDocsFromServer,
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
-import { firebaseConfig } from './firebase-config.js';
+import { firebaseConfig } from './firebase-config.js?v=__BUILD_VERSION__';
 
 // 集合名稱一律加簡報 slug 前綴，避免跨場次資料混在一起
 export const SLUG = 'ccu2026ai';

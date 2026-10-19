@@ -1,5 +1,5 @@
 // 簡報介面元件：主題切換、計時器、複製提示詞、前後對比滑桿、QR Code、文字雲、投票
-import { WORDCLOUDS, POLLS, isReady, submitWord, watchWords, vote, watchPoll, myVote, onStatus } from './interact.js';
+import { WORDCLOUDS, POLLS, isReady, submitWord, watchWords, vote, watchPoll, myVote, onStatus } from './interact.js?v=__BUILD_VERSION__';
 
 const DEFAULT_PREF = 'light';
 const THEME_KEY = 'ccu2026ai_theme';

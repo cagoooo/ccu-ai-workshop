@@ -56,6 +56,6 @@ self.addEventListener('fetch', (e) => {
     return;
   }
   // 網頁、程式、樣式：先問網路（拿到最新），斷線才用快取
-  e.respondWith(fetch(req).then((res) => putCache(req, res)).catch(() =>
+  e.respondWith(fetch(req, { cache: 'no-cache' }).then((res) => putCache(req, res)).catch(() =>
     caches.match(req, { ignoreSearch: true }).then((r) => r || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
 });

@@ -85,7 +85,7 @@
   </footer>
 
   <script type="module">
-    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote } from './js/interact.js';
+    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote } from './js/interact.js?v=__BUILD_VERSION__';
 
     if (!isReady()) document.body.classList.add('offline');
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -139,6 +139,6 @@
     window.addEventListener('hashchange', show);
     show();
   </script>
-  <script src="js/sw-register.js"></script>
+  <script src="js/sw-register.js?v=__BUILD_VERSION__"></script>
 </body>
 </html>
