@@ -329,3 +329,4 @@ html.offline .offline-note { display: block; }
 .cd-formula { fill: var(--accent-ink); font-size: 32px; font-weight: 900; font-family: 'Noto Sans TC', sans-serif; }
 .cd-mid { text-anchor: middle; }
 .cd-end { text-anchor: end; }
+.task .timer[style*="padding:16px"] .timer-num { font-size: 72px; }
