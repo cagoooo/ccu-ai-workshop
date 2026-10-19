@@ -10,7 +10,7 @@ here = Path(__file__).resolve().parent.parent
 dist = here / 'dist'
 shutil.rmtree(dist, ignore_errors=True)
 dist.mkdir()
-for name in ['index.html', 'join.html', 'css', 'js', 'images', 'sw.js', 'version.json', 'manifest.webmanifest',
+for name in ['index.html', 'join.html', 'css', 'js', 'images', 'media', 'sw.js', 'version.json', 'manifest.webmanifest',
              'favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'og-image.jpg']:
     src = here / name
     (shutil.copytree if src.is_dir() else shutil.copy2)(src, dist / name)

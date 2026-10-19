@@ -48,6 +48,16 @@
 
 <!-- ===================== 開場 ===================== -->
 
+<!-- 0 開場片頭（自動播放，播完進入封面） -->
+<section id="slide-opening" data-background-color="#2a1d12">
+  <div class="op-wrap">
+    <video id="op-video" src="media/akai-opening.mp4" poster="media/akai-opening-poster.jpg" playsinline preload="auto"></video>
+    <button id="op-play" type="button"><span class="op-tri">▶</span>播放開場片頭</button>
+    <div class="op-skip">按 → 可直接進入封面</div>
+  </div>
+  <aside class="notes">簡報一打開就會播放 21 秒片頭；若瀏覽器擋下有聲自動播放，按中間的播放鈕。點影片可暫停／繼續，播完會自動進入封面。</aside>
+</section>
+
 <!-- 1 封面 -->
 <section data-background-image="images/bg_cover.jpg" data-background-size="cover" data-background-opacity="0.92">
   <div class="s center cover">
@@ -1437,6 +1447,7 @@
 </script>
 <script src="js/motion.js"></script>
 <script src="js/demo-circle.js"></script>
+<script src="js/opening.js"></script>
 <script type="module" src="js/deck.js"></script>
 <script src="js/sw-register.js"></script>
 </body>

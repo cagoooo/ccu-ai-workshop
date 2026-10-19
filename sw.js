@@ -6,7 +6,7 @@ const PRECACHE = [
   './', './index.html', './join.html', './manifest.webmanifest',
   './favicon.svg', './favicon.ico', './apple-touch-icon.png',
   './css/deck.css', './js/deck.js', './js/interact.js', './js/firebase-config.js',
-  './js/motion.js', './js/demo-circle.js', './js/sw-register.js',
+  './js/motion.js', './js/demo-circle.js', './js/opening.js', './js/sw-register.js', './media/akai-opening-poster.jpg',
   './images/app/icon-192.png', './images/app/icon-512.png',
 ];
 
