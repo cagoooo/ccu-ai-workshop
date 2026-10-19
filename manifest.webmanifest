@@ -1,0 +1,17 @@
+{
+  "name": "AI 數位教學實務工作坊｜阿凱老師",
+  "short_name": "AI 教學工作坊",
+  "description": "一張課本照片，長出一整套 AI 教學：中正大學師培中心 AI 數位教學實務工作坊互動簡報",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#e8643a",
+  "icons": [
+    { "src": "images/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "images/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "images/app/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "images/app/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
