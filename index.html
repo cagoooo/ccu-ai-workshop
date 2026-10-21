@@ -49,13 +49,23 @@
 <!-- ===================== 開場 ===================== -->
 
 <!-- 0 開場片頭（自動播放，播完進入封面） -->
-<section id="slide-opening" data-background-color="#2a1d12">
+<section id="slide-opening" class="vid-slide" data-background-color="#2a1d12">
   <div class="op-wrap">
-    <video id="op-video" src="media/akai-opening.mp4" poster="media/akai-opening-poster.jpg" playsinline preload="auto"></video>
-    <button id="op-play" type="button"><span class="op-tri">▶</span>播放開場片頭</button>
+    <video class="op-video" src="media/akai-opening.mp4" poster="media/akai-opening-poster.jpg" playsinline preload="auto"></video>
+    <button class="op-play" type="button"><span class="op-tri">▶</span>播放開場片頭</button>
+    <div class="op-skip">按 → 可直接進入下一頁</div>
+  </div>
+  <aside class="notes">簡報一打開就會播放 21 秒片頭；若瀏覽器擋下有聲自動播放，按中間的播放鈕。點影片可暫停／繼續，播完會自動進入上午場宣傳片。</aside>
+</section>
+
+<!-- 0b 上午場開場宣傳片（自動播放，播完進入封面） -->
+<section id="slide-promo-am" class="vid-slide" data-background-color="#1c1430">
+  <div class="op-wrap">
+    <video class="op-video" src="media/promo-am.mp4?v=__BUILD_VERSION__" poster="media/promo-am-poster.jpg" playsinline preload="metadata"></video>
+    <button class="op-play" type="button"><span class="op-tri">▶</span>播放上午場宣傳片</button>
     <div class="op-skip">按 → 可直接進入封面</div>
   </div>
-  <aside class="notes">簡報一打開就會播放 21 秒片頭；若瀏覽器擋下有聲自動播放，按中間的播放鈕。點影片可暫停／繼續，播完會自動進入封面。</aside>
+  <aside class="notes">上午場宣傳片 36 秒：一張課本照片 → Gemini Notebook 八種教材 → 老師的專業 → 掃 QR Code。播完自動進入封面。</aside>
 </section>
 
 <!-- 1 封面 -->
@@ -449,6 +459,16 @@
 </section>
 
 <!-- ===================== 下午 ===================== -->
+
+<!-- 21b 下午場開場宣傳片（自動播放，播完進入下午回顧） -->
+<section id="slide-promo-pm" class="vid-slide" data-background-color="#0d1526">
+  <div class="op-wrap">
+    <video class="op-video" src="media/promo-pm.mp4?v=__BUILD_VERSION__" poster="media/promo-pm-poster.jpg" playsinline preload="metadata"></video>
+    <button class="op-play" type="button"><span class="op-tri">▶</span>播放下午場宣傳片</button>
+    <div class="op-skip">按 → 可直接進入下午回顧</div>
+  </div>
+  <aside class="notes">13:00 回來先播 31 秒下午場宣傳片：教材包動起來 → 教學駕駛艙 → 動畫 → 揪錯 → Gemini Canvas → 起飛。播完自動進入下午回顧。</aside>
+</section>
 
 <!-- 22 下午回顧 -->
 <section>

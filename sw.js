@@ -6,7 +6,7 @@ const PRECACHE = [
   './', './index.html', './join.html', './manifest.webmanifest',
   './favicon.svg', './favicon.ico', './apple-touch-icon.png',
   './css/deck.css', './js/deck.js', './js/interact.js', './js/firebase-config.js',
-  './js/motion.js', './js/demo-circle.js', './js/opening.js', './js/sw-register.js', './media/akai-opening-poster.jpg',
+  './js/motion.js', './js/demo-circle.js', './js/opening.js', './js/sw-register.js', './media/akai-opening-poster.jpg', './media/promo-am-poster.jpg', './media/promo-pm-poster.jpg',
   './images/app/icon-192.png', './images/app/icon-512.png',
 ];
 
@@ -43,6 +43,7 @@ self.addEventListener('fetch', (e) => {
   try { url = new URL(req.url); } catch { return; }
   if (url.origin !== self.location.origin) return;            // Firebase、CDN 等外部請求不攔截
 
+  if (/\.(mp4|webm)$/i.test(url.pathname)) return;           // 影片交給瀏覽器自己分段串流，不經過 SW
   if (url.pathname.endsWith('/version.json')) {                // 版本檔永遠向網路要最新
     e.respondWith(fetch(req, { cache: 'no-store' }).catch(() => caches.match(req)));
     return;
