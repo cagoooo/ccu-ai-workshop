@@ -99,14 +99,27 @@ function toast(m) {
   while (box.children.length > 3) box.firstElementChild.remove();
   setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 400); }, 8000);
 }
-function floatEmoji(e) {
+/* 表情飛起（仿 Google Meet）：大表情＋送出者名牌，從右下角左右搖擺往上飄
+ * 同時湧入很多個時錯開 0.12 秒出場，畫面上最多保留 40 個 */
+let floatQueue = 0;
+function floatEmoji(e, name) {
   if (document.documentElement.classList.contains('is-opening')) return;
-  const f = document.createElement('span');
-  f.className = 'cw-float';
-  f.textContent = e;
-  f.style.setProperty('--dx', `${Math.round(Math.random() * 80 - 40)}px`);
-  $('.cw-floats').appendChild(f);
-  setTimeout(() => f.remove(), 2600);
+  const delay = Math.min(floatQueue, 12) * 120;
+  floatQueue += 1;
+  setTimeout(() => {
+    floatQueue = Math.max(0, floatQueue - 1);
+    const box = $('.cw-floats');
+    while (box.children.length >= 40) box.firstElementChild.remove();
+    const f = document.createElement('div');
+    f.className = 'cw-float';
+    f.innerHTML = `<span class="cw-emo">${esc(e)}</span>${name ? `<span class="cw-who">${esc(name)}</span>` : ''}`;
+    const dur = 3.6 + Math.random() * 0.9;
+    f.style.left = `${Math.round(Math.random() * 120)}px`;
+    f.style.setProperty('--s', `${Math.round((Math.random() < 0.5 ? -1 : 1) * (18 + Math.random() * 22))}px`);
+    f.style.animationDuration = `${dur}s`;
+    box.appendChild(f);
+    setTimeout(() => f.remove(), dur * 1000 + 100);
+  }, delay);
 }
 
 /* ---------- 訊息列表 ---------- */
@@ -129,7 +142,7 @@ watchChat((items) => {
     if (seen.has(m.id)) return;
     seen.add(m.id);
     if (first) return;                             // 剛打開簡報時的舊訊息不跳提示
-    if (m.kind === 'react') floatEmoji(m.text);
+    if (m.kind === 'react') floatEmoji(m.text, m.name);
     else { if (!state.open) unread += 1; toast(m); }
   });
   first = false;

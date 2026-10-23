@@ -416,13 +416,24 @@ html.is-opening .akai-footer, html.is-opening #theme-btn, html.is-opening .revea
 .cw-toast b { display: block; font-size: calc(var(--cw-fs) * .7); color: var(--accent); }
 .cw-toast.out { opacity: 0; transform: translateX(30px); }
 @keyframes cwToast { from { opacity: 0; transform: translateY(20px) scale(.9); } to { opacity: 1; transform: none; } }
-/* 表情回饋往上飄 */
-.cw-floats { position: fixed; right: 160px; bottom: 50px; z-index: 41; pointer-events: none; }
-.cw-float { position: absolute; bottom: 0; left: 0; font-size: 40px; animation: cwFloat 2.6s ease-out forwards; }
-@keyframes cwFloat {
-  0% { opacity: 0; transform: translate(0, 0) scale(.6); }
-  15% { opacity: 1; transform: translate(calc(var(--dx) * .3), -40px) scale(1.2); }
-  100% { opacity: 0; transform: translate(var(--dx), -320px) scale(1); }
+/* 表情回饋往上飄（仿 Google Meet）：收合時從聊天按鈕上方飛起，展開時改從面板左側飛起 */
+.cw-floats { position: fixed; right: 150px; bottom: 56px; width: 140px; height: 0; z-index: 42; pointer-events: none; }
+#chatw.open .cw-floats { right: calc(var(--cw-w) + 40px); }
+.cw-float { position: absolute; bottom: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0;
+  animation: cwRise 4s cubic-bezier(.25, .6, .35, 1) forwards; will-change: transform, opacity; }
+.cw-emo { font-size: 64px; line-height: 1; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .25)); }
+#chatw.big .cw-emo { font-size: 84px; }
+.cw-who { max-width: 140px; padding: 2px 10px; border-radius: 999px; background: rgba(20, 20, 24, .72); color: #fff; font-size: 14px; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#chatw.big .cw-who { font-size: 18px; }
+@keyframes cwRise {
+  0% { opacity: 0; transform: translate(0, 0) scale(.3); }
+  7% { opacity: 1; transform: translate(calc(var(--s) * .2), -36px) scale(1.18); }
+  14% { transform: translate(calc(var(--s) * .5), -9vh) scale(1); }
+  32% { transform: translate(var(--s), -24vh) scale(1); }
+  52% { transform: translate(calc(var(--s) * -1), -40vh) scale(.98); }
+  72% { opacity: 1; transform: translate(var(--s), -54vh) scale(.95); }
+  100% { opacity: 0; transform: translate(calc(var(--s) * -.4), -68vh) scale(.9); }
 }
 html.is-opening #chatw { opacity: 0; pointer-events: none; }
 @media print { #chatw { display: none; } }
@@ -430,4 +441,6 @@ html.is-opening #chatw { opacity: 0; pointer-events: none; }
   .cw-pill { right: 12px; bottom: 56px; }
   .cw-panel, .cw-toasts { right: 8px; left: 8px; width: auto; bottom: 104px; }
 }
-@media (prefers-reduced-motion: reduce) { .cw-float, .cw-toast, .cw-msg, #chatw.open .cw-panel { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .cw-float { animation-name: cwFade; } }
+@keyframes cwFade { 0%, 100% { opacity: 0; } 15%, 80% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .cw-toast, .cw-msg, #chatw.open .cw-panel { animation: none; } }
