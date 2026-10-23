@@ -42,7 +42,8 @@ service cloud.firestore {
       allow delete: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_chat$')
         && request.auth != null
         && request.auth.token.firebase.sign_in_provider == 'password'
-        && request.auth.token.email == 'ccu-admin@akai-slide-interact.firebaseapp.com';
+        && request.auth.token.email == 'ccu-admin@akai-slide-interact.firebaseapp.com'
+        && request.auth.uid == 'RgeBnXayNWPt0QWpaZWTZf6O90T2';
     }
   }
 }
