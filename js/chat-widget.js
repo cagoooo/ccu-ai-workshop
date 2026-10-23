@@ -28,7 +28,7 @@ root.innerHTML = `
         <button type="button" data-act="close" title="收合（C）">✕</button>
       </span>
     </header>
-    <div class="cw-qr"><div class="cw-qr-img"></div><div><b>掃描加入聊天室</b><span>${esc(joinUrl.replace(/^https?:\/\//, ''))}</span></div></div>
+    <a class="cw-qr" href="${esc(joinUrl)}" target="_blank" rel="noopener" title="點一下開新分頁進入聊天室"><div class="cw-qr-img"></div><div><b>掃描或點我加入聊天室</b><span>${esc(joinUrl.replace(/^https?:\/\//, ''))}</span><em>↗ 點一下開新分頁</em></div></a>
     <div class="cw-list"><div class="cw-empty">還沒有訊息。請學員掃 QR Code 加入！</div></div>
     <div class="cw-react-bar"></div>
     <footer class="cw-foot">點訊息可在大螢幕隱藏・按 C 開關</footer>
