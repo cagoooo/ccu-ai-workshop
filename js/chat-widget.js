@@ -188,7 +188,10 @@ adminForm.addEventListener('submit', async (e) => {
   const pw = adminForm.pw.value;
   if (!pw) return;
   adminMsg.textContent = '登入中…';
-  try { await (await loadAdmin()).login(pw); adminMsg.textContent = '登入成功'; }
+  try {
+    const r = await (await loadAdmin()).login(pw);
+    adminMsg.textContent = r === 'created' ? '已完成首次設定：剛剛輸入的就是管理密碼' : '登入成功';
+  }
   catch (err) { adminMsg.textContent = err.message || '登入失敗'; }
   adminForm.pw.value = '';
 });
