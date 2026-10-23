@@ -20,7 +20,7 @@ root.innerHTML = `
   <div class="cw-floats" aria-hidden="true"></div>
   <section class="cw-panel" role="dialog" aria-label="即時聊天室">
     <header class="cw-head">
-      <b>💬 即時聊天室</b><span class="cw-st"></span>
+      <span class="cw-title">💬 即時聊天室<span class="cw-st" role="status"></span></span>
       <span class="cw-tools">
         <button type="button" data-act="admin" title="管理（清除聊天室）">🔒</button>
         <button type="button" data-act="big" title="切換大字">A+</button>
@@ -29,7 +29,7 @@ root.innerHTML = `
         <button type="button" data-act="close" title="收合（C）">✕</button>
       </span>
     </header>
-    <a class="cw-qr" href="${esc(joinUrl)}" target="_blank" rel="noopener" title="點一下開新分頁進入聊天室"><div class="cw-qr-img"></div><div><b>掃描或點我加入聊天室</b><span>${esc(joinUrl.replace(/^https?:\/\//, ''))}</span><em>↗ 點一下開新分頁</em></div></a>
+    <a class="cw-qr" href="${esc(joinUrl)}" target="_blank" rel="noopener" title="點一下開新分頁進入聊天室"><div class="cw-qr-img"></div><div><b>掃描或點我加入</b><span>${esc(joinUrl.replace(/^https?:\/\//, ''))}</span><em>↗ 點一下開新分頁</em></div></a>
     <form class="cw-admin" autocomplete="off">
       <div class="cw-admin-login">
         <b>🔒 管理員</b>
@@ -37,8 +37,8 @@ root.innerHTML = `
         <button type="submit">登入</button>
       </div>
       <div class="cw-admin-tools">
-        <b>🔓 管理員已登入</b>
-        <button type="button" data-adm="clear">清除全部聊天訊息</button>
+        <b>🔓 管理員</b>
+        <button type="button" data-adm="clear">🗑 清除全部訊息</button>
         <button type="button" data-adm="logout">登出</button>
       </div>
       <div class="cw-admin-msg" aria-live="polite"></div>
@@ -101,7 +101,7 @@ list.addEventListener('click', (e) => {
 
 /* ---------- 連線燈 ---------- */
 const ST = { live: '● 即時', connecting: '● 連線中', retrying: '● 重新連線', offline: '● 未連線' };
-onStatus((st) => { const s = $('.cw-st'); s.textContent = ST[st] || st; s.dataset.st = st; });
+onStatus((st) => { const s = $('.cw-st'); s.textContent = ST[st] || st; s.title = (ST[st] || st).replace('● ', ''); s.dataset.st = st; });
 
 /* ---------- 新訊息提示 ---------- */
 function toast(m) {
@@ -203,8 +203,8 @@ adminForm.addEventListener('click', async (e) => {
   if (b.dataset.adm === 'logout') { await mod.logout(); adminMsg.textContent = '已登出'; return; }
   if (Date.now() > confirmUntil) {                       // 按兩次才清除，避免誤觸
     confirmUntil = Date.now() + 4000;
-    b.textContent = '確定要清除？再按一次';
-    setTimeout(() => { b.textContent = '清除全部聊天訊息'; }, 4000);
+    b.textContent = '確定？再按一次';
+    setTimeout(() => { b.textContent = '🗑 清除全部訊息'; }, 4000);
     return;
   }
   confirmUntil = 0;
@@ -214,7 +214,7 @@ adminForm.addEventListener('click', async (e) => {
     hidden = new Set(); store.set('hidden', []);
     adminMsg.textContent = `已清除 ${n} 則訊息`;
   } catch (err) { adminMsg.textContent = '清除失敗：沒有權限或網路中斷'; }
-  b.disabled = false; b.textContent = '清除全部聊天訊息';
+  b.disabled = false; b.textContent = '🗑 清除全部訊息';
 });
 
 if (!isReady()) root.classList.add('offline');

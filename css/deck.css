@@ -378,13 +378,16 @@ html.is-opening .akai-footer, html.is-opening #theme-btn, html.is-opening .revea
 #chatw.big .cw-panel { height: min(760px, calc(100vh - 160px)); }
 #chatw.open .cw-panel { display: flex; animation: cwIn .25s cubic-bezier(.2, .9, .3, 1.2); }
 @keyframes cwIn { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
-.cw-head { display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 16px; background: var(--surface2); border-bottom: 1px solid var(--line); font-size: 17px; }
-.cw-st { font-size: 13px; font-weight: 700; color: var(--muted); }
-.cw-st[data-st="live"] { color: var(--success); }
-.cw-st[data-st="connecting"], .cw-st[data-st="retrying"] { color: var(--warn); }
-.cw-tools { margin-left: auto; display: flex; gap: 4px; }
-.cw-tools button { min-width: 34px; height: 32px; padding: 0 6px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px !important; font-weight: 700 !important; }
-.cw-tools button:hover { border-color: var(--accent); color: var(--accent); }
+.cw-head { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 16px; background: var(--surface2); border-bottom: 1px solid var(--line); font-size: 17px; flex-wrap: nowrap; }
+.cw-title { display: flex; align-items: center; gap: 8px; min-width: 0; white-space: nowrap; font-weight: 900; }
+/* 連線燈：小圓點（滑鼠移上去看文字） */
+.cw-st { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); font-size: 0; }
+.cw-st[data-st="live"] { background: var(--success); box-shadow: 0 0 0 0 rgba(46, 125, 50, .5); animation: cwLive 2s infinite; }
+.cw-st[data-st="connecting"], .cw-st[data-st="retrying"] { background: var(--warn); }
+@keyframes cwLive { 0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, .55); } 70% { box-shadow: 0 0 0 7px rgba(46, 125, 50, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); } }
+.cw-tools { margin-left: auto; display: flex; gap: 2px; flex: 0 0 auto; padding: 2px; border-radius: 11px; background: var(--surface); border: 1px solid var(--line); }
+.cw-tools button { width: 32px; height: 30px; padding: 0; border-radius: 8px; border: none; background: transparent; color: var(--ink); font-size: 14px !important; font-weight: 800 !important; line-height: 1; }
+.cw-tools button:hover { background: var(--surface2); }
 .cw-qr { display: none; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
 #chatw.show-qr .cw-qr { display: flex; }
 .cw-qr-img { flex: 0 0 auto; width: 96px; height: 96px; background: #fff; border-radius: 8px; padding: 3px; }
@@ -392,7 +395,8 @@ html.is-opening .akai-footer, html.is-opening #theme-btn, html.is-opening .revea
 .cw-qr-img svg { width: 100%; height: 100%; display: block; }
 .cw-qr b { display: block; font-size: 17px; color: var(--accent); }
 #chatw.big .cw-qr b { font-size: 22px; }
-.cw-qr span { color: var(--muted); word-break: break-all; }
+.cw-qr > div:last-child { min-width: 0; flex: 1; }
+.cw-qr span { display: block; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 a.cw-qr { color: inherit; text-decoration: none; cursor: pointer; transition: background .2s; }
 a.cw-qr:hover { background: var(--surface2); }
 a.cw-qr:hover .cw-qr-img { box-shadow: 0 0 0 3px var(--accent); }
@@ -400,9 +404,12 @@ a.cw-qr:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; 
 .cw-qr em { display: block; margin-top: 2px; font-style: normal; font-weight: 700; font-size: 13px; color: var(--accent2); }
 .cw-admin { display: none; flex-direction: column; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface2); font-size: 15px; }
 #chatw.admin-open .cw-admin { display: flex; }
-#chatw.admin-open [data-act="admin"] { border-color: var(--accent); color: var(--accent); }
-#chatw.is-admin [data-act="admin"] { background: var(--success); border-color: var(--success); color: #fff; }
-.cw-admin-login, .cw-admin-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#chatw.admin-open [data-act="admin"] { background: var(--surface2); box-shadow: inset 0 0 0 2px var(--accent); }
+#chatw.is-admin [data-act="admin"] { background: var(--success); color: #fff; }
+.cw-admin-login, .cw-admin-tools { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
+.cw-admin b { white-space: nowrap; font-size: 14px; }
+.cw-admin-tools b { flex: 1; color: var(--success); }
+.cw-admin button { white-space: nowrap; flex: 0 0 auto; }
 .cw-admin-tools { display: none; }
 #chatw.is-admin .cw-admin-login { display: none; }
 #chatw.is-admin .cw-admin-tools { display: flex; }
