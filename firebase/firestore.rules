@@ -1,6 +1,6 @@
 rules_version = '2';
 // akai-slide-interact：阿凱老師互動簡報共用專案
-// 集合一律以「簡報slug_」為前綴；只開放「新增」，不開放刪除
+// 集合一律以「簡報slug_」為前綴；學員只能「新增」；只有管理員能清除聊天室
 service cloud.firestore {
   match /databases/{database}/documents {
     // 文字雲：<slug>_wordcloud 或 <slug>_wordcloud_<題號>
@@ -38,7 +38,11 @@ service cloud.firestore {
         && request.resource.data.opt in ['a', 'b', 'c', 'd', 'e', 'f']
         && request.resource.data.updated_at == request.time;
 
-      allow delete: if false;
+      // 只有管理員帳號（Firebase 登入，密碼存在 Firebase，不在程式碼裡）可以清除聊天室
+      allow delete: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_chat$')
+        && request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password'
+        && request.auth.token.email == 'ccu-admin@akai-slide-interact.firebaseapp.com';
     }
   }
 }

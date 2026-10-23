@@ -39,7 +39,8 @@ export const POLLS = {
 
 const ready = !firebaseConfig.apiKey.startsWith('__');
 // 自動偵測：學校網路擋住即時串流時，改用長輪詢維持即時推送
-const db = ready ? initializeFirestore(initializeApp(firebaseConfig), { experimentalAutoDetectLongPolling: true }) : null;
+export const app = ready ? initializeApp(firebaseConfig) : null;
+export const db = ready ? initializeFirestore(app, { experimentalAutoDetectLongPolling: true }) : null;
 
 /* ---------- 連線狀態（給畫面上的「即時同步中」燈號用） ---------- */
 const statusListeners = new Set();

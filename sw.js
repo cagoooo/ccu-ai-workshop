@@ -5,7 +5,7 @@ const CACHE = PREFIX + BUILD_VERSION;
 const PRECACHE = [
   './', './index.html', './join.html', './manifest.webmanifest',
   './favicon.svg', './favicon.ico', './apple-touch-icon.png',
-  './css/deck.css', './js/deck.js', './js/interact.js', './js/chat-widget.js', './js/firebase-config.js',
+  './css/deck.css', './js/deck.js', './js/interact.js', './js/chat-widget.js', './js/chat-admin.js', './js/firebase-config.js',
   './js/motion.js', './js/demo-circle.js', './js/opening.js', './js/sw-register.js', './media/akai-opening-poster.jpg', './media/promo-am-poster.jpg', './media/promo-pm-poster.jpg',
   './images/app/icon-192.png', './images/app/icon-512.png',
 ];

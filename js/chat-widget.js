@@ -22,6 +22,7 @@ root.innerHTML = `
     <header class="cw-head">
       <b>💬 即時聊天室</b><span class="cw-st"></span>
       <span class="cw-tools">
+        <button type="button" data-act="admin" title="管理（清除聊天室）">🔒</button>
         <button type="button" data-act="big" title="切換大字">A+</button>
         <button type="button" data-act="mute" title="收合時不跳出新訊息">🔔</button>
         <button type="button" data-act="qr" title="顯示加入 QR Code">QR</button>
@@ -29,6 +30,19 @@ root.innerHTML = `
       </span>
     </header>
     <a class="cw-qr" href="${esc(joinUrl)}" target="_blank" rel="noopener" title="點一下開新分頁進入聊天室"><div class="cw-qr-img"></div><div><b>掃描或點我加入聊天室</b><span>${esc(joinUrl.replace(/^https?:\/\//, ''))}</span><em>↗ 點一下開新分頁</em></div></a>
+    <form class="cw-admin" autocomplete="off">
+      <div class="cw-admin-login">
+        <b>🔒 管理員</b>
+        <input type="password" name="pw" placeholder="輸入管理密碼" aria-label="管理密碼" autocomplete="current-password" />
+        <button type="submit">登入</button>
+      </div>
+      <div class="cw-admin-tools">
+        <b>🔓 管理員已登入</b>
+        <button type="button" data-adm="clear">清除全部聊天訊息</button>
+        <button type="button" data-adm="logout">登出</button>
+      </div>
+      <div class="cw-admin-msg" aria-live="polite"></div>
+    </form>
     <div class="cw-list"><div class="cw-empty">還沒有訊息。請學員掃 QR Code 加入！</div></div>
     <div class="cw-react-bar"></div>
     <footer class="cw-foot">點訊息可在大螢幕隱藏・按 C 開關</footer>
@@ -66,6 +80,7 @@ $('.cw-pill').addEventListener('click', () => toggle('open'));
 $('.cw-head').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-act]');
   if (!b) return;
+  if (b.dataset.act === 'admin') { openAdmin(); return; }
   toggle(b.dataset.act === 'close' ? 'open' : b.dataset.act);
 });
 // 按 C 開關（打字時不攔截）
@@ -132,6 +147,7 @@ watchChat((items) => {
   items.filter((m) => m.kind === 'react').forEach((m) => { counts[m.text] = (counts[m.text] || 0) + 1; });
   $('.cw-react-bar').innerHTML = Object.entries(counts).map(([e, n]) => `<span>${esc(e)} <b>${n}</b></span>`).join('');
 
+  if (!msgs.length && !first) list.innerHTML = '<div class="cw-empty">聊天室是空的。請學員掃 QR Code 加入！</div>';
   if (msgs.length) {
     const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
     list.innerHTML = msgs.map((m) => `<div class="cw-msg${hidden.has(m.id) ? ' hid' : ''}" data-id="${esc(m.id)}">
@@ -147,6 +163,55 @@ watchChat((items) => {
   });
   first = false;
   render();
+});
+
+/* ---------- 管理：輸入管理密碼後可清除聊天室（登入模組要用時才載入） ---------- */
+const adminForm = $('.cw-admin');
+const adminMsg = $('.cw-admin-msg');
+let adminMod = null;
+async function loadAdmin() {
+  if (!adminMod) {
+    adminMod = await import('./chat-admin.js?v=__BUILD_VERSION__');
+    adminMod.onAdmin((ok) => root.classList.toggle('is-admin', ok));
+  }
+  return adminMod;
+}
+function openAdmin() {
+  const show = !root.classList.contains('admin-open');
+  root.classList.toggle('admin-open', show);
+  adminMsg.textContent = '';
+  if (show) loadAdmin().then(() => { if (!root.classList.contains('is-admin')) adminForm.pw.focus(); })
+    .catch(() => { adminMsg.textContent = '管理功能載入失敗，請檢查網路'; });
+}
+adminForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pw = adminForm.pw.value;
+  if (!pw) return;
+  adminMsg.textContent = '登入中…';
+  try { await (await loadAdmin()).login(pw); adminMsg.textContent = '登入成功'; }
+  catch (err) { adminMsg.textContent = err.message || '登入失敗'; }
+  adminForm.pw.value = '';
+});
+let confirmUntil = 0;
+adminForm.addEventListener('click', async (e) => {
+  const b = e.target.closest('button[data-adm]');
+  if (!b) return;
+  const mod = await loadAdmin();
+  if (b.dataset.adm === 'logout') { await mod.logout(); adminMsg.textContent = '已登出'; return; }
+  if (Date.now() > confirmUntil) {                       // 按兩次才清除，避免誤觸
+    confirmUntil = Date.now() + 4000;
+    b.textContent = '確定要清除？再按一次';
+    setTimeout(() => { b.textContent = '清除全部聊天訊息'; }, 4000);
+    return;
+  }
+  confirmUntil = 0;
+  b.disabled = true; b.textContent = '清除中…';
+  try {
+    const n = await mod.clearChat();
+    hidden = new Set(); store.set('hidden', []);
+    adminMsg.textContent = `已清除 ${n} 則訊息`;
+  } catch (err) { adminMsg.textContent = '清除失敗：沒有權限或網路中斷'; }
+  b.disabled = false; b.textContent = '清除全部聊天訊息';
 });
 
 if (!isReady()) root.classList.add('offline');
