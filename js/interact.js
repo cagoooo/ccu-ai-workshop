@@ -2,6 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
 import {
   initializeFirestore, collection, addDoc, doc, setDoc, onSnapshot, serverTimestamp, getDocsFromServer,
+  query, orderBy, limitToLast,
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js?v=__BUILD_VERSION__';
 
@@ -123,5 +124,32 @@ export function watchPoll(key, cb) {
     const counts = {};
     snap.forEach((d) => { const o = d.data().opt; counts[o] = (counts[o] || 0) + 1; });
     cb(counts, snap.size);
+  });
+}
+
+/* ---------- 即時聊天室 ---------- */
+export const REACTIONS = ['👍', '❤️', '👏', '😮', '🤔', '❓'];
+export const myName = () => store.get(`${SLUG}_name`) || '';
+export const setMyName = (n) => store.set(`${SLUG}_name`, String(n || '').trim().slice(0, 12));
+
+export async function sendChat(raw, kind = 'msg') {
+  const text = String(raw || '').trim().slice(0, 200);
+  if (!text || !db) return false;
+  if (kind === 'react' && !REACTIONS.includes(text)) return false;
+  const name = myName() || '匿名學員';
+  await addDoc(collection(db, `${SLUG}_chat`), { name, text, kind, uid: voterId(), created_at: serverTimestamp() });
+  return true;
+}
+
+// 只抓最近 n 則；送出中的訊息先用本機估計時間排序
+export function watchChat(cb, n = 80) {
+  const ref = db ? query(collection(db, `${SLUG}_chat`), orderBy('created_at'), limitToLast(n)) : null;
+  return liveQuery(ref, (snap) => {
+    if (!snap) return cb([]);
+    cb(snap.docs.map((d) => {
+      const x = d.data({ serverTimestamps: 'estimate' });
+      const t = x.created_at && x.created_at.toDate ? x.created_at.toDate() : new Date();
+      return { id: d.id, name: x.name, text: x.text, kind: x.kind, uid: x.uid, t };
+    }));
   });
 }

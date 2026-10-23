@@ -5,7 +5,24 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // 文字雲：<slug>_wordcloud 或 <slug>_wordcloud_<題號>
     match /{col}/{docId} {
-      allow read: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(wordcloud|poll)(_[a-z0-9]+)?$');
+      allow read: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(wordcloud|poll)(_[a-z0-9]+)?$')
+        || col.matches('^[a-z0-9]+(_[a-z0-9]+)*_chat$');
+
+      // 聊天室：<slug>_chat，一則訊息一份文件；只能新增，不能修改或刪除
+      allow create: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_chat$')
+        && request.resource.data.keys().hasOnly(['name', 'text', 'kind', 'uid', 'created_at'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 12
+        && request.resource.data.text is string
+        && request.resource.data.text.size() >= 1
+        && request.resource.data.text.size() <= 200
+        && request.resource.data.uid is string
+        && request.resource.data.uid.size() <= 40
+        && (request.resource.data.kind == 'msg'
+          || (request.resource.data.kind == 'react'
+            && request.resource.data.text in ['👍', '❤️', '👏', '😮', '🤔', '❓']))
+        && request.resource.data.created_at == request.time;
 
       allow create: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_wordcloud(_[a-z0-9]+)?$')
         && request.resource.data.keys().hasOnly(['word', 'created_at'])

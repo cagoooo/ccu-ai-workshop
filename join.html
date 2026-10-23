@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>工作坊互動參與｜AI 數位教學實務工作坊</title>
-  <meta name="description" content="AI 數位教學實務工作坊的學員互動頁：掃描 QR Code 參加即時文字雲與投票，結果會同步出現在大螢幕。" />
+  <meta name="description" content="AI 數位教學實務工作坊的學員互動頁：掃描 QR Code 參加即時聊天室、文字雲與投票，結果會同步出現在大螢幕。" />
   <meta name="theme-color" content="#e8643a" />
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -17,7 +17,7 @@
   <meta property="og:locale" content="zh_TW" />
   <meta property="og:url" content="https://cagoooo.github.io/ccu-ai-workshop/join.html" />
   <meta property="og:title" content="工作坊互動參與｜AI 數位教學實務工作坊" />
-  <meta property="og:description" content="AI 數位教學實務工作坊的學員互動頁：掃描 QR Code 參加即時文字雲與投票，結果會同步出現在大螢幕。" />
+  <meta property="og:description" content="AI 數位教學實務工作坊的學員互動頁：掃描 QR Code 參加即時聊天室、文字雲與投票，結果會同步出現在大螢幕。" />
   <meta property="og:image" content="https://cagoooo.github.io/ccu-ai-workshop/og-image.jpg?v=__BUILD_VERSION__" />
   <meta property="og:image:secure_url" content="https://cagoooo.github.io/ccu-ai-workshop/og-image.jpg?v=__BUILD_VERSION__" />
   <meta property="og:image:type" content="image/jpeg" />
@@ -26,7 +26,7 @@
   <meta property="og:image:alt" content="一張課本照片，長出一整套 AI 教學｜AI 數位教學實務工作坊｜阿凱老師・桃園市龍潭區石門國民小學" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="工作坊互動參與｜AI 數位教學實務工作坊" />
-  <meta name="twitter:description" content="AI 數位教學實務工作坊的學員互動頁：掃描 QR Code 參加即時文字雲與投票，結果會同步出現在大螢幕。" />
+  <meta name="twitter:description" content="AI 數位教學實務工作坊的學員互動頁：掃描 QR Code 參加即時聊天室、文字雲與投票，結果會同步出現在大螢幕。" />
   <meta name="twitter:image" content="https://cagoooo.github.io/ccu-ai-workshop/og-image.jpg?v=__BUILD_VERSION__" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -56,6 +56,24 @@
     .hint { color: var(--muted); font-size: 14px; margin-top: 6px; }
     .warn { background: #fff4e5; color: #8a5300; padding: 10px 12px; border-radius: 10px; font-size: 14px; margin-bottom: 12px; display: none; }
     .offline .warn { display: block; }
+    /* 聊天室 */
+    #p-chat.on { display: flex; flex-direction: column; padding: 14px; }
+    .who { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 15px; color: var(--muted); }
+    .who input { flex: 1; font-size: 16px; padding: 9px 12px; border-radius: 10px; }
+    .chat-list { height: min(46vh, 420px); overflow-y: auto; padding: 4px 2px 8px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px; }
+    .chat-empty { color: var(--muted); text-align: center; margin: auto; font-size: 15px; }
+    .bub { max-width: 86%; align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; padding: 7px 12px; font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+    .bub b { display: block; font-size: 12px; color: var(--accent2); }
+    .bub.me { align-self: flex-end; background: #fff1ea; border-color: #f5c8b4; border-radius: 16px 4px 16px 16px; }
+    .bub.me b { color: var(--accent); text-align: right; }
+    .bub.react { background: transparent; border: none; font-size: 13px; color: var(--muted); padding: 0 4px; }
+    .bub.react span { font-size: 22px; vertical-align: middle; }
+    .reacts { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 10px 0 8px; }
+    .reacts button { font-size: 24px; padding: 8px 0; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); }
+    .reacts button:active { transform: scale(.92); }
+    .send-row { display: flex; gap: 8px; }
+    .send-row input { flex: 1; min-width: 0; }
+    .send-row button.send { width: auto; margin: 0; padding: 0 20px; flex-shrink: 0; }
     footer { text-align: center; font-size: 13px; color: var(--muted); padding: 0 16px 24px; }
     footer a { color: var(--accent2); }
   </style>
@@ -66,6 +84,7 @@
     <h1>AI 數位教學實務工作坊｜互動參與</h1>
   </header>
   <nav>
+    <a href="#chat" data-tab="chat">💬 聊天室</a>
     <a href="#open" data-tab="open">開場文字雲</a>
     <a href="#pre" data-tab="pre">課前調查</a>
     <a href="#noon" data-tab="noon">上午小結</a>
@@ -73,6 +92,18 @@
   </nav>
   <main>
     <div class="warn">目前是本機預覽，互動功能要部署後才會連線。</div>
+    <section class="panel" id="p-chat">
+      <h2>即時聊天室：有問題、有想法，隨時丟上來！</h2>
+      <label class="who">暱稱 <input id="chat-name" type="text" maxlength="12" placeholder="不填就顯示「匿名學員」" /></label>
+      <div class="chat-list" id="chat-list" aria-live="polite"><div class="chat-empty">還沒有訊息，來當第一個吧！</div></div>
+      <div class="reacts" id="chat-reacts" aria-label="一鍵回饋"></div>
+      <div class="send-row">
+        <input id="chat-input" type="text" maxlength="200" placeholder="輸入訊息或問題（200 字內）" aria-label="輸入訊息" />
+        <button class="send" id="chat-send" type="button">送出</button>
+      </div>
+      <div class="msg" id="chat-msg" aria-live="polite"></div>
+      <div class="hint">訊息會即時出現在講台大螢幕右下角；請友善發言。</div>
+    </section>
     <section class="panel" id="p-open" data-wc="open"></section>
     <section class="panel" id="p-pre" data-poll="pre"></section>
     <section class="panel" id="p-noon" data-poll="noon"></section>
@@ -85,7 +116,7 @@
   </footer>
 
   <script type="module">
-    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote } from './js/interact.js?v=__BUILD_VERSION__';
+    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote, REACTIONS, myName, setMyName, sendChat, watchChat, voterId } from './js/interact.js?v=__BUILD_VERSION__';
 
     if (!isReady()) document.body.classList.add('offline');
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -130,9 +161,56 @@
       mark();
     });
 
+    /* ---------- 聊天室 ---------- */
+    (() => {
+      const list = document.getElementById('chat-list');
+      const nameIn = document.getElementById('chat-name');
+      const input = document.getElementById('chat-input');
+      const btn = document.getElementById('chat-send');
+      const msg = document.getElementById('chat-msg');
+      const reacts = document.getElementById('chat-reacts');
+      const me = voterId();
+      nameIn.value = myName();
+      nameIn.addEventListener('change', () => setMyName(nameIn.value));
+      let last = 0;                                   // 防洗版：每 2 秒最多送一次
+      const guard = () => {
+        const wait = 2000 - (Date.now() - last);
+        if (wait > 0) { msg.textContent = `慢慢來，${Math.ceil(wait / 1000)} 秒後可再送`; return false; }
+        last = Date.now(); return true;
+      };
+      const send = async () => {
+        const text = input.value.trim();
+        if (!text || !guard()) return;
+        setMyName(nameIn.value);
+        btn.disabled = true;
+        try { await sendChat(text); input.value = ''; msg.textContent = ''; }
+        catch (e) { msg.textContent = '送出失敗，請再試一次'; last = 0; }
+        btn.disabled = false;
+        input.focus();
+      };
+      btn.addEventListener('click', send);
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing) send(); });
+      reacts.innerHTML = REACTIONS.map((r) => `<button type="button" data-r="${r}" aria-label="送出 ${r}">${r}</button>`).join('');
+      reacts.addEventListener('click', async (e) => {
+        const b = e.target.closest('button');
+        if (!b || !guard()) return;
+        setMyName(nameIn.value);
+        try { await sendChat(b.dataset.r, 'react'); msg.textContent = `已送出 ${b.dataset.r}`; }
+        catch (err) { msg.textContent = '送出失敗，請再試一次'; last = 0; }
+      });
+      watchChat((items) => {
+        if (!items.length) return;
+        const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 80;
+        list.innerHTML = items.map((m) => m.kind === 'react'
+          ? `<div class="bub react${m.uid === me ? ' me' : ''}">${esc(m.name)} 送出 <span>${esc(m.text)}</span></div>`
+          : `<div class="bub${m.uid === me ? ' me' : ''}"><b>${esc(m.name)}</b>${esc(m.text)}</div>`).join('');
+        if (nearBottom || items[items.length - 1].uid === me) list.scrollTop = list.scrollHeight;
+      });
+    })();
+
     const show = () => {
-      const key = (location.hash || '#open').slice(1);
-      const tab = document.getElementById(`p-${key}`) ? key : 'open';
+      const key = (location.hash || '#chat').slice(1);
+      const tab = document.getElementById(`p-${key}`) ? key : 'chat';
       document.querySelectorAll('.panel').forEach((x) => x.classList.toggle('on', x.id === `p-${tab}`));
       document.querySelectorAll('nav a').forEach((a) => a.classList.toggle('on', a.dataset.tab === tab));
     };
