@@ -50,7 +50,7 @@ function setStatus(s) { if (s !== status) { status = s; statusListeners.forEach(
 
 /* 即時監聽＋省額度保險（Firebase 免費方案每天只有 5 萬次讀取）：
  * ① onSnapshot 即時推送（主要）：第一次讀全部，之後只傳「有變動的那幾筆」
- * ② 分頁回到前景、網路恢復時向伺服器補抓一次（20 秒內最多一次）
+ * ② 分頁回到前景 6 秒後若還沒恢復「即時」才補抓（學員切去別的 App 再回來很常見，每次都整批重讀會很耗）；網路恢復時補抓
  * ③ watchdog（只給講台簡報用）：每 20 秒用「計數查詢」核對總數（1000 筆內只算 1 次讀取），
  *    總數變了但即時推送沒動靜，才整批補抓。舊版每 4 秒整批重讀，人一多幾分鐘就會把額度用完 */
 function liveQuery(ref, handle, { countRef = null, watchdog = false } = {}) {
@@ -74,7 +74,10 @@ function liveQuery(ref, handle, { countRef = null, watchdog = false } = {}) {
     getDocsFromServer(ref).then((snap) => { lastServerSnap = Date.now(); setStatus('live'); apply(snap); })
       .catch(() => setStatus('retrying'));
   };
-  const onVisible = () => { if (document.visibilityState === 'visible') refresh(); };
+  const onVisible = () => {
+    if (document.visibilityState !== 'visible') return;
+    setTimeout(() => { if (status !== 'live') refresh(); }, 6000);   // 即時推送會自己續接，續不上才補抓
+  };
   const onOnline = () => refresh(true);
   document.addEventListener('visibilitychange', onVisible);
   window.addEventListener('online', onOnline);
