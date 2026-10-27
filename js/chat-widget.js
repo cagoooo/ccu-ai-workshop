@@ -2,7 +2,7 @@
  * 收合時：一顆「💬 聊天室」膠囊＋未讀數，新訊息跳出小泡泡（8 秒後消失），表情回饋從角落往上飄
  * 展開時：完整訊息列表＋加入 QR Code
  * 講者操作：點膠囊或按 C 開關；點某則訊息可在大螢幕隱藏（只存在這台電腦） */
-import { isReady, watchChat, onStatus } from './interact.js?v=__BUILD_VERSION__';
+import { isReady, watchChat, watchReacts, onStatus } from './interact.js?v=__BUILD_VERSION__';
 
 const KEY = 'ccu2026ai_chatw';
 const store = {
@@ -137,16 +137,10 @@ function floatEmoji(e, name) {
   }, delay);
 }
 
-/* ---------- 訊息列表 ---------- */
+/* ---------- 訊息列表（文字訊息）---------- */
 const seen = new Set();
 let first = true;
-watchChat((items) => {
-  const msgs = items.filter((m) => m.kind !== 'react');
-  // 表情回饋統計：最近 80 則裡各表情的數量
-  const counts = {};
-  items.filter((m) => m.kind === 'react').forEach((m) => { counts[m.text] = (counts[m.text] || 0) + 1; });
-  $('.cw-react-bar').innerHTML = Object.entries(counts).map(([e, n]) => `<span>${esc(e)} <b>${n}</b></span>`).join('');
-
+watchChat((msgs) => {
   if (!msgs.length && !first) list.innerHTML = '<div class="cw-empty">聊天室是空的。請學員掃 QR Code 加入！</div>';
   if (msgs.length) {
     const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 60;
@@ -154,16 +148,31 @@ watchChat((items) => {
       <div class="cw-meta"><b>${esc(m.name)}</b><time>${hhmm(m.t)}</time></div><div class="cw-text">${esc(m.text)}</div></div>`).join('');
     if (nearBottom || first) list.scrollTop = list.scrollHeight;
   }
-  items.forEach((m) => {
+  msgs.forEach((m) => {
     if (seen.has(m.id)) return;
     seen.add(m.id);
     if (first) return;                             // 剛打開簡報時的舊訊息不跳提示
-    if (m.kind === 'react') floatEmoji(m.text, m.name);
-    else { if (!state.open) unread += 1; toast(m); }
+    if (!state.open) unread += 1;
+    toast(m);
   });
   first = false;
   render();
-});
+}, 80, { watchdog: true });
+
+/* ---------- 表情回饋（獨立集合，只有講台在聽）---------- */
+const seenR = new Set();
+let firstR = true;
+watchReacts((items) => {
+  const counts = {};                               // 最近 200 個表情的統計
+  items.forEach((m) => { counts[m.text] = (counts[m.text] || 0) + 1; });
+  $('.cw-react-bar').innerHTML = Object.entries(counts).map(([e, n]) => `<span>${esc(e)} <b>${n}</b></span>`).join('');
+  items.forEach((m) => {
+    if (seenR.has(m.id)) return;
+    seenR.add(m.id);
+    if (!firstR) floatEmoji(m.text, m.name);
+  });
+  firstR = false;
+}, 200, { watchdog: true });
 
 /* ---------- 管理：輸入管理密碼後可清除聊天室（登入模組要用時才載入） ---------- */
 const adminForm = $('.cw-admin');
@@ -212,7 +221,7 @@ adminForm.addEventListener('click', async (e) => {
   try {
     const n = await mod.clearChat();
     hidden = new Set(); store.set('hidden', []);
-    adminMsg.textContent = `已清除 ${n} 則訊息`;
+    adminMsg.textContent = `已清除 ${n} 筆（訊息＋表情）`;
   } catch (err) { adminMsg.textContent = '清除失敗：沒有權限或網路中斷'; }
   b.disabled = false; b.textContent = '🗑 清除全部訊息';
 });

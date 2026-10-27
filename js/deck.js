@@ -101,6 +101,21 @@ document.querySelectorAll('.wc-side, .poll .join').forEach((host) => {
   onStatus((st) => { s.textContent = STATUS_TEXT[st] || st; s.dataset.st = st; });
 });
 
+/* ---------- 省額度：翻到那一頁（或它的前一頁）才開始監聽，之後持續即時 ---------- */
+function whenNear(slide, fn) {
+  let done = false;
+  const near = (cur) => {
+    if (!cur) return false;
+    if (cur === slide) return true;
+    const next = cur.nextElementSibling;
+    return next === slide;
+  };
+  const go = () => { if (!done) { done = true; fn(); } };
+  const check = () => { if (!done && near(Reveal.getCurrentSlide())) go(); };
+  const init = () => { check(); Reveal.on('slidechanged', check); };
+  Reveal.isReady() ? init() : Reveal.on('ready', init);
+}
+
 /* ---------- 文字雲 ---------- */
 const clouds = [];
 function cloudColors() {
@@ -142,7 +157,7 @@ $$('.wc[data-key]').forEach((box) => {
   };
   box.querySelector('.wc-send').addEventListener('click', send);
   input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') send(); });
-  watchWords(key, (data, total) => {
+  whenNear(c.slide, () => watchWords(key, (data, total) => {
     c.data = data;
     bump(box.querySelector('.wc-total'), total);
     box.querySelector('.wc-empty').style.display = data.length ? 'none' : '';
@@ -150,7 +165,7 @@ $$('.wc[data-key]').forEach((box) => {
       .map(([w, n]) => `<li><span>${esc(w)}</span><b>${n}</b></li>`).join('')
       || '<li class="muted">等待第一個答案…</li>';
     if (c.slide.classList.contains('present')) drawCloud(c);
-  });
+  }, { watchdog: true }));
 });
 
 /* ---------- 投票 ---------- */
@@ -172,7 +187,7 @@ $$('.poll[data-key]').forEach((box) => {
     try { await vote(key, b.dataset.opt); mark(); } catch (err) { console.warn(err); }
   });
   mark();
-  watchPoll(key, (counts, total) => {
+  whenNear(box.closest('section'), () => watchPoll(key, (counts, total) => {
     bump(box.querySelector('.poll-total'), total);
     cfg.options.forEach((o) => {
       const pct = total ? Math.round(((counts[o.id] || 0) / total) * 100) : 0;
@@ -180,7 +195,7 @@ $$('.poll[data-key]').forEach((box) => {
       b.querySelector('i').style.width = pct + '%';
       b.querySelector('.poll-pct').textContent = `${pct}%`;
     });
-  });
+  }, { watchdog: true }));
 });
 
 applyTheme(store.get(THEME_KEY) === 'dark' ? 'dark' : DEFAULT_PREF);

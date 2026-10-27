@@ -38,15 +38,18 @@ export async function login(password) {
 
 export const logout = () => (auth ? signOut(auth) : Promise.resolve());
 
-// 清除全部聊天訊息（每批 400 筆）；回傳刪除數量
+// 清除全部聊天訊息與表情（每批 400 筆）；回傳刪除數量
 export async function clearChat() {
-  const snap = await getDocs(collection(db, `${SLUG}_chat`));
   let n = 0;
-  for (let i = 0; i < snap.docs.length; i += 400) {
-    const batch = writeBatch(db);
-    snap.docs.slice(i, i + 400).forEach((d) => batch.delete(d.ref));
-    await batch.commit();
-    n += Math.min(400, snap.docs.length - i);
+  for (const name of [`${SLUG}_chat`, `${SLUG}_react`]) {
+    const snap = await getDocs(collection(db, name));
+    for (let i = 0; i < snap.docs.length; i += 400) {
+      const batch = writeBatch(db);
+      const part = snap.docs.slice(i, i + 400);
+      part.forEach((d) => batch.delete(d.ref));
+      await batch.commit();
+      n += part.length;
+    }
   }
   return n;
 }

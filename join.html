@@ -176,7 +176,16 @@
       const me = voterId();
       nameIn.value = myName();
       nameIn.addEventListener('change', () => setMyName(nameIn.value));
-      let last = 0;                                   // 防洗版：文字每 2 秒、表情每 0.7 秒最多送一次
+      let last = 0;                                   // 防洗版：文字每 2 秒最多送一次
+      // 表情：可以連按 5 下，之後每 3 秒補 1 下（像 Meet 一樣能連發，又不會把資料庫寫入額度用光）
+      let tokens = 5, tokenAt = Date.now();
+      const takeToken = () => {
+        const now = Date.now();
+        tokens = Math.min(5, tokens + (now - tokenAt) / 3000);
+        tokenAt = now;
+        if (tokens < 1) { msg.textContent = `表情送太快了，${Math.ceil((1 - tokens) * 3)} 秒後再按`; return false; }
+        tokens -= 1; return true;
+      };
       const guard = (gap = 2000) => {
         const wait = gap - (Date.now() - last);
         if (wait > 0) { msg.textContent = `慢慢來，${Math.ceil(wait / 1000)} 秒後可再送`; return false; }
@@ -197,7 +206,7 @@
       reacts.innerHTML = REACTIONS.map((r) => `<button type="button" data-r="${r}" aria-label="送出 ${r}">${r}</button>`).join('');
       reacts.addEventListener('click', async (e) => {
         const b = e.target.closest('button');
-        if (!b || !guard(700)) return;
+        if (!b || !takeToken()) return;
         setMyName(nameIn.value);
         // 按下就先在自己手機上飛起來（仿 Google Meet），不用等網路回應
         const f = document.createElement('div');
@@ -209,7 +218,7 @@
         document.body.appendChild(f);
         setTimeout(() => f.remove(), 1900);
         try { await sendChat(b.dataset.r, 'react'); msg.textContent = `已送出 ${b.dataset.r}，看看大螢幕！`; }
-        catch (err) { msg.textContent = '送出失敗，請再試一次'; last = 0; }
+        catch (err) { msg.textContent = '送出失敗，請再試一次'; tokens = Math.min(5, tokens + 1); }
       });
       watchChat((items) => {
         if (!items.length) return;
