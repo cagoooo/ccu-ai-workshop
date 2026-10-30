@@ -97,16 +97,16 @@
   <main>
     <div class="warn">目前是本機預覽，互動功能要部署後才會連線。</div>
     <section class="panel" id="p-chat">
-      <h2>即時聊天室：有問題、有想法，隨時丟上來！</h2>
+      <h2>即時聊天室：有問題、有想法，隨時丟上來！<br><small style="font-size:15px;color:var(--accent)">🚀 送出的話會變成彈幕，飛過講台大螢幕</small></h2>
       <label class="who">暱稱 <input id="chat-name" type="text" maxlength="12" placeholder="不填就顯示「匿名學員」" /></label>
       <div class="chat-list" id="chat-list" aria-live="polite"><div class="chat-empty">還沒有訊息，來當第一個吧！</div></div>
       <div class="reacts" id="chat-reacts" aria-label="一鍵回饋"></div>
       <div class="send-row">
-        <input id="chat-input" type="text" maxlength="200" placeholder="輸入訊息或問題（200 字內）" aria-label="輸入訊息" />
+        <input id="chat-input" type="text" maxlength="200" placeholder="輸入想說的話，變成彈幕飛上大螢幕！" aria-label="輸入訊息" />
         <button class="send" id="chat-send" type="button">送出</button>
       </div>
       <div class="msg" id="chat-msg" aria-live="polite"></div>
-      <div class="hint">訊息會即時出現在講台大螢幕右下角；請友善發言。</div>
+      <div class="hint">訊息會以彈幕飛過大螢幕，也會留在右下角聊天室；請友善發言。</div>
     </section>
     <section class="panel" id="p-open" data-wc="open"></section>
     <section class="panel" id="p-pre" data-poll="pre"></section>

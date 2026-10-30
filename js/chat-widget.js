@@ -1,6 +1,7 @@
 /* 簡報右下角即時聊天室：學員用手機 join.html#chat 發言，講台大螢幕即時出現
  * 收合時：一顆「💬 聊天室」膠囊＋未讀數，新訊息跳出小泡泡（8 秒後消失），表情回饋從角落往上飄
  * 展開時：完整訊息列表＋加入 QR Code
+ * 彈幕：開啟時（預設開），新訊息從畫面右邊飛到左邊，自動分配跑道不重疊；按 D 或面板「彈」開關
  * 講者操作：點膠囊或按 C 開關；點某則訊息可在大螢幕隱藏（只存在這台電腦） */
 import { isReady, watchChat, watchReacts, onStatus } from './interact.js?v=__BUILD_VERSION__';
 
@@ -16,12 +17,14 @@ const joinUrl = new URL('join.html#chat', location.href).href;
 const root = document.createElement('div');
 root.id = 'chatw';
 root.innerHTML = `
+  <div class="cw-danmaku" aria-hidden="true"></div>
   <div class="cw-toasts" aria-live="polite"></div>
   <div class="cw-floats" aria-hidden="true"></div>
   <section class="cw-panel" role="dialog" aria-label="即時聊天室">
     <header class="cw-head">
       <span class="cw-title">💬 即時聊天室<span class="cw-st" role="status"></span></span>
       <span class="cw-tools">
+        <button type="button" data-act="dm" title="彈幕開關（D）">彈</button>
         <button type="button" data-act="admin" title="管理（清除聊天室）">🔒</button>
         <button type="button" data-act="big" title="切換大字">A+</button>
         <button type="button" data-act="mute" title="收合時不跳出新訊息">🔔</button>
@@ -45,7 +48,7 @@ root.innerHTML = `
     </form>
     <div class="cw-list"><div class="cw-empty">還沒有訊息。請學員掃 QR Code 加入！</div></div>
     <div class="cw-react-bar"></div>
-    <footer class="cw-foot">點訊息可在大螢幕隱藏・按 C 開關</footer>
+    <footer class="cw-foot">點訊息可在大螢幕隱藏・C 開關聊天室・D 開關彈幕</footer>
   </section>
   <button type="button" class="cw-pill" aria-label="開關即時聊天室（C）">💬 聊天室<span class="cw-badge" hidden>0</span></button>`;
 document.body.appendChild(root);
@@ -63,13 +66,15 @@ if (window.qrcode) {
 }
 
 /* ---------- 狀態：開關、大字、靜音、QR、隱藏清單（存在這台電腦） ---------- */
-const state = { open: store.get('open', false), big: store.get('big', false), mute: store.get('mute', false), qr: store.get('qr', true) };
+const state = { open: store.get('open', false), big: store.get('big', false), mute: store.get('mute', false), qr: store.get('qr', true), dm: store.get('dm', true) };
 let hidden = new Set(store.get('hidden', []));
 let unread = 0;
 function render() {
   root.classList.toggle('open', state.open);
   root.classList.toggle('big', state.big);
   root.classList.toggle('show-qr', state.qr);
+  root.classList.toggle('dm-on', state.dm);
+  if (!state.dm) $('.cw-danmaku').innerHTML = '';
   $('[data-act="mute"]').textContent = state.mute ? '🔕' : '🔔';
   if (state.open) { unread = 0; list.scrollTop = list.scrollHeight; $('.cw-toasts').innerHTML = ''; }
   badge.hidden = !unread;
@@ -83,11 +88,13 @@ $('.cw-head').addEventListener('click', (e) => {
   if (b.dataset.act === 'admin') { openAdmin(); return; }
   toggle(b.dataset.act === 'close' ? 'open' : b.dataset.act);
 });
-// 按 C 開關（打字時不攔截）
+// 按 C 開關聊天室、按 D 開關彈幕（打字時不攔截）
 document.addEventListener('keydown', (e) => {
-  if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey && !e.metaKey && !e.altKey && !/input|textarea/i.test(e.target.tagName)) {
-    e.preventDefault(); e.stopPropagation(); toggle('open');
-  }
+  if (e.ctrlKey || e.metaKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
+  const k = e.key.toLowerCase();
+  if (k !== 'c' && k !== 'd') return;
+  e.preventDefault(); e.stopPropagation();
+  toggle(k === 'c' ? 'open' : 'dm');
 }, true);
 // 點訊息：在大螢幕隱藏／再點一次恢復
 list.addEventListener('click', (e) => {
@@ -103,9 +110,59 @@ list.addEventListener('click', (e) => {
 const ST = { live: '● 即時', connecting: '● 連線中', retrying: '● 重新連線', offline: '● 未連線' };
 onStatus((st) => { const s = $('.cw-st'); s.textContent = ST[st] || st; s.title = (ST[st] || st).replace('● ', ''); s.dataset.st = st; });
 
+/* ---------- 彈幕：從右飛到左，依跑道排隊，不互相重疊 ---------- */
+const DM_COLORS = ['#ffffff', '#ffffff', '#ffffff', '#ffd166', '#7fdbff', '#ff9ecd', '#b5f5a0'];
+const lanes = [];                                  // 每條跑道「下一則可以出發的時間」
+let dmQueue = [];
+function laneSetup() {
+  const fs = state.big ? 56 : 42;
+  const laneH = Math.round(fs * 1.45);
+  const top = 64;                                  // 避開上方主題按鈕
+  const usable = Math.max(laneH, window.innerHeight * 0.62 - top);
+  const n = Math.max(3, Math.floor(usable / laneH));
+  while (lanes.length < n) lanes.push(0);
+  lanes.length = n;
+  return { fs, laneH, top };
+}
+function launch(m) {
+  const box = $('.cw-danmaku');
+  const { fs, laneH, top } = laneSetup();
+  const now = performance.now();
+  let li = 0;
+  lanes.forEach((t, i) => { if (t < lanes[li]) li = i; });
+  if (lanes[li] > now + 4000) { dmQueue.push(m); if (dmQueue.length > 30) dmQueue.shift(); return; } // 太擠就排隊
+  const wait = Math.max(0, lanes[li] - now);
+  const el = document.createElement('div');
+  el.className = 'dm';
+  el.style.fontSize = `${fs}px`;
+  el.style.top = `${top + li * laneH}px`;
+  el.style.color = DM_COLORS[Math.floor(Math.random() * DM_COLORS.length)];
+  const text = m.text.length > 60 ? m.text.slice(0, 60) + '…' : m.text;
+  el.innerHTML = `<b>${esc(m.name)}</b>${esc(text)}`;
+  el.style.visibility = 'hidden';
+  box.appendChild(el);
+  const w = el.offsetWidth;
+  const vw = window.innerWidth;
+  const speed = vw / 9;                            // 9 秒橫越一個螢幕寬；長訊息等速但多跑一會兒
+  const dur = ((vw + w) / speed) * 1000;
+  lanes[li] = now + wait + ((w + 60) / speed) * 1000;   // 尾巴完全進場再留 60px 才放下一則
+  setTimeout(() => {
+    if (!state.dm || document.documentElement.classList.contains('is-opening')) { el.remove(); return; }
+    el.style.visibility = '';
+    const a = el.animate([{ transform: `translateX(${vw}px)` }, { transform: `translateX(${-w - 20}px)` }], { duration: dur, easing: 'linear' });
+    a.onfinish = () => { el.remove(); if (dmQueue.length) launch(dmQueue.shift()); };
+  }, wait);
+  while (box.children.length > 60) box.firstElementChild.remove();
+}
+function danmaku(m) {
+  if (!state.dm || hidden.has(m.id) || document.documentElement.classList.contains('is-opening')) return;
+  launch(m);
+}
+
 /* ---------- 新訊息提示 ---------- */
 function toast(m) {
-  if (state.open || state.mute || document.documentElement.classList.contains('is-opening')) return;
+  // 彈幕開著時不再跳右下泡泡（同一句話不要出現兩次）
+  if (state.dm || state.open || state.mute || document.documentElement.classList.contains('is-opening')) return;
   const box = $('.cw-toasts');
   const t = document.createElement('div');
   t.className = 'cw-toast';
@@ -153,6 +210,7 @@ watchChat((msgs) => {
     seen.add(m.id);
     if (first) return;                             // 剛打開簡報時的舊訊息不跳提示
     if (!state.open) unread += 1;
+    danmaku(m);
     toast(m);
   });
   first = false;
