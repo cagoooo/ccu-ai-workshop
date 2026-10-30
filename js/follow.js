@@ -15,6 +15,7 @@ let programmatic = false;
 
 function update() {
   bar.classList.toggle('paused', !following);
+  bar.classList.toggle('waiting', teacherH == null);
   if (teacherH == null) btn.textContent = '等待老師開始同步…';
   else btn.textContent = following ? `跟隨老師中・第 ${teacherH + 1} 頁` : `⏸ 回到老師進度・第 ${teacherH + 1} 頁`;
 }

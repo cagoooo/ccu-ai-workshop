@@ -507,6 +507,7 @@ html.is-opening #chatw { opacity: 0; pointer-events: none; }
 #followbar .fb-follow:hover { background: rgba(255, 255, 255, .08); }
 #followbar.paused .fb-follow { background: var(--accent); }
 #followbar.paused .fb-follow::before { display: none; }
+#followbar.waiting .fb-follow::before { background: #9aa4b2; animation: none; }
 #followbar .fb-back { position: relative; color: #e6edf3; }
 #followbar .fb-back::before { content: ''; position: absolute; left: -2px; top: 10px; bottom: 10px; width: 1px; background: rgba(255, 255, 255, .18); }
 #followbar .fb-back:hover { background: rgba(255, 255, 255, .1); color: #fff; }
