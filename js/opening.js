@@ -32,7 +32,11 @@
 
     return {
       slide,
-      enter() { root.classList.add('is-opening'); start(true); },
+      enter() {
+        // 學員跟隨模式：手機不自動播有聲影片，改顯示播放鈕讓學員自己決定
+        if (root.classList.contains('audience')) { showButton(true); return; }
+        root.classList.add('is-opening'); start(true);
+      },
       leave() { video.pause(); showButton(false); slide.classList.remove('op-ending'); },
     };
   }).filter(Boolean);

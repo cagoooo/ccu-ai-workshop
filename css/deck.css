@@ -478,3 +478,27 @@ html.is-opening #chatw { opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .cw-float { animation-name: cwFade; } }
 @keyframes cwFade { 0%, 100% { opacity: 0; } 15%, 80% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .cw-toast, .cw-msg, #chatw.open .cw-panel { animation: none; } }
+
+/* ---------- 講台同步頁碼中（聊天室標題旁小天線） ---------- */
+#chatw.syncing .cw-title::after { content: '📡'; font-size: 14px; }
+
+/* ---------- 學員跟隨模式 ---------- */
+#followbar {
+  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 45; display: flex; gap: 8px; align-items: center;
+  max-width: calc(100vw - 24px); font: 700 15px 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+}
+#followbar .fb-follow, #followbar .fb-back {
+  border: none; border-radius: 999px; padding: 10px 16px; cursor: pointer; white-space: nowrap; text-decoration: none;
+  box-shadow: 0 10px 26px -8px rgba(0, 0, 0, .45); font: inherit; min-height: 44px; display: inline-flex; align-items: center;
+}
+#followbar .fb-follow { background: #c62828; color: #fff; overflow: hidden; text-overflow: ellipsis; }
+#followbar.paused .fb-follow { background: var(--accent); animation: fbPulse 1.6s ease-in-out infinite; }
+#followbar .fb-back { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+@keyframes fbPulse { 50% { transform: scale(1.04); } }
+html.audience .akai-footer { display: none; }
+html.audience .reveal .controls { bottom: 70px; }
+@media (max-width: 560px) {
+  #followbar { left: 8px; right: 8px; transform: none; bottom: 10px; font-size: 14px; }
+  #followbar .fb-follow { flex: 1; justify-content: center; padding: 10px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { #followbar.paused .fb-follow { animation: none; } }

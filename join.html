@@ -41,6 +41,9 @@
     nav { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; position: sticky; top: 0; background: var(--bg); z-index: 2; }
     nav a { flex-shrink: 0; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 700; }
     nav a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+    nav a.follow { background: #c62828; border-color: #c62828; color: #fff; }
+    nav a.follow.live::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 50%; background: #fff; vertical-align: 1px; animation: blink 1.2s infinite; }
+    @keyframes blink { 50% { opacity: .25; } }
     main { padding: 8px 16px 40px; }
     .panel { display: none; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 8px 24px rgba(60,40,20,.07); }
     .panel.on { display: block; }
@@ -88,6 +91,7 @@
     <h1>AI 數位教學實務工作坊｜互動參與</h1>
   </header>
   <nav>
+    <a href="index.html?follow=1" class="follow" id="follow-link">📺 跟上簡報</a>
     <a href="#chat" data-tab="chat">💬 聊天室</a>
     <a href="#open" data-tab="open">開場文字雲</a>
     <a href="#pre" data-tab="pre">課前調查</a>
@@ -120,7 +124,7 @@
   </footer>
 
   <script type="module">
-    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote, REACTIONS, myName, setMyName, sendChat, watchChat, voterId } from './js/interact.js?v=__BUILD_VERSION__';
+    import { WORDCLOUDS, POLLS, isReady, submitWord, vote, myVote, REACTIONS, myName, setMyName, sendChat, watchChat, voterId, watchLive } from './js/interact.js?v=__BUILD_VERSION__';
 
     if (!isReady()) document.body.classList.add('offline');
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -164,6 +168,17 @@
       });
       mark();
     });
+
+    /* ---------- 一鍵跟上老師簡報：顯示老師目前在第幾頁，點了直接跳過去並跟著翻頁 ---------- */
+    (() => {
+      const a = document.getElementById('follow-link');
+      watchLive((h) => {
+        if (!Number.isInteger(h)) { a.textContent = '📺 跟上簡報'; a.href = 'index.html?follow=1'; a.classList.remove('live'); return; }
+        a.textContent = `跟上簡報・第 ${h + 1} 頁`;
+        a.href = `index.html?follow=1#/${h}`;
+        a.classList.add('live');
+      });
+    })();
 
     /* ---------- 聊天室 ---------- */
     (() => {

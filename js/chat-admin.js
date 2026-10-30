@@ -2,7 +2,7 @@
  * 密碼存在 Firebase 登入系統（雜湊保存），程式碼裡只有管理員帳號名稱；第一次輸入的密碼會成為管理密碼；
  * 資料庫規則只允許這個帳號刪除聊天室資料，學員端仍然只能新增。 */
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
-import { collection, getDocs, writeBatch } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+import { collection, getDocs, writeBatch, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
 import { app, db, SLUG } from './interact.js?v=__BUILD_VERSION__';
 
 const ADMIN_EMAIL = 'ccu-admin@akai-slide-interact.firebaseapp.com';
@@ -53,3 +53,17 @@ export async function clearChat() {
   }
   return n;
 }
+
+// 簡報進度同步：管理員登入且開啟時，每次翻頁（0.4 秒內只送最後一次）寫入目前頁碼
+let syncOn = false;
+let lastH = null;
+let syncTimer = null;
+function pushPage(force) {
+  if (!syncOn || !auth || !auth.currentUser || !window.Reveal) return;
+  const h = window.Reveal.getIndices().h;
+  if (!force && h === lastH) return;
+  lastH = h;
+  setDoc(doc(db, `${SLUG}_live`, 'state'), { h, updated_at: serverTimestamp() }).catch((e) => console.warn('頁碼同步失敗', e));
+}
+if (window.Reveal) window.Reveal.on('slidechanged', () => { clearTimeout(syncTimer); syncTimer = setTimeout(pushPage, 400); });
+export function setSync(on) { syncOn = !!on; if (syncOn) pushPage(true); }

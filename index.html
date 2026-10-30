@@ -32,6 +32,8 @@
   <script>
     // 預設淺色；只有使用者手動切過深色才套用深色（避免第一眼看到黑底）
     try { if (localStorage.getItem('ccu2026ai_theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+    // 學員從互動區點「跟上簡報」進來（?follow=1）＝跟隨模式
+    if (/[?&]follow=1/.test(location.search)) document.documentElement.classList.add('audience');
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1469,7 +1471,11 @@
 <script src="js/demo-circle.js?v=__BUILD_VERSION__"></script>
 <script src="js/opening.js?v=__BUILD_VERSION__"></script>
 <script type="module" src="js/deck.js?v=__BUILD_VERSION__"></script>
-<script type="module" src="js/chat-widget.js?v=__BUILD_VERSION__"></script>
+<script type="module">
+  // 講台：右下角聊天室＋彈幕；學員跟隨模式：跟著老師翻頁（不載入聊天室，省額度）
+  if (document.documentElement.classList.contains('audience')) import('./js/follow.js?v=__BUILD_VERSION__');
+  else import('./js/chat-widget.js?v=__BUILD_VERSION__');
+</script>
 <script src="js/sw-register.js?v=__BUILD_VERSION__"></script>
 </body>
 </html>

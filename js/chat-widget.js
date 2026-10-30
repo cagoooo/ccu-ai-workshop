@@ -41,6 +41,7 @@ root.innerHTML = `
       </div>
       <div class="cw-admin-tools">
         <b>🔓 管理員</b>
+        <button type="button" data-adm="sync" title="把目前頁碼同步給學員的跟隨模式">📡 同步頁碼</button>
         <button type="button" data-adm="clear">🗑 清除全部訊息</button>
         <button type="button" data-adm="logout">登出</button>
       </div>
@@ -239,10 +240,25 @@ let adminMod = null;
 async function loadAdmin() {
   if (!adminMod) {
     adminMod = await import('./chat-admin.js?v=__BUILD_VERSION__');
-    adminMod.onAdmin((ok) => root.classList.toggle('is-admin', ok));
+    adminMod.onAdmin((ok) => {
+      root.classList.toggle('is-admin', ok);
+      if (ok) store.set('adminDevice', true);       // 記住這台是講台電腦，下次一打開就自動同步
+      applySync(ok);
+    });
   }
   return adminMod;
 }
+// 頁碼同步：管理員登入後預設開啟（存在這台電腦）
+let syncPref = store.get('sync', true);
+function applySync(isAdmin) {
+  const on = isAdmin && syncPref;
+  root.classList.toggle('syncing', on);
+  const b = $('[data-adm="sync"]');
+  if (b) b.textContent = syncPref ? '📡 同步頁碼：開' : '📡 同步頁碼：關';
+  if (adminMod) adminMod.setSync(on);
+}
+if (store.get('adminDevice', false)) loadAdmin().catch(() => {});
+
 function openAdmin() {
   const show = !root.classList.contains('admin-open');
   root.classList.toggle('admin-open', show);
@@ -267,7 +283,13 @@ adminForm.addEventListener('click', async (e) => {
   const b = e.target.closest('button[data-adm]');
   if (!b) return;
   const mod = await loadAdmin();
-  if (b.dataset.adm === 'logout') { await mod.logout(); adminMsg.textContent = '已登出'; return; }
+  if (b.dataset.adm === 'logout') { await mod.logout(); store.set('adminDevice', false); adminMsg.textContent = '已登出'; return; }
+  if (b.dataset.adm === 'sync') {
+    syncPref = !syncPref; store.set('sync', syncPref);
+    applySync(root.classList.contains('is-admin'));
+    adminMsg.textContent = syncPref ? '學員的「跟隨模式」會跟著你翻頁' : '已暫停同步：學員停在最後同步的那一頁';
+    return;
+  }
   if (Date.now() > confirmUntil) {                       // 按兩次才清除，避免誤觸
     confirmUntil = Date.now() + 4000;
     b.textContent = '確定？再按一次';

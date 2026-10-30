@@ -6,7 +6,7 @@ service cloud.firestore {
     // 文字雲：<slug>_wordcloud 或 <slug>_wordcloud_<題號>
     match /{col}/{docId} {
       allow read: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(wordcloud|poll)(_[a-z0-9]+)?$')
-        || col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react)$');
+        || col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react|live)$');
 
       // 聊天室：<slug>_chat，一則訊息一份文件；只能新增，不能修改或刪除
       allow create: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_chat$')
@@ -48,6 +48,18 @@ service cloud.firestore {
         && request.resource.data.uid.size() <= 40
         && request.resource.data.text in ['👍', '❤️', '👏', '😮', '🤔', '❓']
         && request.resource.data.created_at == request.time;
+
+      // 簡報進度：<slug>_live/state，只有管理員（講台）能寫入目前頁碼，學員端唯讀
+      allow create, update: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_live$')
+        && docId == 'state'
+        && request.auth != null
+        && request.auth.token.email == 'ccu-admin@akai-slide-interact.firebaseapp.com'
+        && request.auth.uid == 'RgeBnXayNWPt0QWpaZWTZf6O90T2'
+        && request.resource.data.keys().hasOnly(['h', 'updated_at'])
+        && request.resource.data.h is int
+        && request.resource.data.h >= 0
+        && request.resource.data.h < 500
+        && request.resource.data.updated_at == request.time;
 
       // 只有管理員帳號（Firebase 登入，密碼存在 Firebase，不在程式碼裡）可以清除聊天室
       allow delete: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react)$')

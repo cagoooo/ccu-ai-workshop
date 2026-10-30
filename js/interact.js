@@ -2,7 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
 import {
   initializeFirestore, collection, addDoc, doc, setDoc, onSnapshot, serverTimestamp, getDocsFromServer,
-  query, orderBy, limitToLast, getCountFromServer,
+  query, orderBy, limitToLast, getCountFromServer, getDocFromServer,
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js?v=__BUILD_VERSION__';
 
@@ -82,7 +82,8 @@ function liveQuery(ref, handle, { countRef = null, watchdog = false } = {}) {
   document.addEventListener('visibilitychange', onVisible);
   window.addEventListener('online', onOnline);
   let timer = null;
-  if (watchdog) {
+  // 學員用「跟隨模式」看簡報時不跑核對（幾十支手機一起核對會很耗額度）
+  if (watchdog && !document.documentElement.classList.contains('audience')) {
     timer = setInterval(() => {
       if (document.visibilityState !== 'visible') return;
       getCountFromServer(countRef || ref).then((r) => {
@@ -184,4 +185,21 @@ export function watchReacts(cb, n = 200, opts = {}) {
   const col = db ? collection(db, `${SLUG}_react`) : null;
   const ref = col ? query(col, orderBy('created_at'), limitToLast(n)) : null;
   return liveQuery(ref, (snap) => cb(snap ? toItems(snap) : []), { ...opts, countRef: col });
+}
+
+/* ---------- 簡報進度同步：講台（管理員）寫入目前頁碼，學員端即時跟上 ---------- */
+export function watchLive(cb) {
+  if (!db) { cb(null); return () => {}; }
+  const ref = doc(db, `${SLUG}_live`, 'state');
+  const read = (snap) => cb(snap.exists() ? snap.data().h : null);
+  const unsub = onSnapshot(ref, { includeMetadataChanges: true }, (snap) => {
+    setStatus(snap.metadata.fromCache ? 'connecting' : 'live');
+    read(snap);
+  }, () => setStatus('retrying'));
+  const onVisible = () => {
+    if (document.visibilityState !== 'visible') return;
+    setTimeout(() => { if (status !== 'live') getDocFromServer(ref).then(read).catch(() => {}); }, 6000);
+  };
+  document.addEventListener('visibilitychange', onVisible);
+  return () => { unsub(); document.removeEventListener('visibilitychange', onVisible); };
 }
