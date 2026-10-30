@@ -502,3 +502,7 @@ html.audience .reveal .controls { bottom: 70px; }
   #followbar .fb-follow { flex: 1; justify-content: center; padding: 10px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { #followbar.paused .fb-follow { animation: none; } }
+/* 跟隨模式：新版本通知移到上方，不擋住底部的跟隨列 */
+@media (max-width: 560px) {
+  html.audience #sw-update-bar { top: max(12px, env(safe-area-inset-top)); bottom: auto; }
+}
