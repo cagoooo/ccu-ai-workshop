@@ -191,7 +191,13 @@ export function watchReacts(cb, n = 200, opts = {}) {
 export function watchLive(cb) {
   if (!db) { cb(null); return () => {}; }
   const ref = doc(db, `${SLUG}_live`, 'state');
-  const read = (snap) => cb(snap.exists() ? snap.data().h : null);
+  const read = (snap) => {
+    if (!snap.exists()) return cb(null);
+    const d = snap.data({ serverTimestamps: 'estimate' });
+    const t = d.updated_at && d.updated_at.toMillis ? d.updated_at.toMillis() : Date.now();
+    const fresh = Date.now() - t < 3 * 3600 * 1000;          // 老師關掉簡報忘了停同步 → 3 小時後自動視為暫停
+    cb({ h: d.h, on: d.on !== false && fresh });
+  };
   const unsub = onSnapshot(ref, { includeMetadataChanges: true }, (snap) => {
     setStatus(snap.metadata.fromCache ? 'connecting' : 'live');
     read(snap);

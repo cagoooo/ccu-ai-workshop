@@ -525,3 +525,7 @@ html.audience .reveal .controls { bottom: 76px; }
 @media (max-width: 560px) {
   html.audience #sw-update-bar { top: max(12px, env(safe-area-inset-top)); bottom: auto; }
 }
+
+/* 老師暫停同步：學員端膠囊左側轉灰、不再閃燈 */
+#followbar.waiting .fb-follow { color: #c9d1d9; cursor: default; }
+#followbar .fb-follow:disabled { opacity: 1; }

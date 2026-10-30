@@ -172,11 +172,11 @@
     /* ---------- 一鍵跟上老師簡報：顯示老師目前在第幾頁，點了直接跳過去並跟著翻頁 ---------- */
     (() => {
       const a = document.getElementById('follow-link');
-      watchLive((h) => {
-        if (!Number.isInteger(h)) { a.textContent = '📺 跟上簡報'; a.href = 'index.html?follow=1'; a.classList.remove('live'); return; }
-        a.textContent = `跟上簡報・第 ${h + 1} 頁`;
-        a.href = `index.html?follow=1#/${h}`;
-        a.classList.add('live');
+      watchLive((s) => {
+        if (!s || !Number.isInteger(s.h)) { a.textContent = '📺 跟上簡報'; a.href = 'index.html?follow=1'; a.classList.remove('live'); return; }
+        a.href = `index.html?follow=1#/${s.h}`;
+        a.classList.toggle('live', s.on);
+        a.textContent = s.on ? `跟上簡報・第 ${s.h + 1} 頁` : `📺 看簡報（停在第 ${s.h + 1} 頁）`;
       });
     })();
 

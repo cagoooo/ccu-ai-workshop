@@ -260,6 +260,8 @@ function applySync(isAdmin) {
   const b = $('[data-adm="sync"]');
   if (b) b.textContent = syncPref ? '📡 同步頁碼：開' : '📡 同步頁碼：關';
   if (adminMod) adminMod.setSync(on);
+  // 管理員登入但同步是關的（或剛按下關閉）→ 明確通知學員端「已暫停」
+  if (adminMod && isAdmin && !syncPref) adminMod.announcePause().catch(() => {});
 }
 if (store.get('adminDevice', false)) loadAdmin().catch(() => {});
 

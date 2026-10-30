@@ -36,7 +36,13 @@ export async function login(password) {
   }
 }
 
-export const logout = () => (auth ? signOut(auth) : Promise.resolve());
+// 登出前先告訴學員「已暫停同步」，學員端才不會一直顯示跟隨中
+export async function logout() {
+  if (!auth) return;
+  if (syncOn) await writeState(false).catch(() => {});
+  syncOn = false;
+  await signOut(auth);
+}
 
 // 清除全部聊天訊息與表情（每批 400 筆）；回傳刪除數量
 export async function clearChat() {
@@ -58,12 +64,24 @@ export async function clearChat() {
 let syncOn = false;
 let lastH = null;
 let syncTimer = null;
-function pushPage(force) {
-  if (!syncOn || !auth || !auth.currentUser || !window.Reveal) return;
+// on：true＝學員跟隨中；false＝老師暫停同步（學員停在最後一頁、可自由翻頁）
+function writeState(on) {
+  if (!auth || !auth.currentUser || !window.Reveal) return Promise.resolve();
   const h = window.Reveal.getIndices().h;
-  if (!force && h === lastH) return;
   lastH = h;
-  setDoc(doc(db, `${SLUG}_live`, 'state'), { h, updated_at: serverTimestamp() }).catch((e) => console.warn('頁碼同步失敗', e));
+  return setDoc(doc(db, `${SLUG}_live`, 'state'), { h, on, updated_at: serverTimestamp() });
+}
+function pushPage(force) {
+  if (!syncOn) return;
+  if (!force && window.Reveal && window.Reveal.getIndices().h === lastH) return;
+  writeState(true).catch((e) => console.warn('頁碼同步失敗', e));
 }
 if (window.Reveal) window.Reveal.on('slidechanged', () => { clearTimeout(syncTimer); syncTimer = setTimeout(pushPage, 400); });
-export function setSync(on) { syncOn = !!on; if (syncOn) pushPage(true); }
+export function setSync(on) {
+  const was = syncOn;
+  syncOn = !!on;
+  if (syncOn) pushPage(true);
+  else if (was) writeState(false).catch((e) => console.warn('暫停同步失敗', e));
+}
+// 講者在管理區手動關閉同步：就算這次開啟簡報還沒同步過，也要明確通知學員端暫停
+export function announcePause() { return writeState(false); }

@@ -55,7 +55,8 @@ service cloud.firestore {
         && request.auth != null
         && request.auth.token.email == 'ccu-admin@akai-slide-interact.firebaseapp.com'
         && request.auth.uid == 'RgeBnXayNWPt0QWpaZWTZf6O90T2'
-        && request.resource.data.keys().hasOnly(['h', 'updated_at'])
+        && request.resource.data.keys().hasOnly(['h', 'on', 'updated_at'])
+        && (!('on' in request.resource.data) || request.resource.data.on is bool)
         && request.resource.data.h is int
         && request.resource.data.h >= 0
         && request.resource.data.h < 500
