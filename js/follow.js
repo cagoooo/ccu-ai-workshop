@@ -5,7 +5,7 @@ import { watchLive } from './interact.js?v=__BUILD_VERSION__';
 
 const bar = document.createElement('div');
 bar.id = 'followbar';
-bar.innerHTML = '<button type="button" class="fb-follow"></button><a class="fb-back" href="join.html#chat">💬 回互動區</a>';
+bar.innerHTML = '<button type="button" class="fb-follow"></button><a class="fb-back" href="join.html#chat" aria-label="回互動區（聊天室）">💬 互動區</a>';
 document.body.appendChild(bar);
 const btn = bar.querySelector('.fb-follow');
 
@@ -15,8 +15,8 @@ let programmatic = false;
 
 function update() {
   bar.classList.toggle('paused', !following);
-  if (teacherH == null) btn.textContent = '⌛ 等待老師開始同步…';
-  else btn.textContent = following ? `🔴 跟隨老師中・第 ${teacherH + 1} 頁` : `⏸ 已暫停・點我回到老師進度（第 ${teacherH + 1} 頁）`;
+  if (teacherH == null) btn.textContent = '等待老師開始同步…';
+  else btn.textContent = following ? `跟隨老師中・第 ${teacherH + 1} 頁` : `⏸ 回到老師進度・第 ${teacherH + 1} 頁`;
 }
 function go() {
   if (teacherH == null || Reveal.getIndices().h === teacherH) return;

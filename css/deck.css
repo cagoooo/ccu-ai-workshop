@@ -490,26 +490,35 @@ html.is-opening #chatw { opacity: 0; pointer-events: none; }
 /* ---------- 講台同步頁碼中（聊天室標題旁小天線） ---------- */
 #chatw.syncing .cw-title::after { content: '📡'; font-size: 14px; }
 
-/* ---------- 學員跟隨模式 ---------- */
+/* ---------- 學員跟隨模式：底部一顆深色玻璃膠囊（左：跟隨狀態／右：回互動區） ---------- */
 #followbar {
-  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 45; display: flex; gap: 8px; align-items: center;
-  max-width: calc(100vw - 24px); font: 700 15px 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 45;
+  display: flex; align-items: stretch; max-width: calc(100vw - 24px); padding: 5px; gap: 4px;
+  border-radius: 999px; background: rgba(22, 22, 28, .82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .08);
+  font: 700 15px 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 #followbar .fb-follow, #followbar .fb-back {
-  border: none; border-radius: 999px; padding: 10px 16px; cursor: pointer; white-space: nowrap; text-decoration: none;
-  box-shadow: 0 10px 26px -8px rgba(0, 0, 0, .45); font: inherit; min-height: 44px; display: inline-flex; align-items: center;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 16px; border: none; border-radius: 999px;
+  font: inherit; color: #fff; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background .2s;
 }
-#followbar .fb-follow { background: #c62828; color: #fff; overflow: hidden; text-overflow: ellipsis; }
-#followbar.paused .fb-follow { background: var(--accent); animation: fbPulse 1.6s ease-in-out infinite; }
-#followbar .fb-back { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
-@keyframes fbPulse { 50% { transform: scale(1.04); } }
+#followbar .fb-follow { background: transparent; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+#followbar .fb-follow::before { content: ''; flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%; background: #ff4d4f; box-shadow: 0 0 0 0 rgba(255, 77, 79, .6); animation: fbLive 1.6s infinite; }
+#followbar .fb-follow:hover { background: rgba(255, 255, 255, .08); }
+#followbar.paused .fb-follow { background: var(--accent); }
+#followbar.paused .fb-follow::before { display: none; }
+#followbar .fb-back { position: relative; color: #e6edf3; }
+#followbar .fb-back::before { content: ''; position: absolute; left: -2px; top: 10px; bottom: 10px; width: 1px; background: rgba(255, 255, 255, .18); }
+#followbar .fb-back:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+@keyframes fbLive { 70% { box-shadow: 0 0 0 8px rgba(255, 77, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); } }
 html.audience .akai-footer { display: none; }
-html.audience .reveal .controls { bottom: 70px; }
+html.audience .reveal .controls { bottom: 76px; }
 @media (max-width: 560px) {
-  #followbar { left: 8px; right: 8px; transform: none; bottom: 10px; font-size: 14px; }
-  #followbar .fb-follow { flex: 1; justify-content: center; padding: 10px 12px; }
+  #followbar { left: 10px; right: 10px; transform: none; bottom: 10px; font-size: 14px; }
+  #followbar .fb-follow { flex: 1; justify-content: center; padding: 0 12px; }
+  #followbar .fb-back { padding: 0 14px; }
 }
-@media (prefers-reduced-motion: reduce) { #followbar.paused .fb-follow { animation: none; } }
+@media (prefers-reduced-motion: reduce) { #followbar .fb-follow::before { animation: none; } }
 /* 跟隨模式：新版本通知移到上方，不擋住底部的跟隨列 */
 @media (max-width: 560px) {
   html.audience #sw-update-bar { top: max(12px, env(safe-area-inset-top)); bottom: auto; }
