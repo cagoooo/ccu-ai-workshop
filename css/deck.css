@@ -477,6 +477,7 @@ a.cw-qr:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; 
 .dm b { margin-right: .45em; font-size: .55em; font-weight: 800; vertical-align: .25em; padding: .1em .55em; border-radius: 999px;
   background: rgba(15, 12, 10, .62); color: #fff; -webkit-text-stroke: 0; text-shadow: none; }
 #chatw.dm-on [data-act="dm"] { background: var(--accent); color: #fff; }
+#chatw.big [data-act="big"] { background: var(--surface2); box-shadow: inset 0 0 0 2px var(--accent2); color: var(--accent2); }
 html.is-opening #chatw { opacity: 0; pointer-events: none; }
 @media print { #chatw { display: none; } }
 @media (max-width: 560px) {

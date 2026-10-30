@@ -77,6 +77,10 @@ function render() {
   root.classList.toggle('dm-on', state.dm);
   if (!state.dm) $('.cw-danmaku').innerHTML = '';
   $('[data-act="mute"]').textContent = state.mute ? '🔕' : '🔔';
+  const bigBtn = $('[data-act="big"]');                    // 大字模式時改成「A−」＝按了會變回小字
+  bigBtn.textContent = state.big ? 'A−' : 'A+';
+  bigBtn.title = state.big ? '切換小字' : '切換大字';
+  bigBtn.setAttribute('aria-pressed', state.big ? 'true' : 'false');
   if (state.open) { unread = 0; list.scrollTop = list.scrollHeight; $('.cw-toasts').innerHTML = ''; }
   badge.hidden = !unread;
   badge.textContent = unread > 99 ? '99+' : unread;
