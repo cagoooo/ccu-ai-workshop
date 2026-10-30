@@ -359,7 +359,7 @@ html.is-opening .akai-footer, html.is-opening #theme-btn, html.is-opening .revea
 .tight-cards .card { padding: 10px 16px; font-size: 21px; line-height: 1.4; }
 
 /* ---------- 右下角即時聊天室（講台大螢幕） ---------- */
-#chatw { --cw-w: 380px; --cw-fs: 18px; font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; }
+#chatw { --cw-w: 400px; --cw-fs: 18px; font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; }
 #chatw.big { --cw-w: 520px; --cw-fs: 24px; }
 #chatw button { font: inherit; cursor: pointer; }
 .cw-pill {
@@ -386,7 +386,7 @@ html.is-opening .akai-footer, html.is-opening #theme-btn, html.is-opening .revea
 .cw-st[data-st="connecting"], .cw-st[data-st="retrying"] { background: var(--warn); }
 @keyframes cwLive { 0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, .55); } 70% { box-shadow: 0 0 0 7px rgba(46, 125, 50, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); } }
 .cw-tools { margin-left: auto; display: flex; gap: 2px; flex: 0 0 auto; padding: 2px; border-radius: 11px; background: var(--surface); border: 1px solid var(--line); }
-.cw-tools button { width: 32px; height: 30px; padding: 0; border-radius: 8px; border: none; background: transparent; color: var(--ink); font-size: 14px !important; font-weight: 800 !important; line-height: 1; }
+.cw-tools button { width: 30px; height: 30px; padding: 0; border-radius: 8px; border: none; background: transparent; color: var(--ink); font-size: 14px !important; font-weight: 800 !important; line-height: 1; }
 .cw-tools button:hover { background: var(--surface2); }
 .cw-qr { display: none; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
 #chatw.show-qr .cw-qr { display: flex; }
@@ -412,7 +412,15 @@ a.cw-qr:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; 
 .cw-admin button { white-space: nowrap; flex: 0 0 auto; }
 .cw-admin-tools { display: none; }
 #chatw.is-admin .cw-admin-login { display: none; }
-#chatw.is-admin .cw-admin-tools { display: flex; }
+#chatw.is-admin .cw-admin-tools { display: grid; }
+/* 管理員登入後：上排「管理員＋登出」，下排兩顆大按鈕平分，不再擠成一行被切掉 */
+.cw-admin-tools { grid-template-columns: 1fr 1fr; grid-template-areas: "who out" "sync clear"; gap: 8px; align-items: center; }
+.cw-admin-tools b { grid-area: who; }
+.cw-admin-tools [data-adm="logout"] { grid-area: out; justify-self: end; }
+.cw-admin-tools [data-adm="sync"] { grid-area: sync; }
+.cw-admin-tools [data-adm="clear"] { grid-area: clear; }
+.cw-admin-tools [data-adm="sync"], .cw-admin-tools [data-adm="clear"] { width: 100%; min-height: 38px; justify-content: center; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+#chatw.syncing .cw-admin-tools [data-adm="sync"] { background: #e8f5e9; border-color: var(--success); color: var(--success); }
 .cw-admin input { flex: 1; min-width: 120px; font: inherit; font-size: 15px; padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
 .cw-admin button { padding: 7px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px !important; font-weight: 700 !important; }
 .cw-admin button[type="submit"], .cw-admin [data-adm="clear"] { background: var(--accent); border-color: var(--accent); color: #fff; }
