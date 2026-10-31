@@ -55,7 +55,7 @@ function setStatus(s) { if (s !== status) { status = s; statusListeners.forEach(
  *    總數變了但即時推送沒動靜，才整批補抓。舊版每 4 秒整批重讀，人一多幾分鐘就會把額度用完 */
 function liveQuery(ref, handle, { countRef = null, watchdog = false } = {}) {
   if (!db || !ref) { handle(null); return () => {}; }
-  let lastSig = '';
+  let lastSig = null;                                  // 第一次一定通知畫面，集合是空的也不會一直停在讀取中
   let lastServerSnap = 0;
   let lastRefresh = 0;
   let knownCount = null;
@@ -149,6 +149,66 @@ export function watchPoll(key, cb, opts) {
     snap.forEach((d) => { const o = d.data().opt; counts[o] = (counts[o] || 0) + 1; });
     cb(counts, snap.size);
   }, opts);
+}
+
+/* ---------- 課前問卷：一人一份、可修改 ----------
+ * plans＝{ 工具代號: 方案 }，空物件代表「都還沒用過」
+ * 用獨立的匿名代號，不和聊天室暱稱綁在一起，問卷答案才真的對不到人 */
+export const SURVEY_TOOLS = [
+  { id: 'gemini', label: 'Gemini', by: 'Google' },
+  { id: 'claude', label: 'Claude', by: 'Anthropic' },
+  { id: 'chatgpt', label: 'ChatGPT', by: 'OpenAI' },
+  { id: 'grok', label: 'Grok', by: 'xAI' },
+  { id: 'other', label: '其他 AI', by: '例如 Copilot、Perplexity' },
+];
+export const SURVEY_PLANS = [
+  { id: 'paid', label: '付費訂閱' },
+  { id: 'free', label: '免費版' },
+  { id: 'unsure', label: '不確定' },
+];
+
+let memSurveyId = null;
+function surveyId() {
+  let id = store.get(`${SLUG}_survey_id`);
+  if (!id) {
+    id = memSurveyId || ('s' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36));
+    memSurveyId = id;
+    store.set(`${SLUG}_survey_id`, id);
+  }
+  return id;
+}
+
+export function mySurvey() {
+  try { return JSON.parse(store.get(`${SLUG}_survey_answer`)); } catch { return null; }
+}
+// 跳過只算這次開啟：下次再打開簡報還會邀請填答
+export function skipSurvey() { try { sessionStorage.setItem(`${SLUG}_survey_skip`, '1'); } catch { /* 無痕模式 */ } }
+
+export async function submitSurvey(plans) {
+  if (!db) throw new Error('尚未連線');
+  // 網路被擋時 setDoc 會一直等下去，10 秒沒回應就請學員重試
+  const timeout = new Promise((_, reject) => { setTimeout(() => reject(new Error('送出逾時')), 10000); });
+  await Promise.race([setDoc(doc(db, `${SLUG}_survey`, surveyId()), { plans, updated_at: serverTimestamp() }), timeout]);
+  store.set(`${SLUG}_survey_answer`, JSON.stringify(plans));
+}
+
+export function watchSurvey(cb) {
+  return liveQuery(db ? collection(db, `${SLUG}_survey`) : null, (snap) => {
+    const r = { total: 0, none: 0, anyPaid: 0, tools: {} };
+    SURVEY_TOOLS.forEach((t) => { r.tools[t.id] = { paid: 0, free: 0, unsure: 0, total: 0 }; });
+    if (snap) snap.forEach((d) => {
+      const plans = Object.entries(d.data().plans || {});
+      r.total += 1;
+      if (!plans.length) r.none += 1;
+      if (plans.some(([, p]) => p === 'paid')) r.anyPaid += 1;
+      plans.forEach(([tool, plan]) => {
+        if (!r.tools[tool]) return;
+        r.tools[tool][plan] += 1;
+        r.tools[tool].total += 1;
+      });
+    });
+    cb(r);
+  });
 }
 
 /* ---------- 即時聊天室 ---------- */

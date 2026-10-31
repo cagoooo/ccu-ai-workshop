@@ -4,6 +4,7 @@
 
 - 簡報：`index.html`（方向鍵換頁、`S` 開講者備忘稿、右上角切換深淺色）
 - 學員手機參與頁：`join.html`（文字雲、投票）
+- 課前 AI 問卷：`survey.html`（工作坊前打開簡報會先到這頁，`survey.html#results` 看統計；2026-11-13 08:00 起不再自動帶過去，時間在 `index.html` 開頭）
 - 動畫層：`js/motion.js`（GSAP 時間軸，區塊依序淡入串接）
 - 即時互動：`js/interact.js`（Firebase 專案 `akai-slide-interact`，集合前綴 `ccu2026ai_`）
 - Firestore 規則：`firebase/firestore.rules`

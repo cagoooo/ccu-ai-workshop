@@ -6,7 +6,7 @@ service cloud.firestore {
     // 文字雲：<slug>_wordcloud 或 <slug>_wordcloud_<題號>
     match /{col}/{docId} {
       allow read: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(wordcloud|poll)(_[a-z0-9]+)?$')
-        || col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react|live)$');
+        || col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react|live|survey)$');
 
       // 聊天室：<slug>_chat，一則訊息一份文件；只能新增，不能修改或刪除
       allow create: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_chat$')
@@ -36,6 +36,15 @@ service cloud.firestore {
         && docId.size() <= 40
         && request.resource.data.keys().hasOnly(['opt', 'updated_at'])
         && request.resource.data.opt in ['a', 'b', 'c', 'd', 'e', 'f']
+        && request.resource.data.updated_at == request.time;
+
+      // 課前問卷：<slug>_survey，每人一份（doc id = 匿名代號），可改答案；plans 空白代表還沒用過
+      allow create, update: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_survey$')
+        && docId.size() <= 40
+        && request.resource.data.keys().hasOnly(['plans', 'updated_at'])
+        && request.resource.data.plans is map
+        && request.resource.data.plans.keys().hasOnly(['gemini', 'claude', 'chatgpt', 'grok', 'other'])
+        && request.resource.data.plans.values().hasOnly(['free', 'paid', 'unsure'])
         && request.resource.data.updated_at == request.time;
 
       // 表情回饋：<slug>_react，獨立集合只給講台監聽（學員手機不用下載每個表情，省讀取額度）

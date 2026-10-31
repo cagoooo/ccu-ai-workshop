@@ -3,7 +3,7 @@ const BUILD_VERSION = '__BUILD_VERSION__';
 const PREFIX = 'ccu2026ai-';
 const CACHE = PREFIX + BUILD_VERSION;
 const PRECACHE = [
-  './', './index.html', './join.html', './manifest.webmanifest',
+  './', './index.html', './join.html', './survey.html', './manifest.webmanifest',
   './favicon.svg', './favicon.ico', './apple-touch-icon.png',
   './css/deck.css', './js/deck.js', './js/interact.js', './js/chat-widget.js', './js/chat-admin.js', './js/follow.js', './js/firebase-config.js',
   './js/motion.js', './js/demo-circle.js', './js/opening.js', './js/sw-register.js', './media/akai-opening-poster.jpg', './media/promo-am-poster.jpg', './media/promo-pm-poster.jpg',

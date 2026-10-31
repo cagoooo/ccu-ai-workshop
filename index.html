@@ -34,6 +34,16 @@
     try { if (localStorage.getItem('ccu2026ai_theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
     // 學員從互動區點「跟上簡報」進來（?follow=1）＝跟隨模式
     if (/[?&]follow=1/.test(location.search)) document.documentElement.classList.add('audience');
+    // 課前問卷：工作坊前打開簡報先到問卷頁；已填過或這次跳過就不再帶過去
+    // 跟隨模式、講者備忘稿（?receiver）、列印、截圖不帶過去；11/13 當天 08:00 起講台直接開簡報
+    try {
+      if (Date.now() < Date.parse('2026-11-13T08:00:00+08:00')
+        && !/[?&](follow|receiver|print-pdf|capture)\b/.test(location.search)
+        && !localStorage.getItem('ccu2026ai_survey_answer')
+        && !sessionStorage.getItem('ccu2026ai_survey_skip')) {
+        location.replace('survey.html' + (location.hash.indexOf('#/') === 0 ? location.hash : ''));
+      }
+    } catch (e) { /* 瀏覽器不允許儲存時不攔，直接看簡報 */ }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

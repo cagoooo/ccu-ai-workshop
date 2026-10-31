@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>課前 AI 問卷｜AI 數位教學實務工作坊</title>
+  <meta name="description" content="AI 數位教學實務工作坊課前問卷：你現在用哪些 AI、有沒有付費訂閱？約 30 秒完成，阿凱老師會依結果調整工作坊內容的深度。" />
+  <meta name="theme-color" content="#e8643a" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="canonical" href="https://cagoooo.github.io/ccu-ai-workshop/survey.html" />
+  <!-- 社群分享卡片（Facebook／LINE／Twitter）：圖片網址加版本號，部署新版時強制平台重抓 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AI 數位教學實務工作坊" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:url" content="https://cagoooo.github.io/ccu-ai-workshop/survey.html" />
+  <meta property="og:title" content="課前 AI 問卷｜AI 數位教學實務工作坊" />
+  <meta property="og:description" content="你現在用哪些 AI、有沒有付費訂閱？約 30 秒完成，阿凱老師會依結果調整工作坊內容的深度。" />
+  <meta property="og:image" content="https://cagoooo.github.io/ccu-ai-workshop/og-image.jpg?v=__BUILD_VERSION__" />
+  <meta property="og:image:secure_url" content="https://cagoooo.github.io/ccu-ai-workshop/og-image.jpg?v=__BUILD_VERSION__" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="一張課本照片，長出一整套 AI 教學｜AI 數位教學實務工作坊｜阿凱老師・桃園市龍潭區石門國民小學" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="課前 AI 問卷｜AI 數位教學實務工作坊" />
+  <meta name="twitter:description" content="你現在用哪些 AI、有沒有付費訂閱？約 30 秒完成，阿凱老師會依結果調整工作坊內容的深度。" />
+  <meta name="twitter:image" content="https://cagoooo.github.io/ccu-ai-workshop/og-image.jpg?v=__BUILD_VERSION__" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #faf7f2; --surface: #fff; --ink: #1f2328; --muted: #5b6470; --line: #e6dfd3;
+      --accent: #c2501c; --accent-soft: #fff1ea; --blue: #0b7fb3;
+      --paid: #c2501c; --free: #0b7fb3; --unsure: #a8862a;   /* 這三色已用 dataviz 驗證腳本確認色弱可分 */
+      --maxw: min(1180px, 94vw);
+      --fs-xs: .9rem; --fs-sm: .95rem; --fs-base: 1rem; --fs-md: 1.1rem; --fs-lg: 1.38rem; --fs-xl: clamp(1.7rem, 4.6vw, 2.5rem);
+    }
+    html { font-size: 16px; }
+    @media (min-width: 768px) { html { font-size: 17px; } }
+    @media (min-width: 1200px) { html { font-size: 18px; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); color: var(--ink); font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; font-size: var(--fs-base); line-height: 1.6; }
+    main { flex: 1; width: 100%; max-width: var(--maxw); margin: 0 auto; padding: clamp(18px, 4vw, 44px) 0 clamp(28px, 5vw, 56px); }
+    [hidden] { display: none !important; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .kicker { display: inline-block; color: var(--accent); font-size: var(--fs-sm); font-weight: 700; letter-spacing: .06em; }
+    h1 { margin: 6px 0 12px; font-size: var(--fs-xl); font-weight: 900; line-height: 1.3; }
+    .lead { margin: 0; color: var(--muted); font-size: var(--fs-md); }
+    .intro h1 { font-size: clamp(1.7rem, 2.6vw, 2.1rem); }
+
+    /* 問卷畫面：桌機左邊說明、右邊題目；手機上下排 */
+    .form-grid { display: grid; gap: clamp(18px, 3vw, 40px); grid-template-columns: 1fr; align-items: start; }
+    @media (min-width: 980px) { .form-grid { grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr); } .intro { position: sticky; top: 32px; } }
+    .promise { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 8px; }
+    .promise li { display: flex; gap: 8px; color: var(--ink); font-size: var(--fs-sm); }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: clamp(16px, 2.6vw, 28px); box-shadow: 0 8px 24px rgba(60, 40, 20, .07); }
+    .q { margin: 0 0 4px; font-size: var(--fs-lg); line-height: 1.4; }
+    .q-hint { margin: 0 0 16px; color: var(--muted); font-size: var(--fs-sm); }
+    .tools { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); align-items: start; }
+    .tool { border: 2px solid var(--line); border-radius: 14px; background: var(--surface); transition: border-color .15s, background .15s; }
+    .tool.on { border-color: var(--accent); background: var(--accent-soft); }
+    .tool.miss { border-color: #b3261e; }
+    .tool-head { display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 14px; cursor: pointer; }
+    .tool-head input { flex: 0 0 auto; width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+    .tool-name { font-size: var(--fs-md); font-weight: 900; line-height: 1.3; }
+    .tool-by { display: block; color: var(--muted); font-size: var(--fs-xs); font-weight: 400; }
+    .plans { display: none; margin: 0; padding: 0 12px 12px; border: 0; }
+    .tool.on .plans { display: block; }
+    .plans legend { padding: 0 0 6px; color: var(--ink); font-size: var(--fs-sm); font-weight: 700; }
+    .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .seg label { position: relative; }
+    .seg input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+    .seg span { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 4px; border: 2px solid var(--line); border-radius: 10px; background: var(--surface); font-size: var(--fs-sm); font-weight: 700; text-align: center; }
+    .seg input:checked + span { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .seg input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 1px; }
+    .tool-none .tool-head { min-height: 60px; }
+    .note { margin: 14px 0 0; padding: 10px 12px; border-radius: 10px; background: #f4efe6; color: var(--muted); font-size: var(--fs-sm); }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 18px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 10px 26px; border: 2px solid var(--accent); border-radius: 12px; background: var(--accent); color: #fff; font: inherit; font-size: var(--fs-md); font-weight: 900; text-decoration: none; cursor: pointer; }
+    .btn:disabled { opacity: .55; cursor: default; }
+    .btn.ghost { background: transparent; color: var(--accent); }
+    .link { padding: 8px 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: var(--fs-sm); text-decoration: underline; cursor: pointer; }
+    .err:empty { display: none; }
+    .err { width: 100%; margin: 0; color: #b3261e; font-size: var(--fs-sm); font-weight: 700; }
+    @media (max-width: 560px) { .actions .btn { width: 100%; } .actions .link { width: 100%; text-align: center; } }
+
+    /* 結果畫面 */
+    .stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin: 20px 0; }
+    .stat { padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .stat b { display: block; font-size: clamp(1.9rem, 4vw, 2.4rem); font-weight: 900; line-height: 1.2; }
+    .stat span { color: var(--muted); font-size: var(--fs-sm); }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 14px; padding: 0; list-style: none; font-size: var(--fs-sm); color: var(--muted); }
+    .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; vertical-align: -1px; }
+    .rows { display: grid; gap: 16px 32px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); }
+    .row-head { display: flex; justify-content: space-between; gap: 10px; }
+    .row-head b { font-size: var(--fs-md); }
+    .row-head span { color: var(--muted); font-size: var(--fs-sm); white-space: nowrap; }
+    .bar { display: flex; gap: 2px; height: 18px; margin: 4px 0; border-radius: 4px; background: #f1ebe0; overflow: hidden; }
+    .bar i { display: block; min-width: 3px; transition: width .5s ease; }
+    .bar i.paid { background: var(--paid); }
+    .bar i.free { background: var(--free); }
+    .bar i.unsure { background: var(--unsure); }
+    .row-sub { color: var(--muted); font-size: var(--fs-sm); }
+    .empty { margin: 8px 0; color: var(--muted); }
+    .live { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+    @media (prefers-reduced-motion: reduce) { .bar i, .tool { transition: none; } }
+
+    .site-foot { border-top: 1px solid var(--line); background: linear-gradient(#f1ebdf, #ebe3d3); }
+    .site-foot::before { content: ''; display: block; height: 4px; background: linear-gradient(90deg, var(--accent), var(--blue)); }
+    .site-foot p { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 16px 0; color: var(--muted); font-size: var(--fs-sm); text-align: center; }
+    .site-foot a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted currentColor; }
+    .site-foot a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="warn-offline" hidden>目前是本機預覽，問卷要部署後才會連線。</div>
+
+    <!-- 問卷 -->
+    <section id="v-form" class="form-grid" hidden>
+      <div class="intro">
+        <span class="kicker">中正大學師培中心 · 2026.11.13 工作坊</span>
+        <h1>開始之前，<br>先讓阿凱老師認識你</h1>
+        <p class="lead">你現在用哪些 AI、有沒有付費訂閱？老師會依大家的狀況，調整當天內容要講到多深。</p>
+        <ul class="promise">
+          <li><span aria-hidden="true">⏱️</span>約 30 秒就能填完</li>
+          <li><span aria-hidden="true">🔒</span>不用登入，也不會問你的名字</li>
+          <li><span aria-hidden="true">✏️</span>用同一台裝置可以回來修改</li>
+        </ul>
+      </div>
+      <form class="panel" id="survey-form" novalidate>
+        <h2 class="q">你現在有在用哪些 AI？</h2>
+        <p class="q-hint">可以複選；勾選後再選你用的方案。</p>
+        <div class="tools" id="tools"></div>
+        <p class="note">付費訂閱通常有更多額度、也能用到更多功能。學校或學生優惠送的進階方案，也請選「付費訂閱」。</p>
+        <div class="actions">
+          <p class="err" id="form-err" role="alert"></p>
+          <button class="btn" id="submit" type="submit">送出，看看大家的答案</button>
+          <button class="link" id="skip" type="button">先跳過，直接看簡報</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 結果 -->
+    <section id="v-result" hidden>
+      <span class="kicker">課前 AI 問卷 · 即時統計</span>
+      <h1 id="result-title">大家現在用哪些 AI？</h1>
+      <p class="lead" id="result-lead">結果會隨新的填答自動更新。</p>
+      <div class="stats" id="stats"></div>
+      <div class="panel">
+        <h2 class="q">各個 AI 的使用人數與方案</h2>
+        <ul class="legend" id="legend"></ul>
+        <div class="rows" id="rows"><p class="empty">讀取中…</p></div>
+        <p class="live" id="live-status" aria-live="polite"></p>
+      </div>
+      <div class="actions">
+        <a class="btn" id="to-deck" href="index.html">進入簡報 →</a>
+        <button class="btn ghost" id="edit" type="button">修改我的答案</button>
+      </div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <p>Made with <span aria-label="愛心">❤️</span> by
+      <a href="https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5" target="_blank" rel="noopener noreferrer">阿凱老師</a>
+      · 桃園市龍潭區石門國民小學</p>
+  </footer>
+
+  <script type="module">
+    import { isReady, onStatus, SURVEY_TOOLS, SURVEY_PLANS, mySurvey, submitSurvey, skipSurvey, watchSurvey } from './js/interact.js?v=__BUILD_VERSION__';
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    // 從簡報某一頁被帶來的話，填完回到同一頁
+    const deckUrl = `index.html${location.hash.startsWith('#/') ? location.hash : ''}`;
+
+    /* ---------- 題目 ---------- */
+    $('tools').innerHTML = SURVEY_TOOLS.map((t) => `
+      <div class="tool" data-tool="${t.id}">
+        <label class="tool-head"><input type="checkbox" value="${t.id}" /><span class="tool-name">${esc(t.label)}<span class="tool-by">${esc(t.by)}</span></span></label>
+        <fieldset class="plans">
+          <legend>你用的方案</legend>
+          <div class="seg">${SURVEY_PLANS.map((p) => `<label><input type="radio" name="plan-${t.id}" value="${p.id}" /><span>${esc(p.label)}</span></label>`).join('')}</div>
+        </fieldset>
+      </div>`).join('') + `
+      <div class="tool tool-none" data-none>
+        <label class="tool-head"><input type="checkbox" id="none" /><span class="tool-name">都還沒用過<span class="tool-by">沒關係，老師會從頭帶你</span></span></label>
+      </div>`;
+
+    const cards = [...document.querySelectorAll('.tool[data-tool]')];
+    const noneBox = $('none');
+    const paint = () => {
+      cards.forEach((c) => c.classList.toggle('on', c.querySelector('.tool-head input').checked));
+      noneBox.closest('.tool').classList.toggle('on', noneBox.checked);
+    };
+    // 「都還沒用過」和其他選項互斥
+    $('tools').addEventListener('change', (e) => {
+      if (e.target === noneBox) { if (noneBox.checked) cards.forEach((c) => { c.querySelector('.tool-head input').checked = false; }); }
+      else if (e.target.type === 'checkbox') noneBox.checked = false;
+      e.target.closest('.tool').classList.remove('miss');
+      $('form-err').textContent = '';
+      paint();
+    });
+
+    function prefill(plans) {
+      if (!plans) return;
+      cards.forEach((c) => {
+        const plan = plans[c.dataset.tool];
+        c.querySelector('.tool-head input').checked = !!plan;
+        c.querySelectorAll('.seg input').forEach((r) => { r.checked = r.value === plan; });
+      });
+      noneBox.checked = !Object.keys(plans).length;
+      paint();
+    }
+
+    $('survey-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const picked = cards.filter((c) => c.querySelector('.tool-head input').checked);
+      if (!picked.length && !noneBox.checked) { $('form-err').textContent = '請至少勾選一項；還沒用過 AI 也可以選「都還沒用過」。'; return; }
+      const missing = picked.filter((c) => !c.querySelector('.seg input:checked'));
+      cards.forEach((c) => c.classList.toggle('miss', missing.includes(c)));
+      if (missing.length) {
+        $('form-err').textContent = `還有 ${missing.length} 個 AI 沒選方案，紅框的地方請選一下。`;
+        missing[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      const plans = Object.fromEntries(picked.map((c) => [c.dataset.tool, c.querySelector('.seg input:checked').value]));
+      const btn = $('submit');
+      btn.disabled = true;
+      btn.textContent = '送出中…';
+      try {
+        await submitSurvey(plans);
+        show('result');
+        window.scrollTo(0, 0);
+      } catch (err) {
+        console.warn(err);
+        $('form-err').textContent = '送出失敗，請確認網路後再試一次。';
+      }
+      btn.disabled = false;
+      btn.textContent = '送出，看看大家的答案';
+    });
+
+    $('skip').addEventListener('click', () => { skipSurvey(); location.href = deckUrl; });
+
+    /* ---------- 結果 ---------- */
+    $('legend').innerHTML = SURVEY_PLANS.map((p) => `<li><i style="background:var(--${p.id})"></i>${esc(p.label)}</li>`).join('');
+    const pct = (n, total) => (total ? Math.round((n / total) * 100) : 0);
+    const stat = (n, label) => `<div class="stat"><b>${n}</b><span>${esc(label)}</span></div>`;
+
+    function renderResult(r) {
+      $('stats').innerHTML = stat(r.total, '已填答（人）')
+        + stat(`${pct(r.total - r.none, r.total)}%`, `有在用 AI（${r.total - r.none} 人）`)
+        + stat(`${pct(r.anyPaid, r.total)}%`, `有付費訂閱（${r.anyPaid} 人）`)
+        + stat(`${pct(r.none, r.total)}%`, `都還沒用過（${r.none} 人）`);
+      if (!r.total) { $('rows').innerHTML = '<p class="empty">還沒有人填答，答案送出後會出現在這裡。</p>'; return; }
+      // 人數多的排前面，「其他」固定放最後
+      const list = SURVEY_TOOLS.map((t) => ({ ...t, ...r.tools[t.id] }))
+        .sort((a, b) => (a.id === 'other') - (b.id === 'other') || b.total - a.total);
+      $('rows').innerHTML = list.map((t) => {
+        const parts = SURVEY_PLANS.map((p) => ({ ...p, n: t[p.id] }));
+        return `<div class="row">
+          <div class="row-head"><b>${esc(t.label)}</b><span>${t.total} 人・${pct(t.total, r.total)}%</span></div>
+          <div class="bar" role="img" aria-label="${esc(t.label)}：${parts.map((p) => `${p.label} ${p.n} 人`).join('、')}">${parts.filter((p) => p.n)
+            .map((p) => `<i class="${p.id}" style="width:${(p.n / r.total) * 100}%" title="${esc(p.label)} ${p.n} 人"></i>`).join('')}</div>
+          <div class="row-sub">${parts.map((p) => `${p.label} ${p.n}`).join('・')}</div>
+        </div>`;
+      }).join('');
+    }
+
+    const STATUS = { live: '● 即時更新中', connecting: '● 連線中…', retrying: '● 重新連線中', offline: '● 本機預覽（未連線）' };
+    let watching = false;
+    function startWatch() {
+      if (watching) return;
+      watching = true;
+      onStatus((s) => { $('live-status').textContent = STATUS[s] || ''; });
+      watchSurvey(renderResult);
+    }
+
+    function show(view) {
+      const answered = mySurvey();
+      $('v-form').hidden = view !== 'form';
+      $('v-result').hidden = view !== 'result';
+      if (view === 'form') { prefill(answered); return; }
+      $('result-title').textContent = answered ? '謝謝你！大家現在用哪些 AI？' : '大家現在用哪些 AI？';
+      $('edit').textContent = answered ? '修改我的答案' : '我也要填問卷';
+      startWatch();
+    }
+
+    $('to-deck').href = deckUrl;
+    $('to-deck').addEventListener('click', skipSurvey);      // 只看結果沒填的人，這次也不再被帶回問卷
+    $('edit').addEventListener('click', () => { show('form'); window.scrollTo(0, 0); });
+    if (!isReady()) document.querySelector('.warn-offline').hidden = false;
+    show(location.hash === '#results' || mySurvey() ? 'result' : 'form');
+  </script>
+  <script src="js/sw-register.js?v=__BUILD_VERSION__"></script>
+</body>
+</html>
