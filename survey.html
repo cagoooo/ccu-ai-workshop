@@ -275,8 +275,14 @@
     function startWatch() {
       if (watching) return;
       watching = true;
-      onStatus((s) => { $('live-status').textContent = STATUS[s] || ''; });
-      watchSurvey(renderResult);
+      // 剛送出時本機只有自己這一份，等雲端資料回來才畫，才不會先閃一下「1 人、100%」
+      let latest = null;
+      let synced = false;
+      onStatus((s) => {
+        $('live-status').textContent = STATUS[s] || '';
+        if (s === 'live') { synced = true; if (latest) renderResult(latest); }
+      });
+      watchSurvey((r) => { latest = r; if (synced) renderResult(r); });
     }
 
     function show(view) {
