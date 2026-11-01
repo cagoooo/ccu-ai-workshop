@@ -127,6 +127,7 @@
         <div><span class="chip">10:35</span>模組二　Gemini Notebook 備課示範</div>
         <div><span class="chip o">11:05</span><b>實作①</b>　我的單元教材包</div>
         <div><span class="chip">11:45</span>查核清單、存成技能＋上午小結</div>
+        <div class="small" style="margin-top:auto">📌 教材、提示詞、工具都在 <a href="https://padlet.com/2104340/ai-s0251gd1cq61iglw87t1" target="_blank" rel="noopener">Padlet 資源專區</a></div>
       </div>
       <div class="card cyan stg" style="display:flex;flex-direction:column;gap:4px;font-size:25px">
         <h3>🌤️ 下午 13:00–16:00｜駕駛艙與動畫簡報</h3>
@@ -1535,9 +1536,17 @@
         <a href="https://github.com/mathruffian-dot/soil-motion-deck" target="_blank" rel="noopener">GitHub：soil-motion-deck</a>
       </div>
       <div class="card ok small" style="text-align:center">
-        <h3>🏫 教育科技創新專區</h3>
-        <div id="qr-akai3" style="width:130px;height:130px;background:#fff;border-radius:12px;padding:6px;margin:6px auto"></div>
-        <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener">cagoooo.github.io/Akai</a>
+        <h3>📌 帶走全部資源</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <div id="qr-padlet" style="width:130px;height:130px;background:#fff;border-radius:12px;padding:6px;margin:6px auto"></div>
+            <a href="https://padlet.com/2104340/ai-s0251gd1cq61iglw87t1" target="_blank" rel="noopener">Padlet 資源專區</a>
+          </div>
+          <div>
+            <div id="qr-akai3" style="width:130px;height:130px;background:#fff;border-radius:12px;padding:6px;margin:6px auto"></div>
+            <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener">教育科技創新專區</a>
+          </div>
+        </div>
       </div>
     </div>
     <p class="small muted" data-a style="text-align:center">感謝國立中正大學師資培育中心　連啟舜老師邀請｜阿凱老師・桃園市龍潭區石門國民小學</p>
@@ -1576,7 +1585,7 @@
     plugins: [RevealNotes],
   });
   // 固定網址的 QR Code（教育科技創新專區）
-  [['qr-akai', 'https://cagoooo.github.io/Akai/'], ['qr-akai2', 'https://cagoooo.github.io/Akai/'], ['qr-akai3', 'https://cagoooo.github.io/Akai/'], ['qr-itc', 'https://cagoooo.github.io/it-cockpit/'], ['qr-gifted', 'https://cagoooo.github.io/it-cockpit/gifted-ai-lab/']].forEach(function (pair) {
+  [['qr-akai', 'https://cagoooo.github.io/Akai/'], ['qr-akai2', 'https://cagoooo.github.io/Akai/'], ['qr-akai3', 'https://cagoooo.github.io/Akai/'], ['qr-padlet', 'https://padlet.com/2104340/ai-s0251gd1cq61iglw87t1'], ['qr-itc', 'https://cagoooo.github.io/it-cockpit/'], ['qr-gifted', 'https://cagoooo.github.io/it-cockpit/gifted-ai-lab/']].forEach(function (pair) {
     var el = document.getElementById(pair[0]);
     if (!el) return;
     var qr = qrcode(0, 'M');
