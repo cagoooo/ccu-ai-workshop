@@ -198,6 +198,51 @@ $$('.poll[data-key]').forEach((box) => {
   }, { watchdog: true }));
 });
 
+/* ---------- 手機直拿的上下換頁箭頭 ----------
+ * 寬度 435 以下 Reveal 會自動改成上下捲動，內建的左右箭頭也跟著藏起來，學員不知道要上下滑
+ * 顯示與否交給 CSS 的 .reveal-scroll：手機轉橫向或回到電腦寬度就自動消失
+ * 第一次滑動前提示一直留著；之後箭頭停幾秒就隱藏，碰一下螢幕或換完頁又會出現 */
+const swipeNav = document.createElement('nav');
+swipeNav.id = 'swipe-nav';
+swipeNav.className = 'fresh';
+swipeNav.setAttribute('aria-label', '上下換頁');
+const chevron = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>';
+swipeNav.innerHTML = `
+  <button type="button" class="sn-btn sn-prev" aria-label="上一頁">${chevron}</button>
+  <button type="button" class="sn-btn sn-next" aria-label="下一頁">${chevron}</button>
+  <span class="sn-tip">上下滑動換頁</span>`;
+document.body.appendChild(swipeNav);
+
+let snTimer = null;
+const snWake = () => {
+  swipeNav.classList.remove('idle');
+  clearTimeout(snTimer);
+  snTimer = setTimeout(() => swipeNav.classList.add('idle'), 3500);
+};
+const snLearned = () => { swipeNav.classList.remove('fresh'); snWake(); };
+// 看捲動位置不看頁碼：這個模式下 Reveal 的最後一頁有小數誤差，頁碼會停在倒數第二頁
+const snMark = () => {
+  const v = Reveal.getViewportElement();
+  swipeNav.classList.toggle('first', v.scrollTop < 2);
+  swipeNav.classList.toggle('last', v.scrollTop + v.clientHeight > v.scrollHeight - 2);
+};
+swipeNav.querySelector('.sn-prev').addEventListener('click', () => { snLearned(); Reveal.prev(); });
+swipeNav.querySelector('.sn-next').addEventListener('click', () => { snLearned(); Reveal.next(); });
+// 影片播完自動換頁不算學會，手指真的滑過才收起提示
+window.addEventListener('touchmove', snLearned, { once: true, passive: true });
+window.addEventListener('wheel', snLearned, { once: true, passive: true });
+window.addEventListener('pointerdown', snWake, { passive: true });
+const snInit = () => {
+  snMark();
+  Reveal.getViewportElement().addEventListener('scroll', () => {
+    snMark();
+    swipeNav.classList.add('idle');
+    clearTimeout(snTimer);
+    snTimer = setTimeout(snWake, 200);
+  }, { passive: true });
+};
+Reveal.isReady() ? snInit() : Reveal.on('ready', snInit);
+
 applyTheme(store.get(THEME_KEY) === 'dark' ? 'dark' : DEFAULT_PREF);
 if (!isReady()) document.documentElement.classList.add('offline');
 

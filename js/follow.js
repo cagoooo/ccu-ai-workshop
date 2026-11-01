@@ -23,15 +23,21 @@ function update() {
   else if (!teacherOn) btn.textContent = `老師已暫停同步・可自由翻頁（停在第 ${teacherH + 1} 頁）`;
   else btn.textContent = following ? `跟隨老師中・第 ${teacherH + 1} 頁` : `⏸ 回到老師進度・第 ${teacherH + 1} 頁`;
 }
+// 手機直拿是上下捲動模式：Reveal.slide 只給 h 會被忽略，給了 v 後半本又會少一頁，所以直接捲到那一頁的位置
+function jump() {
+  programmatic = true;
+  const page = document.querySelectorAll('.scroll-page')[teacherH];
+  if (page) Reveal.getViewportElement().scrollTop += page.getBoundingClientRect().top;
+  else Reveal.slide(teacherH);
+  setTimeout(() => { programmatic = false; }, 0);
+}
 function go() {
   if (teacherH == null || Reveal.getIndices().h === teacherH) return;
-  programmatic = true;
-  Reveal.slide(teacherH);
-  setTimeout(() => { programmatic = false; }, 0);
+  jump();
 }
 btn.addEventListener('click', () => {
   if (!teacherOn) {                                   // 老師暫停同步時：點一下只是跳到老師最後停的那頁
-    if (teacherH != null) { programmatic = true; Reveal.slide(teacherH); setTimeout(() => { programmatic = false; }, 0); }
+    if (teacherH != null) jump();
     return;
   }
   // 暫停中 → 恢復並跳回；跟隨中但頁數不同（例如剛載入）→ 跳回；跟隨中且同頁 → 暫停

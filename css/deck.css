@@ -529,3 +529,25 @@ html.audience .reveal .controls { bottom: 76px; }
 /* 老師暫停同步：學員端膠囊左側轉灰、不再閃燈 */
 #followbar.waiting .fb-follow { color: #c9d1d9; cursor: default; }
 #followbar .fb-follow:disabled { opacity: 1; }
+
+/* ---------- 手機直拿的上下換頁箭頭（Reveal 上下捲動模式才顯示，貼著投影片上下兩側的空白） ---------- */
+#swipe-nav { display: none; --sn-gap: calc(28vw + 14px); }
+.reveal-viewport.reveal-scroll #swipe-nav { display: block; }
+.sn-btn, .sn-tip {
+  position: fixed; left: 50%; z-index: 38; color: #fff; background: rgba(22, 22, 28, .78);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .1); transition: opacity .25s;
+}
+.sn-btn { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin-left: -24px; padding: 0; border: none; border-radius: 50%; cursor: pointer; }
+.sn-btn svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.sn-prev { bottom: calc(50% + var(--sn-gap)); }
+.sn-prev svg { transform: rotate(180deg); }
+.sn-next { top: calc(50% + var(--sn-gap)); }
+.sn-tip { top: calc(50% + var(--sn-gap) + 58px); transform: translateX(-50%); padding: 7px 16px; border-radius: 999px; font: 700 15px 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; white-space: nowrap; pointer-events: none; }
+#swipe-nav:not(.fresh) .sn-tip, #swipe-nav:not(.fresh).idle .sn-btn { opacity: 0; }
+#swipe-nav:not(.fresh).idle .sn-btn { pointer-events: none; }
+#swipe-nav.first .sn-prev, #swipe-nav.last .sn-next { visibility: hidden; }
+#swipe-nav.fresh .sn-next { animation: snBounce 1.4s ease-in-out 8; }
+@keyframes snBounce { 50% { transform: translateY(8px); } }
+@media (max-height: 600px) { #swipe-nav { --sn-gap: calc(28vw + 6px); } }
+@media (prefers-reduced-motion: reduce) { #swipe-nav.fresh .sn-next { animation: none; } }
