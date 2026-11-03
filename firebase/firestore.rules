@@ -31,17 +31,23 @@ service cloud.firestore {
         && request.resource.data.word.size() <= 20
         && request.resource.data.created_at == request.time;
 
-      // 投票：每位投票者一份文件（doc id = 投票者代號），可改票
+      // 投票：每人一份（doc id = 匿名登入編號），只能改自己的票；legacy 記舊代號，統計時不重複算
       allow create, update: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_poll(_[a-z0-9]+)?$')
-        && docId.size() <= 40
-        && request.resource.data.keys().hasOnly(['opt', 'updated_at'])
+        && request.auth != null
+        && docId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['opt', 'updated_at', 'legacy'])
+        && (!('legacy' in request.resource.data)
+          || (request.resource.data.legacy is string && request.resource.data.legacy.matches('^v[a-z0-9]{8,30}$')))
         && request.resource.data.opt in ['a', 'b', 'c', 'd', 'e', 'f']
         && request.resource.data.updated_at == request.time;
 
-      // 課前問卷：<slug>_survey，每人一份（doc id = 匿名代號），可改答案；plans 空白代表還沒用過
+      // 課前問卷：<slug>_survey，每人一份（doc id = 匿名登入編號），只能改自己的答案；plans 空白代表還沒用過
       allow create, update: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_survey$')
-        && docId.size() <= 40
-        && request.resource.data.keys().hasOnly(['plans', 'updated_at'])
+        && request.auth != null
+        && docId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['plans', 'updated_at', 'legacy'])
+        && (!('legacy' in request.resource.data)
+          || (request.resource.data.legacy is string && request.resource.data.legacy.matches('^s[a-z0-9]{8,30}$')))
         && request.resource.data.plans is map
         && request.resource.data.plans.keys().hasOnly(['gemini', 'claude', 'chatgpt', 'grok', 'other'])
         && request.resource.data.plans.values().hasOnly(['free', 'paid', 'unsure'])

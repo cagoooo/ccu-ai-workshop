@@ -4,6 +4,7 @@ import {
   initializeFirestore, collection, addDoc, doc, setDoc, onSnapshot, serverTimestamp, getDocsFromServer,
   query, orderBy, limitToLast, getCountFromServer, getDocFromServer,
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 import { firebaseConfig } from './firebase-config.js?v=__BUILD_VERSION__';
 
 // 集合名稱一律加簡報 slug 前綴，避免跨場次資料混在一起
@@ -41,6 +42,21 @@ const ready = !firebaseConfig.apiKey.startsWith('__');
 // 自動偵測：學校網路擋住即時串流時，改用長輪詢維持即時推送
 export const app = ready ? initializeApp(firebaseConfig) : null;
 export const db = ready ? initializeFirestore(app, { experimentalAutoDetectLongPolling: true }) : null;
+const auth = ready ? getAuth(app) : null;
+
+/* ---------- 匿名身分：問卷與投票一人一份 ----------
+ * 文件名稱用 Firebase 匿名登入的編號，資料庫規則才擋得住「改別人的答案」；同一台裝置重新整理後編號不變。
+ * 講台登入管理員時沿用管理員身分，不會被匿名身分蓋掉 */
+let firstUser = null;
+let signing = null;
+async function me() {
+  if (!auth) throw new Error('尚未連線');
+  if (!firstUser) firstUser = new Promise((resolve) => { const off = onAuthStateChanged(auth, (u) => { off(); resolve(u); }); });
+  await firstUser;                                     // 先等瀏覽器把上次的登入狀態還原，才不會每次重新整理都多一個匿名帳號
+  if (auth.currentUser) return auth.currentUser;
+  signing = signing || signInAnonymously(auth).then((c) => c.user).finally(() => { signing = null; });
+  return signing;
+}
 
 /* ---------- 連線狀態（給畫面上的「即時同步中」燈號用） ---------- */
 const statusListeners = new Set();
@@ -135,9 +151,22 @@ export function watchWords(key, cb, opts) {
 
 export const myVote = (key) => store.get(`${SLUG}_vote_${key}`);
 
+// 改用匿名身分前，這台裝置用的舊代號；新的那份記下它，統計時舊的那份就不重複算
+const legacyId = (k, prefix) => { const v = store.get(k); return v && new RegExp(`^${prefix}[a-z0-9]{8,30}$`).test(v) ? v : null; };
+// 新的一份記著舊代號時，舊的那份不算
+function legacyHidden(snap) {
+  const hidden = new Set();
+  snap.forEach((d) => { const l = d.data().legacy; if (l) hidden.add(l); });
+  return hidden;
+}
+
 export async function vote(key, opt) {
   if (!db) return false;
-  await setDoc(doc(db, `${SLUG}_poll_${key}`, voterId()), { opt, updated_at: serverTimestamp() });
+  const user = await me();
+  const data = { opt, updated_at: serverTimestamp() };
+  const old = legacyId(`${SLUG}_voter`, 'v');
+  if (old) data.legacy = old;
+  await setDoc(doc(db, `${SLUG}_poll_${key}`, user.uid), data);
   store.set(`${SLUG}_vote_${key}`, opt);
   return true;
 }
@@ -146,8 +175,15 @@ export function watchPoll(key, cb, opts) {
   return liveQuery(db ? collection(db, `${SLUG}_poll_${key}`) : null, (snap) => {
     if (!snap) return cb({}, 0);
     const counts = {};
-    snap.forEach((d) => { const o = d.data().opt; counts[o] = (counts[o] || 0) + 1; });
-    cb(counts, snap.size);
+    const hidden = legacyHidden(snap);
+    let total = 0;
+    snap.forEach((d) => {
+      if (hidden.has(d.id)) return;
+      const o = d.data().opt;
+      counts[o] = (counts[o] || 0) + 1;
+      total += 1;
+    });
+    cb(counts, total);
   }, opts);
 }
 
@@ -167,17 +203,6 @@ export const SURVEY_PLANS = [
   { id: 'unsure', label: '不確定' },
 ];
 
-let memSurveyId = null;
-function surveyId() {
-  let id = store.get(`${SLUG}_survey_id`);
-  if (!id) {
-    id = memSurveyId || ('s' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36));
-    memSurveyId = id;
-    store.set(`${SLUG}_survey_id`, id);
-  }
-  return id;
-}
-
 export function mySurvey() {
   try { return JSON.parse(store.get(`${SLUG}_survey_answer`)); } catch { return null; }
 }
@@ -188,7 +213,14 @@ export async function submitSurvey(plans) {
   if (!db) throw new Error('尚未連線');
   // 網路被擋時 setDoc 會一直等下去，10 秒沒回應就請學員重試
   const timeout = new Promise((_, reject) => { setTimeout(() => reject(new Error('送出逾時')), 10000); });
-  await Promise.race([setDoc(doc(db, `${SLUG}_survey`, surveyId()), { plans, updated_at: serverTimestamp() }), timeout]);
+  const save = async () => {
+    const user = await me();
+    const data = { plans, updated_at: serverTimestamp() };
+    const old = legacyId(`${SLUG}_survey_id`, 's');
+    if (old) data.legacy = old;
+    await setDoc(doc(db, `${SLUG}_survey`, user.uid), data);
+  };
+  await Promise.race([save(), timeout]);
   store.set(`${SLUG}_survey_answer`, JSON.stringify(plans));
 }
 
@@ -196,7 +228,9 @@ export function watchSurvey(cb) {
   return liveQuery(db ? collection(db, `${SLUG}_survey`) : null, (snap) => {
     const r = { total: 0, none: 0, anyPaid: 0, tools: {} };
     SURVEY_TOOLS.forEach((t) => { r.tools[t.id] = { paid: 0, free: 0, unsure: 0, total: 0 }; });
+    const hidden = snap ? legacyHidden(snap) : new Set();
     if (snap) snap.forEach((d) => {
+      if (hidden.has(d.id)) return;
       const plans = Object.entries(d.data().plans || {});
       r.total += 1;
       if (!plans.length) r.none += 1;
