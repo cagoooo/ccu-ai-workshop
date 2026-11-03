@@ -15,3 +15,18 @@ Firebase 設定只在部署時由 `.github/inject.py` 從 GitHub Secrets 注入�
 教育科技創新專區數據依據本機專案 H:\Akai v3.6.168（2026-10-18 盤點）。
 
 Made with ❤️ by [阿凱老師](https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5) · 桃園市龍潭區石門國民小學
+
+<!-- akai-edu-tools:backlink -->
+
+---
+
+## 🔗 阿凱老師教育工具集
+
+這個專案是[阿凱老師教育工具集](https://cagoooo.github.io/Akai/)的 **#133 一張課本照片，長出一整套 AI 教學｜AI 數位教學實務工作坊**，由桃園市龍潭區石門國民小學阿凱老師開發。
+
+- 工具介紹頁：[https://cagoooo.github.io/Akai/tool/133/](https://cagoooo.github.io/Akai/tool/133/)
+- 線上使用：[https://cagoooo.github.io/ccu-ai-workshop/](https://cagoooo.github.io/ccu-ai-workshop/)
+- 教學情境文章：[https://cagoooo.github.io/Akai/blog/ccu-ai-workshop-133-one-photo-whole-lesson/](https://cagoooo.github.io/Akai/blog/ccu-ai-workshop-133-one-photo-whole-lesson/)
+- 全部工具（上百個教育工具與原始碼）：[https://cagoooo.github.io/Akai/](https://cagoooo.github.io/Akai/)
+
+想改造成自己的版本？到上面的教學情境文章，按左下角「複製 AI 開發提示詞」，貼給 ChatGPT、Claude、Gemini 等 AI 助手，就能參考這份原始碼開始規劃。
