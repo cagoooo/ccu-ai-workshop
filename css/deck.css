@@ -420,11 +420,12 @@ a.cw-qr:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; 
 #chatw.is-admin .cw-admin-login { display: none; }
 #chatw.is-admin .cw-admin-tools { display: grid; }
 /* 管理員登入後：上排「管理員＋登出」，下排兩顆大按鈕平分，不再擠成一行被切掉 */
-.cw-admin-tools { grid-template-columns: 1fr 1fr; grid-template-areas: "who out" "sync clear"; gap: 8px; align-items: center; }
+.cw-admin-tools { grid-template-columns: 1fr 1fr; grid-template-areas: "who out" "sync clear" "reset reset"; gap: 8px; align-items: center; }
 .cw-admin-tools b { grid-area: who; }
 .cw-admin-tools [data-adm="logout"] { grid-area: out; justify-self: end; }
 .cw-admin-tools [data-adm="sync"] { grid-area: sync; }
 .cw-admin-tools [data-adm="clear"] { grid-area: clear; }
+.cw-admin-tools [data-adm="reset"] { grid-area: reset; width: 100%; min-height: 38px; justify-content: center; border-color: var(--danger); color: var(--danger); }
 .cw-admin-tools [data-adm="sync"], .cw-admin-tools [data-adm="clear"] { width: 100%; min-height: 38px; justify-content: center; text-align: center; overflow: hidden; text-overflow: ellipsis; }
 #chatw.syncing .cw-admin-tools [data-adm="sync"] { background: #e8f5e9; border-color: var(--success); color: var(--success); }
 .cw-admin input { flex: 1; min-width: 120px; font: inherit; font-size: 15px; padding: 7px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }

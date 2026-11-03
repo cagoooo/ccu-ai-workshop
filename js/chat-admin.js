@@ -3,7 +3,7 @@
  * 資料庫規則只允許這個帳號刪除聊天室資料，學員端仍然只能新增。 */
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 import { collection, getDocs, writeBatch, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
-import { app, db, SLUG } from './interact.js?v=__BUILD_VERSION__';
+import { app, db, SLUG, POLLS, WORDCLOUDS } from './interact.js?v=__BUILD_VERSION__';
 
 const ADMIN_EMAIL = 'ccu-admin@akai-slide-interact.firebaseapp.com';
 const auth = app ? getAuth(app) : null;
@@ -44,10 +44,10 @@ export async function logout() {
   await signOut(auth);
 }
 
-// 清除全部聊天訊息與表情（每批 400 筆）；回傳刪除數量
-export async function clearChat() {
+// 刪除指定集合裡的全部文件（每批 400 筆）；回傳刪除數量
+async function wipe(names) {
   let n = 0;
-  for (const name of [`${SLUG}_chat`, `${SLUG}_react`]) {
+  for (const name of names) {
     const snap = await getDocs(collection(db, name));
     for (let i = 0; i < snap.docs.length; i += 400) {
       const batch = writeBatch(db);
@@ -59,6 +59,15 @@ export async function clearChat() {
   }
   return n;
 }
+
+// 清除全部聊天訊息與表情
+export const clearChat = () => wipe([`${SLUG}_chat`, `${SLUG}_react`]);
+
+// 清除簡報裡的投票與文字雲結果（課前問卷不動）
+export const clearActivities = () => wipe([
+  ...Object.keys(POLLS).map((k) => `${SLUG}_poll_${k}`),
+  ...Object.keys(WORDCLOUDS).map((k) => `${SLUG}_wordcloud_${k}`),
+]);
 
 // 簡報進度同步：管理員登入且開啟時，每次翻頁（0.4 秒內只送最後一次）寫入目前頁碼
 let syncOn = false;

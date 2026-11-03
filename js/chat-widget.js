@@ -43,6 +43,7 @@ root.innerHTML = `
         <b>🔓 管理員</b>
         <button type="button" data-adm="sync" title="把目前頁碼同步給學員的跟隨模式">📡 同步頁碼</button>
         <button type="button" data-adm="clear">🗑 清除全部訊息</button>
+        <button type="button" data-adm="reset" title="清除簡報裡的投票與文字雲結果，課前問卷不受影響">🧹 清除投票與文字雲</button>
         <button type="button" data-adm="logout">登出</button>
       </div>
       <div class="cw-admin-msg" aria-live="polite"></div>
@@ -285,6 +286,8 @@ adminForm.addEventListener('submit', async (e) => {
   adminForm.pw.value = '';
 });
 let confirmUntil = 0;
+let confirmKey = null;
+const ADM_LABEL = { clear: '🗑 清除全部訊息', reset: '🧹 清除投票與文字雲' };
 adminForm.addEventListener('click', async (e) => {
   const b = e.target.closest('button[data-adm]');
   if (!b) return;
@@ -296,20 +299,29 @@ adminForm.addEventListener('click', async (e) => {
     adminMsg.textContent = syncPref ? '學員的「跟隨模式」會跟著你翻頁' : '已暫停同步：學員停在最後同步的那一頁';
     return;
   }
-  if (Date.now() > confirmUntil) {                       // 按兩次才清除，避免誤觸
+  const kind = b.dataset.adm;
+  if (confirmKey !== kind || Date.now() > confirmUntil) {   // 同一顆按兩次才清除，避免誤觸
+    adminForm.querySelectorAll('button[data-adm]').forEach((x) => { if (x !== b && ADM_LABEL[x.dataset.adm] && !x.disabled) x.textContent = ADM_LABEL[x.dataset.adm]; });
+    confirmKey = kind;
     confirmUntil = Date.now() + 4000;
     b.textContent = '確定？再按一次';
-    setTimeout(() => { b.textContent = '🗑 清除全部訊息'; }, 4000);
+    setTimeout(() => { if (!b.disabled) b.textContent = ADM_LABEL[kind]; }, 4000);
     return;
   }
   confirmUntil = 0;
+  confirmKey = null;
   b.disabled = true; b.textContent = '清除中…';
   try {
-    const n = await mod.clearChat();
-    hidden = new Set(); store.set('hidden', []);
-    adminMsg.textContent = `已清除 ${n} 筆（訊息＋表情）`;
+    if (kind === 'clear') {
+      const n = await mod.clearChat();
+      hidden = new Set(); store.set('hidden', []);
+      adminMsg.textContent = `已清除 ${n} 筆（訊息＋表情）`;
+    } else {
+      const n = await mod.clearActivities();
+      adminMsg.textContent = `已清除 ${n} 筆（投票＋文字雲），課前問卷沒有動`;
+    }
   } catch (err) { adminMsg.textContent = '清除失敗：沒有權限或網路中斷'; }
-  b.disabled = false; b.textContent = '🗑 清除全部訊息';
+  b.disabled = false; b.textContent = ADM_LABEL[kind];
 });
 
 if (!isReady()) root.classList.add('offline');

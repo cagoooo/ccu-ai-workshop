@@ -77,8 +77,9 @@ service cloud.firestore {
         && request.resource.data.h < 500
         && request.resource.data.updated_at == request.time;
 
-      // 只有管理員帳號（Firebase 登入，密碼存在 Firebase，不在程式碼裡）可以清除聊天室
-      allow delete: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react)$')
+      // 只有管理員帳號（Firebase 登入，密碼存在 Firebase，不在程式碼裡）可以清除聊天室、投票與文字雲；課前問卷不能刪
+      allow delete: if (col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(chat|react)$')
+          || col.matches('^[a-z0-9]+(_[a-z0-9]+)*_(wordcloud|poll)(_[a-z0-9]+)?$'))
         && request.auth != null
         && request.auth.token.firebase.sign_in_provider == 'password'
         && request.auth.token.email == 'ccu-admin@akai-slide-interact.firebaseapp.com'
