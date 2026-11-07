@@ -43,3 +43,10 @@ Made with ❤️ by [阿凱老師](https://www.smes.tyc.edu.tw/modules/school/in
 - 全部工具（上百個教育工具與原始碼）：[https://cagoooo.github.io/Akai/](https://cagoooo.github.io/Akai/)
 
 想改造成自己的版本？到上面的教學情境文章，按左下角「複製 AI 開發提示詞」，貼給 ChatGPT、Claude、Gemini 等 AI 助手，就能參考這份原始碼開始規劃。
+
+## 離線備份（會場網路被擋時用）
+
+- 打包：`python scripts/build_offline.py`，輸出到 `H:\Seminar\ccu-ai-workshop-離線版`（不在 repo 裡）。外部套件全部收進包裡，Google 字型抓不到時改用微軟正黑體。
+- 使用：把整個資料夾複製到講台電腦，雙擊「啟動簡報.bat」（Windows 內建 PowerShell 就能跑，不用安裝）。離線時互動功能（聊天、投票、文字雲、問卷）不能用，其餘 71 頁、動畫與影片正常。
+- PDF：先開好離線伺服器，再用 `scripts/offline/pdf-shots.js` 逐頁截圖組成 PDF（不用 `?print-pdf`，它的列印版面會把部分頁面擠出頁外）。
+- 簡報改版後兩樣都要重做。
