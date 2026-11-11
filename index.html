@@ -1035,6 +1035,36 @@
   </div>
 </section>
 
+<!-- 29b Akai：一鍵複製 AI 開發提示詞 -->
+<section id="slide-akai-prompt">
+  <div class="s">
+    <span class="kicker">延伸｜教育科技創新專區</span>
+    <h2>看到好用的小工具，改成自己班上的版本</h2>
+    <div class="g2 grow" style="grid-template-columns:1.15fr 1fr;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <img src="images/akai-prompt-copy.webp" alt="一鍵複製 AI 開發提示詞：先對齊需求、只聚焦一個作品、帶你一路上線" data-a="left"
+          style="width:100%;border-radius:18px;box-shadow:var(--shadow);margin:0">
+        <div class="card small" data-a style="display:flex;gap:14px;align-items:center;padding:10px 16px">
+          <div id="qr-akaiblog" style="width:92px;height:92px;flex:0 0 auto;background:#fff;border-radius:10px;padding:5px"></div>
+          <div><b>135 篇工具文章都有這顆按鈕</b><br><a href="https://cagoooo.github.io/Akai/blog/" target="_blank" rel="noopener">cagoooo.github.io/Akai/blog</a><br><span class="muted" style="font-size:.8em">原始碼多為 MIT 授權，改作請在頁尾註明參考來源</span></div>
+        </div>
+      </div>
+      <div class="stg" style="display:flex;flex-direction:column;gap:12px">
+        <div class="card accent small">
+          <h3>🚀 三步驟開始</h3>
+          <ol style="margin:0">
+            <li>打開工具文章，按左下角<b>「🤖 複製 AI 開發提示詞」</b></li>
+            <li>貼給 ChatGPT、Claude、Gemini，填上自己的情境</li>
+            <li>跟著 AI 一步一步做出自己的版本</li>
+          </ol>
+        </div>
+        <div class="card cyan small"><b>有付費訂閱？</b>交給 AI Agent，從讀懂原作品一路帶到上線。</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">接在推薦工具後面講：看到喜歡的工具不用從零開始，按文章左下角的按鈕，就能把整份開發需求帶走。提示詞會讓 AI 先確認電腦環境、先讀懂原作品、一題一題問清楚需求，只做 1～2 個核心功能的小版本，資料庫與金鑰換成老師自己的，用到學生資料會提醒去識別化，最後帶到 GitHub Pages 上線。可以對照課前問卷「付費 2 個以上」的比例：有訂閱的老師可以直接用 AI Agent 跑完整流程。</aside>
+</section>
+
 <!-- ===================== 模組四：動畫簡報 ===================== -->
 
 <!-- M1 章節：模組四 -->
@@ -1585,7 +1615,7 @@
     plugins: [RevealNotes],
   });
   // 固定網址的 QR Code（教育科技創新專區）
-  [['qr-akai', 'https://cagoooo.github.io/Akai/'], ['qr-akai2', 'https://cagoooo.github.io/Akai/'], ['qr-akai3', 'https://cagoooo.github.io/Akai/'], ['qr-padlet', 'https://padlet.com/2104340/ai-s0251gd1cq61iglw87t1'], ['qr-itc', 'https://cagoooo.github.io/it-cockpit/'], ['qr-gifted', 'https://cagoooo.github.io/it-cockpit/gifted-ai-lab/']].forEach(function (pair) {
+  [['qr-akai', 'https://cagoooo.github.io/Akai/'], ['qr-akai2', 'https://cagoooo.github.io/Akai/'], ['qr-akai3', 'https://cagoooo.github.io/Akai/'], ['qr-akaiblog', 'https://cagoooo.github.io/Akai/blog/'], ['qr-padlet', 'https://padlet.com/2104340/ai-s0251gd1cq61iglw87t1'], ['qr-itc', 'https://cagoooo.github.io/it-cockpit/'], ['qr-gifted', 'https://cagoooo.github.io/it-cockpit/gifted-ai-lab/']].forEach(function (pair) {
     var el = document.getElementById(pair[0]);
     if (!el) return;
     var qr = qrcode(0, 'M');

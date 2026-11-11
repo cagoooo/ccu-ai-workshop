@@ -47,6 +47,6 @@ Made with ❤️ by [阿凱老師](https://www.smes.tyc.edu.tw/modules/school/in
 ## 離線備份（會場網路被擋時用）
 
 - 打包：`python scripts/build_offline.py`，輸出到 `H:\Seminar\ccu-ai-workshop-離線版`（不在 repo 裡）。外部套件全部收進包裡，Google 字型抓不到時改用微軟正黑體。
-- 使用：把整個資料夾複製到講台電腦，雙擊「啟動簡報.bat」（Windows 內建 PowerShell 就能跑，不用安裝）。離線時互動功能（聊天、投票、文字雲、問卷）不能用，其餘 71 頁、動畫與影片正常。
+- 使用：把整個資料夾複製到講台電腦，雙擊「啟動簡報.bat」（Windows 內建 PowerShell 就能跑，不用安裝）。離線時互動功能（聊天、投票、文字雲、問卷）不能用，其餘投影片、動畫與影片都正常。
 - PDF：先開好離線伺服器，再用 `scripts/offline/pdf-shots.js` 逐頁截圖組成 PDF（不用 `?print-pdf`，它的列印版面會把部分頁面擠出頁外）。
 - 簡報改版後兩樣都要重做。

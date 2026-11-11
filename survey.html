@@ -106,6 +106,12 @@
     .bar i.unsure { background: var(--unsure); }
     .row-sub { color: var(--muted); font-size: var(--fs-sm); }
     .empty { margin: 8px 0; color: var(--muted); }
+    .bar i.count { background: var(--paid); }
+    .combos h3 { margin: 18px 0 8px; font-size: var(--fs-base); }
+    .combos ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .combos li { padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); font-size: var(--fs-sm); }
+    .combos li b { margin-left: 6px; color: var(--paid); }
+    .agent-note { margin: 16px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); font-size: var(--fs-sm); }
     .live { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-sm); }
     @media (prefers-reduced-motion: reduce) { .bar i, .tool { transition: none; } }
 
@@ -169,6 +175,15 @@
       <h1 id="result-title">大家現在用哪些 AI？</h1>
       <p class="lead" id="result-lead">結果會隨新的填答自動更新。</p>
       <div class="stats" id="stats"></div>
+      <div class="panel">
+        <h2 class="q">每個人付費訂閱了幾個 AI？</h2>
+        <div class="rows" id="paid-rows"><p class="empty">讀取中…</p></div>
+        <div class="combos" id="combos" hidden>
+          <h3>同時付費訂閱的組合</h3>
+          <ul id="combo-list"></ul>
+        </div>
+        <p class="agent-note">💡 有付費訂閱，就能進一步使用 AI Agent：讓 AI 自己讀檔、寫程式，一路陪你把小工具做到上線。</p>
+      </div>
       <div class="panel">
         <h2 class="q">各個 AI 的使用人數與方案</h2>
         <ul class="legend" id="legend"></ul>
@@ -286,8 +301,25 @@
       $('stats').innerHTML = stat(r.total, '已填答（人）')
         + stat(`${pct(r.total - r.none, r.total)}%`, `有在用 AI（${r.total - r.none} 人）`)
         + stat(`${pct(r.anyPaid, r.total)}%`, `有付費訂閱（${r.anyPaid} 人）`)
+        + stat(`${pct(r.paidCount[2] + r.paidCount[3], r.total)}%`, `付費 2 個以上（${r.paidCount[2] + r.paidCount[3]} 人）`)
         + stat(`${pct(r.none, r.total)}%`, `都還沒用過（${r.none} 人）`);
-      if (!r.total) { $('rows').innerHTML = '<p class="empty">還沒有人填答，答案送出後會出現在這裡。</p>'; return; }
+      if (!r.total) {
+        $('rows').innerHTML = $('paid-rows').innerHTML = '<p class="empty">還沒有人填答，答案送出後會出現在這裡。</p>';
+        $('combos').hidden = true;
+        return;
+      }
+      // 付費訂閱數分布：同一個顏色，條越長人越多
+      $('paid-rows').innerHTML = ['沒有付費', '付費 1 個', '付費 2 個', '付費 3 個以上'].map((label, i) => {
+        const n = r.paidCount[i];
+        return `<div class="row">
+          <div class="row-head"><b>${label}</b><span>${n} 人・${pct(n, r.total)}%</span></div>
+          <div class="bar" role="img" aria-label="${label} ${n} 人">${n ? `<i class="count" style="width:${(n / r.total) * 100}%"></i>` : ''}</div>
+        </div>`;
+      }).join('');
+      const name = Object.fromEntries(SURVEY_TOOLS.map((t) => [t.id, t.label]));
+      const combos = Object.entries(r.combos).sort((a, b) => b[1] - a[1]);
+      $('combos').hidden = !combos.length;
+      $('combo-list').innerHTML = combos.map(([k, n]) => `<li>${k.split('+').map((id) => esc(name[id] || id)).join('＋')}<b>${n} 人</b></li>`).join('');
       // 人數多的排前面，「其他」固定放最後
       const list = SURVEY_TOOLS.map((t) => ({ ...t, ...r.tools[t.id] }))
         .sort((a, b) => (a.id === 'other') - (b.id === 'other') || b.total - a.total);

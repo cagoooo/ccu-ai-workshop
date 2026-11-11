@@ -226,7 +226,8 @@ export async function submitSurvey(plans) {
 
 export function watchSurvey(cb) {
   return liveQuery(db ? collection(db, `${SLUG}_survey`) : null, (snap) => {
-    const r = { total: 0, none: 0, anyPaid: 0, tools: {} };
+    // paidCount：付費 0／1／2／3 個以上各幾人；combos：同時付費 2 個以上的組合
+    const r = { total: 0, none: 0, anyPaid: 0, paidCount: [0, 0, 0, 0], combos: {}, tools: {} };
     SURVEY_TOOLS.forEach((t) => { r.tools[t.id] = { paid: 0, free: 0, unsure: 0, total: 0 }; });
     const hidden = snap ? legacyHidden(snap) : new Set();
     if (snap) snap.forEach((d) => {
@@ -235,6 +236,9 @@ export function watchSurvey(cb) {
       r.total += 1;
       if (!plans.length) r.none += 1;
       if (plans.some(([, p]) => p === 'paid')) r.anyPaid += 1;
+      const paid = SURVEY_TOOLS.map((t) => t.id).filter((id) => plans.some(([tool, p]) => tool === id && p === 'paid'));
+      r.paidCount[Math.min(paid.length, 3)] += 1;
+      if (paid.length >= 2) { const k = paid.join('+'); r.combos[k] = (r.combos[k] || 0) + 1; }
       plans.forEach(([tool, plan]) => {
         if (!r.tools[tool]) return;
         r.tools[tool][plan] += 1;
