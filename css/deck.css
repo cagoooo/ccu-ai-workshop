@@ -363,6 +363,11 @@ html.is-opening .akai-footer, html.is-opening #theme-btn, html.is-opening .revea
 /* ---------- 內容較多頁面的緊湊版 ---------- */
 .chips-sm .chip { font-size: 18px; padding: 3px 10px; }
 .tight-cards .card { padding: 10px 16px; font-size: 21px; line-height: 1.4; }
+/* 六張卡＋結論的頁面（學科適配）：標題不換行、內文與標籤縮小，結論才不會壓到卡片 */
+.fit-cards { gap: 14px; }
+.fit-cards .card { padding: 12px 18px; font-size: 22px; line-height: 1.45; }
+.fit-cards .card h3 { font-size: 26px; white-space: nowrap; margin-bottom: 4px; }
+.fit-cards .chip { font-size: 18px; padding: 2px 10px; margin-top: 6px; }
 
 /* ---------- 右下角即時聊天室（講台大螢幕） ---------- */
 #chatw { --cw-w: 400px; --cw-fs: 18px; font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; }
