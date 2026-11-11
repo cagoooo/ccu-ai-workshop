@@ -206,34 +206,45 @@ export const SURVEY_PLANS = [
 export function mySurvey() {
   try { return JSON.parse(store.get(`${SLUG}_survey_answer`)); } catch { return null; }
 }
+export const myOtherName = () => store.get(`${SLUG}_survey_other`) || '';
 // 跳過只算這次開啟：下次再打開簡報還會邀請填答
 export function skipSurvey() { try { sessionStorage.setItem(`${SLUG}_survey_skip`, '1'); } catch { /* 無痕模式 */ } }
 
-export async function submitSurvey(plans) {
+// otherName：勾「其他 AI」時選填是哪一個
+export async function submitSurvey(plans, otherName = '') {
+  const other = plans.other ? String(otherName || '').trim().slice(0, 20) : '';
   if (!db) throw new Error('尚未連線');
   // 網路被擋時 setDoc 會一直等下去，10 秒沒回應就請學員重試
   const timeout = new Promise((_, reject) => { setTimeout(() => reject(new Error('送出逾時')), 10000); });
   const save = async () => {
     const user = await me();
     const data = { plans, updated_at: serverTimestamp() };
+    if (other) data.other_name = other;
     const old = legacyId(`${SLUG}_survey_id`, 's');
     if (old) data.legacy = old;
     await setDoc(doc(db, `${SLUG}_survey`, user.uid), data);
   };
   await Promise.race([save(), timeout]);
   store.set(`${SLUG}_survey_answer`, JSON.stringify(plans));
+  store.set(`${SLUG}_survey_other`, other);
 }
 
 export function watchSurvey(cb) {
   return liveQuery(db ? collection(db, `${SLUG}_survey`) : null, (snap) => {
     // paidCount：付費 0／1／2／3 個以上各幾人；combos：同時付費 2 個以上的組合
-    const r = { total: 0, none: 0, anyPaid: 0, paidCount: [0, 0, 0, 0], combos: {}, tools: {} };
+    // otherNames：「其他 AI」填的名稱，大小寫與空白不同算同一個
+    const r = { total: 0, none: 0, anyPaid: 0, paidCount: [0, 0, 0, 0], combos: {}, tools: {}, otherNames: {} };
     SURVEY_TOOLS.forEach((t) => { r.tools[t.id] = { paid: 0, free: 0, unsure: 0, total: 0 }; });
     const hidden = snap ? legacyHidden(snap) : new Set();
     if (snap) snap.forEach((d) => {
       if (hidden.has(d.id)) return;
       const plans = Object.entries(d.data().plans || {});
       r.total += 1;
+      const on = String(d.data().other_name || '').trim();
+      if (on && d.data().plans?.other) {
+        const k = on.toLowerCase().replace(/\s+/g, '');
+        (r.otherNames[k] = r.otherNames[k] || { label: on, n: 0 }).n += 1;
+      }
       if (!plans.length) r.none += 1;
       if (plans.some(([, p]) => p === 'paid')) r.anyPaid += 1;
       const paid = SURVEY_TOOLS.map((t) => t.id).filter((id) => plans.some(([tool, p]) => tool === id && p === 'paid'));

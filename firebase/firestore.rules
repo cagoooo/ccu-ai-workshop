@@ -45,10 +45,16 @@ service cloud.firestore {
       allow create, update: if col.matches('^[a-z0-9]+(_[a-z0-9]+)*_survey$')
         && request.auth != null
         && docId == request.auth.uid
-        && request.resource.data.keys().hasOnly(['plans', 'updated_at', 'legacy'])
+        && request.resource.data.keys().hasOnly(['plans', 'updated_at', 'legacy', 'other_name'])
         && (!('legacy' in request.resource.data)
           || (request.resource.data.legacy is string && request.resource.data.legacy.matches('^s[a-z0-9]{8,30}$')))
         && request.resource.data.plans is map
+        // 勾「其他 AI」時可選填是哪一個（1～20 字）
+        && (!('other_name' in request.resource.data)
+          || (request.resource.data.other_name is string
+            && request.resource.data.other_name.size() >= 1
+            && request.resource.data.other_name.size() <= 20
+            && 'other' in request.resource.data.plans))
         && request.resource.data.plans.keys().hasOnly(['gemini', 'claude', 'chatgpt', 'grok', 'other'])
         && request.resource.data.plans.values().hasOnly(['free', 'paid', 'unsure'])
         && request.resource.data.updated_at == request.time;

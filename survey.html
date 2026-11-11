@@ -71,6 +71,11 @@
     .plans { display: none; margin: 0; padding: 0 12px 12px; border: 0; }
     .tool.on .plans { display: block; }
     .plans legend { padding: 0 0 6px; color: var(--ink); font-size: var(--fs-sm); font-weight: 700; }
+    .other-name { display: block; margin-top: 10px; font-size: var(--fs-sm); font-weight: 700; }
+    .other-name input { display: block; width: 100%; min-height: 44px; margin-top: 6px; padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; font-weight: 400; }
+    .other-name input:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; border-color: var(--accent); }
+    .other-list { margin: 6px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+    .other-list b { color: var(--ink); }
     .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .seg label { position: relative; }
     .seg input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
@@ -217,7 +222,7 @@
   </footer>
 
   <script type="module">
-    import { isReady, onStatus, SURVEY_TOOLS, SURVEY_PLANS, mySurvey, submitSurvey, skipSurvey, watchSurvey } from './js/interact.js?v=__BUILD_VERSION__';
+    import { isReady, onStatus, SURVEY_TOOLS, SURVEY_PLANS, mySurvey, myOtherName, submitSurvey, skipSurvey, watchSurvey } from './js/interact.js?v=__BUILD_VERSION__';
 
     const $ = (id) => document.getElementById(id);
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -231,6 +236,7 @@
         <fieldset class="plans">
           <legend>你用的方案</legend>
           <div class="seg">${SURVEY_PLANS.map((p) => `<label><input type="radio" name="plan-${t.id}" value="${p.id}" /><span>${esc(p.label)}</span></label>`).join('')}</div>
+          ${t.id === 'other' ? '<label class="other-name">是哪一個 AI？（選填）<input type="text" id="other-name" maxlength="20" placeholder="例如 Copilot、Perplexity" autocomplete="off" /></label>' : ''}
         </fieldset>
       </div>`).join('') + `
       <div class="tool tool-none" data-none>
@@ -260,6 +266,7 @@
         c.querySelectorAll('.seg input').forEach((r) => { r.checked = r.value === plan; });
       });
       noneBox.checked = !Object.keys(plans).length;
+      $('other-name').value = myOtherName();
       paint();
     }
 
@@ -279,7 +286,7 @@
       btn.disabled = true;
       btn.textContent = '送出中…';
       try {
-        await submitSurvey(plans);
+        await submitSurvey(plans, $('other-name').value);
         show('result');
         window.scrollTo(0, 0);
       } catch (err) {
@@ -323,6 +330,7 @@
       // 人數多的排前面，「其他」固定放最後
       const list = SURVEY_TOOLS.map((t) => ({ ...t, ...r.tools[t.id] }))
         .sort((a, b) => (a.id === 'other') - (b.id === 'other') || b.total - a.total);
+      const others = Object.values(r.otherNames || {}).sort((a, b) => b.n - a.n);
       $('rows').innerHTML = list.map((t) => {
         const parts = SURVEY_PLANS.map((p) => ({ ...p, n: t[p.id] }));
         return `<div class="row">
@@ -330,6 +338,7 @@
           <div class="bar" role="img" aria-label="${esc(t.label)}：${parts.map((p) => `${p.label} ${p.n} 人`).join('、')}">${parts.filter((p) => p.n)
             .map((p) => `<i class="${p.id}" style="width:${(p.n / r.total) * 100}%" title="${esc(p.label)} ${p.n} 人"></i>`).join('')}</div>
           <div class="row-sub">${parts.map((p) => `${p.label} ${p.n}`).join('・')}</div>
+          ${t.id === 'other' && others.length ? `<p class="other-list">填寫的 AI：${others.map((o) => `<b>${esc(o.label)}</b> ${o.n}`).join('・')}</p>` : ''}
         </div>`;
       }).join('');
     }
